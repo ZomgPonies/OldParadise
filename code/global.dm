@@ -78,7 +78,7 @@ var/endicon = null
 var/diary = null
 var/diaryofmeanpeople = null
 var/href_logfile = null
-var/station_name = "NSS Cyberiad"
+var/station_name = "NSS Exodus"
 var/game_version = "Custom ParaCode"
 var/changelog_hash = ""
 
