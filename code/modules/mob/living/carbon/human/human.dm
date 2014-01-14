@@ -61,11 +61,6 @@
 	if(!species)
 		set_species("Human")
 
-	if(species.language)
-		var/datum/language/L = all_languages[species.language]
-		if(L)
-			languages += L
-
 	var/datum/reagents/R = new/datum/reagents(1000)
 	reagents = R
 	R.my_atom = src
@@ -189,7 +184,7 @@
 				stat("Chemical Storage", mind.changeling.chem_charges)
 				stat("Genetic Damage Time", mind.changeling.geneticdamage)
 		if (istype(wear_suit, /obj/item/clothing/suit/space/space_ninja)&&wear_suit:s_initialized)
-			stat("Energy Charge", round(wear_suit:cell:charge/100))
+			stat("Energy Charge", (wear_suit:cell:charge))
 
 
 /mob/living/carbon/human/ex_act(severity)
@@ -1354,6 +1349,9 @@ mob/living/carbon/human/yank_out_object()
 	if(species && (species.name && species.name == new_species))
 		return 1
 
+	if(species && species.language)
+		remove_language(species.language)
+
 	species = all_species[new_species]
 
 	see_in_dark = species.darksight
@@ -1366,6 +1364,9 @@ mob/living/carbon/human/yank_out_object()
 		dna.mutantrace = "slime"
 
 	mutations+=species.default_mutations
+
+	if(species.language)
+		add_language(species.language)
 
 	spawn(0)
 		update_icons()
@@ -1425,3 +1426,12 @@ mob/living/carbon/human/yank_out_object()
 		var/obj/effect/decal/cleanable/blood/writing/W = new(T)
 		W.message = message
 		W.add_fingerprint(src)
+
+/mob/living/carbon/human/proc/expose_brain()
+	var/datum/organ/external/head/H = get_organ("head")
+	if(H)
+		H.brained=1
+		h_style = "Bald"
+		drop_from_inventory(head)
+		update_hair()
+		update_body()

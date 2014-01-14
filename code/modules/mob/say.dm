@@ -67,7 +67,7 @@
 	if(!other)
 		return 1
 	//Universal speak makes everything understandable, for obvious reasons.
-	else if(other.universal_speak || src.universal_speak)
+	else if(other.universal_speak || src.universal_speak || src.universal_understand)
 		return 1
 	else if (src.stat == 2)
 		return 1
@@ -92,10 +92,6 @@
 		return 1
 	else if (istype(other, /mob/living/carbon/human) && istype(src, /mob/living/carbon/human))
 		return 1
-	else if (istype(other, /mob/living/simple_animal) && istype(src, /mob/living/simple_animal))
-		return 1
-	else if (istype(other, /mob/living/carbon/human) && istype(src, /mob/living/simple_animal/borer))
-		return 1
 	return 0
 
 /mob/proc/say_quote(var/text,var/datum/language/speaking)
@@ -105,30 +101,28 @@
 		//tcomms code is still runtiming somewhere here
 	var/ending = copytext(text, length(text))
 
-	var/speechverb = "<span class='say_quote'>"
+	var/speech_verb = "says"
+	var/speech_style = "body"
 
 	if (speaking)
-		speechverb = "[speaking.speech_verb]</span>, \"<span class='[speaking.colour]'>"
+		speech_verb = speaking.speech_verb
+		speech_style = speaking.colour
 	else if(speak_emote && speak_emote.len)
-		speechverb = "[pick(speak_emote)], \""
+		speech_verb = pick(speak_emote)
 	else if (src.stuttering)
-		speechverb = "stammers, \""
+		speech_verb = "stammers"
 	else if (src.slurring)
-		speechverb = "slurrs, \""
+		speech_verb = "slurrs"
 	else if (ending == "?")
-		speechverb = "asks, \""
+		speech_verb = "asks"
 	else if (ending == "!")
-		speechverb = "exclaims, \""
+		speech_verb = "exclaims"
 	else if(isliving(src))
 		var/mob/living/L = src
 		if (L.getBrainLoss() >= 60)
-			speechverb = "gibbers, \""
-		else
-			speechverb = "says, \""
-	else
-		speechverb = "says, \""
+			speech_verb = "gibbers"
 
-	return "[speechverb][text]</span>\""
+	return "<span class='say_quote'>[speech_verb],</span> \"<span class='[speech_style]'>[text]</span>\""
 
 /mob/proc/emote(var/act, var/type, var/message)
 	if(act == "me")
