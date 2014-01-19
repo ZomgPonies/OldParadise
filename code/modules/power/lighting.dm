@@ -448,7 +448,6 @@
 		flickering = 0
 
 // ai attack - make lights flicker, because why not
-
 /obj/machinery/light/attack_ai(mob/user)
 	src.flicker(1)
 	return
@@ -738,7 +737,7 @@
 	if(!proximity) return
 	if(istype(target, /obj/machinery/light))
 		return
-	if(user.a_intent != "hurt")
+	if(user.a_intent != "harm")
 		return
 
 	shatter()

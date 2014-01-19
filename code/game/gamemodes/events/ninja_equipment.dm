@@ -501,6 +501,7 @@ ________________________________________________________________________________
 	var/mob/living/carbon/human/U = affecting
 	var/mob/living/silicon/ai/A = AI
 	var/display_to = s_control ? U : A//Who do we want to display certain messages to?
+	var/turf/mobloc // For use later on during a check in Kamikaze
 
 	if(s_control)
 		if(!affecting||U.stat||!s_initialized)//Check to make sure the guy is wearing the suit after clicking and it's on.
@@ -594,31 +595,35 @@ ________________________________________________________________________________
 
 		if("Unlock Kamikaze")
 			if(input(U)=="Divine Wind")
-				if( !(U.stat||U.wear_suit!=src||!s_initialized) )
-					if( !(cell.charge<=1||s_busy) )
-						s_busy = 1
-						for(var/i, i<4, i++)
-							switch(i)
-								if(0)
-									U << "\blue Engaging mode...\n\black<b>CODE NAME</b>: \red <b>KAMIKAZE</b>"
-								if(1)
-									U << "\blue Re-routing power nodes... \nUnlocking limiter..."
-								if(2)
-									U << "\blue Power nodes re-routed. \nLimiter unlocked."
-								if(3)
-									grant_kamikaze(U)//Give them verbs and change variables as necessary.
-									U.regenerate_icons()//Update their clothing.
-									ninjablade()//Summon two energy blades.
-									message_admins("\blue [key_name_admin(U)] used KAMIKAZE mode.")//Let the admins know.
-									s_busy = 0
-									return
-							sleep(s_delay)
+				mobloc = get_turf(U.loc)
+				if(mobloc.loc != /area/ninja_outpost)
+					if( !(U.stat||U.wear_suit!=src||!s_initialized))
+						if( !(cell.charge<=1||s_busy) )
+							s_busy = 1
+							for(var/i, i<4, i++)
+								switch(i)
+									if(0)
+										U << "\blue Engaging mode...\n\black<b>CODE NAME</b>: \red <b>KAMIKAZE</b>"
+									if(1)
+										U << "\blue Re-routing power nodes... \nUnlocking limiter..."
+									if(2)
+										U << "\blue Power nodes re-routed. \nLimiter unlocked."
+									if(3)
+										grant_kamikaze(U)//Give them verbs and change variables as necessary.
+										U.regenerate_icons()//Update their clothing.
+										ninjablade()//Summon two energy blades.
+										message_admins("\blue [key_name_admin(U)] used KAMIKAZE mode.")//Let the admins know.
+										s_busy = 0
+										return
+								sleep(s_delay)
+						else
+							U << "\red <b>ERROR<b>: \black Unable to initiate mode."
 					else
-						U << "\red <b>ERROR<b>: \black Unable to initiate mode."
+						U << browse(null, "window=spideros")
+						s_busy = 0
+						return
 				else
-					U << browse(null, "window=spideros")
-					s_busy = 0
-					return
+					U << "\red Your <b>NINJA HONOR</b> prevents you from activating Kamikaze here!"
 			else
 				U << "\red ERROR: WRONG PASSWORD!"
 				k_unlock = 0
@@ -1529,7 +1534,7 @@ It is possible to destroy the net by the occupant or someone else.
 			tforce = 10
 		else
 			tforce = AM:throwforce
-		playsound(src.loc, 'sound/weapons/slash.ogg', 80, 1)
+		playsound(get_turf(src), 'sound/weapons/slash.ogg', 80, 1)
 		health = max(0, health - tforce)
 		healthcheck()
 		..()
@@ -1553,7 +1558,7 @@ It is possible to destroy the net by the occupant or someone else.
 		usr << text("\green You claw at the net.")
 		for(var/mob/O in oviewers(src))
 			O.show_message(text("\red [] claws at the energy net!", usr), 1)
-		playsound(src.loc, 'sound/weapons/slash.ogg', 80, 1)
+		playsound(get_turf(src), 'sound/weapons/slash.ogg', 80, 1)
 		health -= rand(10, 20)
 		if(health <= 0)
 			usr << text("\green You slice the energy net to pieces.")
