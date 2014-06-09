@@ -596,6 +596,10 @@ datum
 
 			on_mob_life(var/mob/living/M as mob)
 				if(!M) M = holder.my_atom
+				if (prob(4))
+					M << "\blue Feels good, man!"
+				if (prob(2))
+					M << "\blue Good sh$%, man!"
 				M.druggy = max(M.druggy, 15)
 				if(isturf(M.loc) && !istype(M.loc, /turf/space))
 					if(M.canmove && !M.restrained())
@@ -3348,9 +3352,9 @@ datum
 				pass_out = 60
 				on_mob_life(var/mob/M)
 					if(!M) M = holder.my_atom
-						usr << "YOU FEEL ROBUST!"
-						usr << "YOU FEEL ROBUST!"
-						usr << "YOU FEEL ROBUST!"
+						M << "YOU FEEL ROBUST!"
+						M << "YOU FEEL ROBUST!"
+						M << "YOU FEEL ROBUST!"
 				..()
 				return
 			deadrum
