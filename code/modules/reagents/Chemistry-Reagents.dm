@@ -596,15 +596,12 @@ datum
 
 			on_mob_life(var/mob/living/M as mob)
 				if(!M) M = holder.my_atom
-				if (prob(4))
-					M << "\blue Feels good, man!"
-				if (prob(2))
-					M << "\blue Good sh$%, man!"
 				M.druggy = max(M.druggy, 15)
 				if(isturf(M.loc) && !istype(M.loc, /turf/space))
 					if(M.canmove && !M.restrained())
 						if(prob(10)) step(M, pick(cardinal))
 				if(prob(7)) M.emote(pick("twitch","drool","moan","giggle"))
+					M << "\Feels good, man!"
 				holder.remove_reagent(src.id, 0.5 * REAGENTS_METABOLISM)
 				return
 
