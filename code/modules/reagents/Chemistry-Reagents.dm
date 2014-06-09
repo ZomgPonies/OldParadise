@@ -3334,7 +3334,18 @@ datum
 				id = "rum"
 				description = "Yohoho and all that."
 				color = "#664300" // rgb: 102, 67, 0
-
+			robustazine
+				name = "Robustazine"
+				id = "robustazine"
+				description = "Too hot to handle."
+				color = "#B77700" // rgb: 118, 119, 0
+					dizzy_adj = 10
+					slurr_adj = 5
+					confused_adj = 10
+					slur_start = 1
+					confused_start = 1
+					blur_start = 1
+					pass_out = 60
 			deadrum
 				name = "Deadrum"
 				id = "rum"
