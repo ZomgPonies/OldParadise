@@ -298,6 +298,13 @@ datum
 			requires_heating = 1
 */
 
+		robustazine
+			name = "Robustazine"
+			id = "robustazine"
+			result = "robustazine"
+			required_reagents = list("ethanol" = 1, "rum" = 1, "hyperzine" = 1)
+			result_amount = 1
+
 		ryetalyn
 			name = "Ryetalyn"
 			id = "ryetalyn"
