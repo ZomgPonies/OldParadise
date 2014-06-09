@@ -3339,13 +3339,20 @@ datum
 				id = "robustazine"
 				description = "Too hot to handle."
 				color = "#B77700" // rgb: 118, 119, 0
-					dizzy_adj = 10
-					slurr_adj = 5
-					confused_adj = 10
-					slur_start = 1
-					confused_start = 1
-					blur_start = 1
-					pass_out = 60
+				dizzy_adj = 10
+				slurr_adj = 5
+				confused_adj = 10
+				slur_start = 1
+				confused_start = 1
+				blur_start = 1
+				pass_out = 60
+				on_mob_life(var/mob/M)
+					if(!M) M = holder.my_atom
+						usr << "YOU FEEL ROBUST!"
+						usr << "YOU FEEL ROBUST!"
+						usr << "YOU FEEL ROBUST!"
+				..()
+				return
 			deadrum
 				name = "Deadrum"
 				id = "rum"
