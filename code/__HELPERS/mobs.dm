@@ -37,9 +37,9 @@ proc/random_facial_hair_style(gender, species = "Human")
 
 		return f_style
 
-proc/random_name(gender, species = "Human")
-	if(gender==FEMALE)	return capitalize(pick(first_names_female)) + " " + capitalize(pick(last_names))
-	else				return capitalize(pick(first_names_male)) + " " + capitalize(pick(last_names))
+proc/random_name(gender, speciesName = "Human")
+	var/datum/species/S = all_species[speciesName]
+	return S.makeName(gender)
 
 proc/random_skin_tone()
 	switch(pick(60;"caucasian", 15;"afroamerican", 10;"african", 10;"latino", 5;"albino"))
@@ -109,12 +109,14 @@ Proc for attack log creation, because really why not
 */
 
 proc/add_logs(mob/target, mob/user, what_done, var/object=null, var/addition=null)
+	var/list/ignore=list("shaked","CPRed","grabbed","punched")
 	if(ismob(user))
 		user.attack_log += text("\[[time_stamp()]\] <font color='red'>Has [what_done] [target.name][ismob(target) ? "([target.ckey])" : ""][object ? " with [object]" : " "][addition]</font>")
 	if(ismob(target))
 		target.attack_log += text("\[[time_stamp()]\] <font color='orange'>Has been [what_done] by [user.name][ismob(user) ? "([user.ckey])" : ""][object ? " with [object]" : " "][addition]</font>")
 	log_attack("<font color='red'>[user.name][ismob(user) ? "([user.ckey])" : ""] [what_done] [target.name][ismob(target) ? "([target.ckey])" : ""][object ? " with [object]" : " "][addition]</font>")
 	if(target.client)
-		if(what_done != ("shaked" || "CPRed" || "grabbed"))
-			message_admins("[user.name][ismob(user) ? "([user.ckey])" : ""] [what_done] [target.name][ismob(target) ? "([target.ckey])" : ""][object ? " with [object]" : " "][addition](<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[target.x];Y=[target.y];Z=[target.z]'>JMP</a>)")
+		if(what_done in ignore) return
+		if(target == user)return
+		message_admins("[user.name][ismob(user) ? "([user.ckey])" : ""] [what_done] [target.name][ismob(target) ? "([target.ckey])" : ""][object ? " with [object]" : " "][addition](<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[target.x];Y=[target.y];Z=[target.z]'>JMP</a>)")
 

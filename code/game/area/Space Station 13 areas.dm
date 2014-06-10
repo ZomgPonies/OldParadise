@@ -60,7 +60,7 @@ NOTE: there are two lists of areas in the end of this file: centcom and station 
 /*I am far too lazy to make it a proper list of areas so I'll just make it run the usual telepot routine at the start of the game*/
 var/list/teleportlocs = list()
 
-proc/process_teleport_locs()
+/hook/startup/proc/setupTeleportLocs()
 	for(var/area/AR in world)
 		if(istype(AR, /area/shuttle) || istype(AR, /area/syndicate_station) || istype(AR, /area/wizard_station)) continue
 		if(teleportlocs.Find(AR.name)) continue
@@ -69,20 +69,13 @@ proc/process_teleport_locs()
 			teleportlocs += AR.name
 			teleportlocs[AR.name] = AR
 
-	var/not_in_order = 0
-	do
-		not_in_order = 0
-		if(teleportlocs.len <= 1)
-			break
-		for(var/i = 1, i <= (teleportlocs.len - 1), i++)
-			if(sorttext(teleportlocs[i], teleportlocs[i+1]) == -1)
-				teleportlocs.Swap(i, i+1)
-				not_in_order = 1
-	while(not_in_order)
+	teleportlocs = sortAssoc(teleportlocs)
+
+	return 1
 
 var/list/ghostteleportlocs = list()
 
-proc/process_ghost_teleport_locs()
+/hook/startup/proc/setupGhostTeleportLocs()
 	for(var/area/AR in world)
 		if(ghostteleportlocs.Find(AR.name)) continue
 		if(istype(AR, /area/turret_protected/aisat) || istype(AR, /area/derelict) || istype(AR, /area/tdome))
@@ -93,17 +86,9 @@ proc/process_ghost_teleport_locs()
 			ghostteleportlocs += AR.name
 			ghostteleportlocs[AR.name] = AR
 
-	var/not_in_order = 0
-	do
-		not_in_order = 0
-		if(ghostteleportlocs.len <= 1)
-			break
-		for(var/i = 1, i <= (ghostteleportlocs.len - 1), i++)
-			if(sorttext(ghostteleportlocs[i], ghostteleportlocs[i+1]) == -1)
-				ghostteleportlocs.Swap(i, i+1)
-				not_in_order = 1
-	while(not_in_order)
+	ghostteleportlocs = sortAssoc(ghostteleportlocs)
 
+	return 1
 
 /*-----------------------------------------------------------------------------*/
 
@@ -540,6 +525,10 @@ proc/process_ghost_teleport_locs()
 /area/tdome/tdomeobserve
 	name = "\improper Thunderdome (Observer.)"
 	icon_state = "purple"
+
+/area/exploration/methlab
+	name = "\improper Abandoned Drug Lab"
+	icon_state = "green"
 
 //ENEMY
 
@@ -1127,6 +1116,9 @@ proc/process_ghost_teleport_locs()
 		name = "\improper Chief Engineer's office"
 		icon_state = "engine_control"
 
+	mechanic_workshop
+		name = "\improper Mechanic Workshop"
+		icon_state = "engine"
 
 //Solars
 
@@ -1574,11 +1566,11 @@ proc/process_ghost_teleport_locs()
 //DJSTATION
 
 /area/djstation
-	name = "\improper Ruskie DJ Station"
+	name = "\improper Listening Post"
 	icon_state = "DJ"
 
 /area/djstation/solars
-	name = "\improper DJ Station Solars"
+	name = "\improper Listening Post Solars"
 	icon_state = "DJ"
 
 //DERELICT
@@ -1668,6 +1660,71 @@ proc/process_ghost_teleport_locs()
 /area/derelict/singularity_engine
 	name = "\improper Derelict Singularity Engine"
 	icon_state = "engine"
+
+//HALF-BUILT STATION (REPLACES DERELICT IN BAYCODE, ABOVE IS LEFT FOR DOWNSTREAM)
+
+/area/shuttle/constructionsite
+	name = "\improper Construction Site Shuttle"
+	icon_state = "yellow"
+
+/area/shuttle/constructionsite/station
+	name = "\improper Construction Site Shuttle"
+
+/area/shuttle/constructionsite/site
+	name = "\improper Construction Site Shuttle"
+
+/area/constructionsite
+	name = "\improper Construction Site"
+	icon_state = "storage"
+
+/area/constructionsite/storage
+	name = "\improper Construction Site Storage Area"
+
+/area/constructionsite/science
+	name = "\improper Construction Site Research"
+
+/area/constructionsite/bridge
+	name = "\improper Construction Site Bridge"
+	icon_state = "bridge"
+
+/area/constructionsite/maintenance
+	name = "\improper Construction Site Maintenance"
+	icon_state = "yellow"
+
+/area/constructionsite/hallway/aft
+	name = "\improper Construction Site Aft Hallway"
+	icon_state = "hallP"
+
+/area/constructionsite/hallway/fore
+	name = "\improper Construction Site Fore Hallway"
+	icon_state = "hallS"
+
+/area/constructionsite/atmospherics
+	name = "\improper Construction Site Atmospherics"
+	icon_state = "green"
+
+/area/constructionsite/medical
+	name = "\improper Construction Site Medbay"
+	icon_state = "medbay"
+
+/area/constructionsite/ai
+	name = "\improper Construction Computer Core"
+	icon_state = "ai"
+
+/area/constructionsite/engineering
+	name = "\improper Construction Site Engine Bay"
+	icon_state = "engine"
+
+/area/solar/constructionsite
+	name = "\improper Construction Site Solars"
+	icon_state = "aft"
+
+//area/constructionsite
+//	name = "\improper Construction Site Shuttle"
+
+//area/constructionsite
+//	name = "\improper Construction Site Shuttle"
+
 
 //Construction
 

@@ -224,11 +224,9 @@ mob/living/carbon/human/airflow_hit(atom/A)
 //	for(var/mob/M in hearers(src))
 //		M.show_message("\red <B>[src] slams into [A]!</B>",1,"\red You hear a loud slam!",2)
 	playsound(src.loc, "punch", 25, 1, -1)
-	loc:add_blood(src)
-	if (src.wear_suit)
-		src.wear_suit.add_blood(src)
-	if (src.w_uniform)
-		src.w_uniform.add_blood(src)
+	if (prob(33))
+		loc:add_blood(src)
+		bloody_body(src)
 	var/b_loss = airflow_speed * vsc.airflow_damage
 
 	var/blocked = run_armor_check("head","melee")
@@ -251,6 +249,6 @@ zone/proc/movables()
 	. = list()
 	for(var/turf/T in contents)
 		for(var/atom/A in T)
-			if(istype(A, /obj/effect) || istype(A, /mob/camera/aiEye))
+			if(istype(A, /obj/effect) || istype(A, /mob/aiEye))
 				continue
 			. += A

@@ -104,15 +104,14 @@ Class Procs:
 		//2 = run auto, use active
 	var/idle_power_usage = 0
 	var/active_power_usage = 0
-	var/power_channel = EQUIP
-		//EQUIP,ENVIRON or LIGHT
+	var/power_channel = EQUIP //EQUIP,ENVIRON or LIGHT
 	var/list/component_parts = null //list of all the parts used to build it, if made from certain kinds of frames.
 	var/uid
 	var/manual = 0
 	var/global/gl_uid = 1
 	var/custom_aghost_alerts=0
 	var/panel_open = 0
-	var/myArea
+	var/area/myArea
 	var/interact_offline = 0 // Can the machine be interacted with while de-powered.
 
 /obj/machinery/New()
@@ -121,7 +120,7 @@ Class Procs:
 
 /obj/machinery/proc/addAtProcessing()
 	if (use_power)
-		myArea = loc.loc
+		myArea = get_area_master(src)
 
 	machines += src
 

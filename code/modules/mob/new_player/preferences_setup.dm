@@ -177,6 +177,15 @@ datum/preferences
 		g_skin = green
 		b_skin = blue
 
+	proc/blend_backpack(var/icon/clothes_s,var/backbag,var/satchel,var/backpack="backpack")
+		switch(backbag)
+			if(2)
+				clothes_s.Blend(new /icon('icons/mob/back.dmi', backpack), ICON_OVERLAY)
+			if(3)
+				clothes_s.Blend(new /icon('icons/mob/back.dmi', satchel), ICON_OVERLAY)
+			if(4)
+				clothes_s.Blend(new /icon('icons/mob/back.dmi', "satchel"), ICON_OVERLAY)
+		return clothes_s
 
 	proc/update_preview_icon(var/for_observer=0)		//seriously. This is horrendous.
 		del(preview_icon_front)

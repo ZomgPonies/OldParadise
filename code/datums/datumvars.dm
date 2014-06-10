@@ -245,7 +245,8 @@ client
 
 		if(ismob(D))
 			body += "<option value='?_src_=vars;give_spell=\ref[D]'>Give Spell</option>"
-			body += "<option value='?_src_=vars;give_disease=\ref[D]'>Give Disease</option>"
+			body += "<option value='?_src_=vars;give_disease2=\ref[D]'>Give Disease</option>"
+			body += "<option value='?_src_=vars;give_disease=\ref[D]'>Give TG-style Disease</option>"
 			body += "<option value='?_src_=vars;godmode=\ref[D]'>Toggle Godmode</option>"
 			body += "<option value='?_src_=vars;build_mode=\ref[D]'>Toggle Build Mode</option>"
 
@@ -266,6 +267,7 @@ client
 				body += "<option value='?_src_=vars;setmutantrace=\ref[D]'>Set Mutantrace</option>"
 				body += "<option value='?_src_=vars;setspecies=\ref[D]'>Set Species</option>"
 				body += "<option value='?_src_=vars;makeai=\ref[D]'>Make AI</option>"
+				body += "<option value='?_src_=vars;makemask=\ref[D]'>Make Mask of Nar'sie</option>"
 				body += "<option value='?_src_=vars;makerobot=\ref[D]'>Make cyborg</option>"
 				body += "<option value='?_src_=vars;makemonkey=\ref[D]'>Make monkey</option>"
 				body += "<option value='?_src_=vars;makealien=\ref[D]'>Make alien</option>"
@@ -403,7 +405,23 @@ client
 
 		else
 			html += "[name] = <span class='value'>[value]</span>"
-
+			/*
+			// Bitfield stuff
+			if(round(value)==value) // Require integers.
+				var/idx=0
+				var/bit=0
+				var/bv=0
+				html += "<div class='value binary'>"
+				for(var/block=0;block<8;block++)
+					html += " <span class='block'>"
+					for(var/i=0;i<4;i++)
+						idx=(block*4)+i
+						bit=1 << idx
+						bv=value & bit
+						html += "<a href='?_src_=vars;togbit=[idx];var=[name];subject=\ref[DA]' title='bit [idx] ([bit])'>[bv?1:0]</a>"
+					html += "</span>"
+				html += "</div>"
+			*/
 		html += "</li>"
 
 		return html
@@ -440,6 +458,20 @@ client
 			return
 
 		modify_variables(D, href_list["varnameedit"], 1)
+
+	else if(href_list["togbit"])
+		if(!check_rights(R_VAREDIT))	return
+
+		var/atom/D = locate(href_list["subject"])
+		if(!istype(D,/datum) && !istype(D,/client))
+			usr << "This can only be used on instances of types /client or /datum"
+			return
+		if(!(href_list["var"] in D.vars))
+			usr << "Unable to find variable specified."
+			return
+		var/value = D.vars[href_list["var"]]
+		value ^= 1 << text2num(href_list["togbit"])
+		D.vars[href_list["var"]] = value
 
 	else if(href_list["varnamechange"] && href_list["datumchange"])
 		if(!check_rights(R_VAREDIT))	return
@@ -492,6 +524,17 @@ client
 			return
 
 		src.give_disease(M)
+		href_list["datumrefresh"] = href_list["give_spell"]
+		
+	else if(href_list["give_disease2"])
+		if(!check_rights(R_ADMIN|R_FUN))	return
+
+		var/mob/M = locate(href_list["give_disease2"])
+		if(!istype(M))
+			usr << "This can only be used on instances of type /mob"
+			return
+
+		src.give_disease2(M)
 		href_list["datumrefresh"] = href_list["give_spell"]
 
 	else if(href_list["ninja"])
@@ -758,7 +801,18 @@ client
 			usr << "Mob doesn't exist anymore"
 			return
 		holder.Topic(href, list("makeai"=href_list["makeai"]))
-
+		
+		
+	else if(href_list["makemask"])
+		if(!check_rights(R_SPAWN)) return
+		var/mob/currentMob = locate(href_list["makemask"])
+		if(alert("Confirm mob type change?",,"Transform","Cancel") != "Transform")	return
+		if(!currentMob)
+			usr << "Mob doesn't exist anymore"
+			return
+		holder.Topic(href, list("makemask"=href_list["makemask"]))
+		
+		
 	else if(href_list["setmutantrace"])
 		if(!check_rights(R_SPAWN))	return
 

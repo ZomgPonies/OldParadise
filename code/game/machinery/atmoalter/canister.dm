@@ -284,9 +284,15 @@ update_flag
 		ui.set_auto_update(1)
 
 /obj/machinery/portable_atmospherics/canister/Topic(href, href_list)
-	//Do not use "if(..()) return" here, canisters will stop working in unpowered areas like space or on the derelict.
+
+	//Do not use "if(..()) return" here, canisters will stop working in unpowered areas like space or on the derelict. // yeah but without SOME sort of Topic check any dick can mess with them via exploits as he pleases -walter0o
 	if (!istype(src.loc, /turf))
 		return 0
+
+	if(!usr.canmove || usr.stat || usr.restrained() || !in_range(loc, usr)) // exploit protection -walter0o
+		usr << browse(null, "window=canister")
+		onclose(usr, "canister")
+		return
 
 	if(href_list["toggle"])
 		if (valve_open)
@@ -303,6 +309,9 @@ update_flag
 
 	if (href_list["remove_tank"])
 		if(holding)
+			if (valve_open)
+				valve_open = 0
+				release_log += "Valve was <b>closed</b> by [usr] ([usr.ckey]), stopping the transfer into the [holding]<br>"
 			holding.loc = loc
 			holding = null
 

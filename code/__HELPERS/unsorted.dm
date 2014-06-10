@@ -362,7 +362,7 @@ Turf and target are seperate in case you want to teleport some distance from a t
 	var/select = null
 	var/list/borgs = list()
 	for (var/mob/living/silicon/robot/A in player_list)
-		if (A.stat == 2 || A.connected_ai || A.scrambledcodes)
+		if (A.stat == 2 || A.connected_ai || A.scrambledcodes || istype(A,/mob/living/silicon/robot/drone))
 			continue
 		var/name = "[A.real_name] ([A.modtype] [A.braintype])"
 		borgs[name] = A
@@ -463,36 +463,29 @@ Turf and target are seperate in case you want to teleport some distance from a t
 
 	return creatures
 
+var/list/sortMobsOrder = list(	"/mob/living/silicon/ai",
+								"/mob/living/silicon/pai",
+								"/mob/living/silicon/robot",
+								"/mob/living/carbon/human",
+								"/mob/spirit/mask",
+								"/mob/living/carbon/brain",
+								"/mob/living/carbon/alien",
+								"/mob/dead/observer",
+								"/mob/new_player",
+								"/mob/living/carbon/monkey",
+								"/mob/living/carbon/slime",
+								"/mob/living/simple_animal",
+								"/mob/living/silicon/hivebot",
+								"/mob/living/silicon/hive_mainframe"	)
+
 //Orders mobs by type then by name
 /proc/sortmobs()
 	var/list/moblist = list()
 	var/list/sortmob = sortAtom(mob_list)
-	for(var/mob/living/silicon/ai/M in sortmob)
-		moblist.Add(M)
-	for(var/mob/living/silicon/pai/M in sortmob)
-		moblist.Add(M)
-	for(var/mob/living/silicon/robot/M in sortmob)
-		moblist.Add(M)
-	for(var/mob/living/carbon/human/M in sortmob)
-		moblist.Add(M)
-	for(var/mob/living/carbon/brain/M in sortmob)
-		moblist.Add(M)
-	for(var/mob/living/carbon/alien/M in sortmob)
-		moblist.Add(M)
-	for(var/mob/dead/observer/M in sortmob)
-		moblist.Add(M)
-	for(var/mob/new_player/M in sortmob)
-		moblist.Add(M)
-	for(var/mob/living/carbon/monkey/M in sortmob)
-		moblist.Add(M)
-	for(var/mob/living/carbon/slime/M in sortmob)
-		moblist.Add(M)
-	for(var/mob/living/simple_animal/M in sortmob)
-		moblist.Add(M)
-//	for(var/mob/living/silicon/hivebot/M in world)
-//		mob_list.Add(M)
-//	for(var/mob/living/silicon/hive_mainframe/M in world)
-//		mob_list.Add(M)
+	for (var/path in sortMobsOrder)
+		for (var/mob/sorting in sortmob)
+			if (istype(sorting,text2path(path)))
+				moblist.Add(sorting)
 	return moblist
 
 //E = MC^2
@@ -1241,12 +1234,21 @@ proc/get_mob_with_client_list()
 	else return zone
 
 
-/proc/get_turf(turf/location)
-	while(location)
-		if(isturf(location))
-			return location
-		location = location.loc
-	return null
+/proc/get_turf(const/atom/O)
+	if (isnull(O) || isarea(O))
+		return
+
+	var/atom/A = O
+
+	for (var/i = 0, ++i <= 20)
+		if (isturf(A))
+			return A
+
+		switch (istype(A))
+			if (1)
+				A = A.loc
+			if (0)
+				return
 
 /proc/get(atom/loc, type)
 	while(loc)
@@ -1609,3 +1611,23 @@ proc/check_target_facings(mob/living/initator, mob/living/target)
     ext_python("voice.py", "\"[accent]\" \"[voice]\" \"[pitch]\" \"[echo]\" \"[speed]\" \"[text]\" \"[src.ckey]\"")
 
 
+atom/proc/GetTypeInAllContents(typepath)
+	var/list/processing_list = list(src)
+	var/list/processed = list()
+
+	var/atom/found = null
+
+	while(processing_list.len && found==null)
+		var/atom/A = processing_list[1]
+		if(istype(A, typepath))
+			found = A
+
+		processing_list -= A
+
+		for(var/atom/a in A)
+			if(!(a in processed))
+				processing_list |= a
+
+		processed |= A
+
+	return found

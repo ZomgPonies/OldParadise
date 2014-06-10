@@ -40,6 +40,17 @@
 	var/list/allowed = null //suit storage stuff.
 	var/obj/item/device/uplink/hidden/hidden_uplink = null // All items can have an uplink hidden inside, just remember to add the triggers.
 
+	/* Species-specific sprites, concept stolen from Paradise//vg/.
+	ex:
+	sprite_sheets = list(
+		"Tajaran" = 'icons/cat/are/bad'
+		)
+	If index term exists and icon_override is not set, this sprite sheet will be used.
+	*/
+	var/list/sprite_sheets = null
+	var/icon_override = null  //Used to override hardcoded clothing dmis in human clothing proc.
+	var/list/species_fit = null //This object has a different appearance when worn by these species
+
 /obj/item/Destroy()
 	if(istype(src.loc, /mob))
 		var/mob/H = src.loc
@@ -123,14 +134,14 @@
 	return
 
 /obj/item/attack_hand(mob/user as mob)
-	if (!user) return
+	if (!user) return 0
 	if (hasorgans(user))
 		var/datum/organ/external/temp = user:organs_by_name["r_hand"]
 		if (user.hand)
 			temp = user:organs_by_name["l_hand"]
 		if(temp && !temp.is_usable())
 			user << "<span class='notice'>You try to move your [temp.display_name], but cannot!"
-			return
+			return 0
 
 	if (istype(src.loc, /obj/item/weapon/storage))
 		//If the item is in a storage item, take it out
@@ -141,17 +152,17 @@
 	if (src.loc == user)
 		//canremove==0 means that object may not be removed. You can still wear it. This only applies to clothing. /N
 		if(!src.canremove)
-			return
+			return 0
 		else
 			user.u_equip(src)
 	else
 		if(isliving(src.loc))
-			return
+			return 0
 		user.next_move = max(user.next_move+2,world.time + 2)
 	src.pickup(user)
 	add_fingerprint(user)
 	user.put_in_active_hand(src)
-	return
+	return 1
 
 
 /obj/item/attack_paw(mob/user as mob)
@@ -274,9 +285,9 @@
 //returns 1 if the item is equipped by a mob, 0 otherwise.
 //This might need some error trapping, not sure if get_equipped_items() is safe for non-human mobs.
 /obj/item/proc/is_equipped()
-	if(!ismob(loc)) 
+	if(!ismob(loc))
 		return 0
-	
+
 	var/mob/M = loc
 	if(src in M.get_equipped_items())
 		return 1
@@ -540,6 +551,12 @@
 /obj/item/proc/IsShield()
 	return 0
 
+/obj/item/proc/get_loc_turf()
+	var/atom/L = loc
+	while(L && !istype(L, /turf/))
+		L = L.loc
+	return loc
+
 /obj/item/proc/eyestab(mob/living/carbon/M as mob, mob/living/carbon/user as mob)
 
 	var/mob/living/carbon/human/H = M
@@ -566,7 +583,8 @@
 
 	user.attack_log += "\[[time_stamp()]\]<font color='red'> Attacked [M.name] ([M.ckey]) with [src.name] (INTENT: [uppertext(user.a_intent)])</font>"
 	M.attack_log += "\[[time_stamp()]\]<font color='orange'> Attacked by [user.name] ([user.ckey]) with [src.name] (INTENT: [uppertext(user.a_intent)])</font>"
-	msg_admin_attack("[user.name] ([user.ckey]) attacked [M.name] ([M.ckey]) with [src.name] (INTENT: [uppertext(user.a_intent)]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)") //BS12 EDIT ALG
+	if(M.ckey)
+		msg_admin_attack("[user.name] ([user.ckey]) attacked [M.name] ([M.ckey]) with [src.name] (INTENT: [uppertext(user.a_intent)]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)") //BS12 EDIT ALG
 
 	if(!iscarbon(user))
 		M.LAssailant = null

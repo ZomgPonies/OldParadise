@@ -185,6 +185,7 @@
 	H << "<span class='notice'><b>Consciousness slowly creeps over you as your body regenerates.</b><br><i>So this is what cloning feels like?</i></span>"
 
 	// -- Mode/mind specific stuff goes here
+	callHook("clone", list(H))
 
 	if((H.mind in ticker.mode:revolutionaries) || (H.mind in ticker.mode:head_revolutionaries))
 		ticker.mode.update_all_rev_icons() //So the icon actually appears
@@ -214,8 +215,11 @@
 	if(R.dna.species == "Human") //no more xenos losing ears/tentacles
 		H.h_style = pick("Bedhead", "Bedhead 2", "Bedhead 3")
 
-	//for(var/datum/language/L in languages)
-	//	H.add_language(L.name)
+	H.set_species(R.dna.species)
+
+	for(var/datum/language/L in R.languages)
+		H.add_language(L.name)
+
 	H.suiciding = 0
 	src.attempting = 0
 	return 1

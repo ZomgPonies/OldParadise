@@ -45,6 +45,18 @@
 		cmd_admin_pm(C,null)
 		return
 
+	if(href_list["irc_msg"])
+		if(!holder && received_irc_pm < world.time - 6000) //Worse they can do is spam IRC for 10 minutes
+			usr << "<span class='warning'>You are no longer able to use this, it's been more then 10 minutes since an admin on IRC has responded to you</span>"
+			return
+		if(mute_irc)
+			usr << "<span class='warning'You cannot use this as your client has been muted from sending messages to the admins on IRC</span>"
+			return
+		cmd_admin_irc_pm()
+		return
+
+
+
 	//Logs all hrefs
 	if(config && config.log_hrefs && href_logfile)
 		href_logfile << "<small>[time2text(world.timeofday,"hh:mm")] [src] (usr:[usr])</small> || [hsrc ? "[hsrc] " : ""][href]<br>"
@@ -63,36 +75,45 @@
 				else
 					src.DB_job_unlock("Nanotrasen Representative",30)
 			if("3")
-				if(karma <15)
+				if(karma <30)
 					usr << "You do not have enough karma!"
 				else
-					src.DB_job_unlock("Customs Officer",15)
+					src.DB_job_unlock("Customs Officer",30)
 			if("4")
 				if(karma <30)
 					usr << "You do not have enough karma!"
 				else
 					src.DB_job_unlock("Blueshield",30)
 			if("5")
+				if(karma <30)
+					usr << "You do not have enough karma!"
+				else
+					src.DB_job_unlock("Mechanic",30)
+
+	if(href_list["KarmaBuy2"])
+		var/karma=verify_karma()
+		switch(href_list["KarmaBuy2"])
+			if("1")
 				if(karma <15)
 					usr << "You do not have enough karma!"
 				else
 					src.DB_species_unlock("Machine",15)
-			if("6")
+			if("2")
 				if(karma <30)
 					usr << "You do not have enough karma!"
 				else
 					src.DB_species_unlock("Kidan",30)
-			if("7")
+			if("3")
 				if(karma <30)
 					usr << "You do not have enough karma!"
 				else
 					src.DB_species_unlock("Grey",30)
-			if("8")
+			if("4")
 				if(karma <45)
 					usr << "You do not have enough karma!"
 				else
 					src.DB_species_unlock("Vox",45)
-			if("9")
+			if("5")
 				if(karma <45)
 					usr << "You do not have enough karma!"
 				else
@@ -197,9 +218,10 @@
 
 	send_resources()
 
+/*
 	if(prefs.lastchangelog != changelog_hash) //bolds the changelog button on the interface so we know there are updates.
 		winset(src, "rpane.changelog", "background-color=#eaeaea;font-style=bold")
-
+*/
 
 	//////////////
 	//DISCONNECT//
@@ -228,6 +250,7 @@
 	var/DBQuery/query = dbcon.NewQuery("SELECT id, datediff(Now(),firstseen) as age FROM erro_player WHERE ckey = '[sql_ckey]'")
 	query.Execute()
 	var/sql_id = 0
+	player_age = 0	// New players won't have an entry so knowing we have a connection we set this to zero to be updated if their is a record.
 	while(query.NextRow())
 		sql_id = query.item[1]
 		player_age = text2num(query.item[2])

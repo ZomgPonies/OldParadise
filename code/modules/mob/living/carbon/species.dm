@@ -16,6 +16,8 @@
 	var/mutantrace               // Safeguard due to old code.
 
 	var/breath_type = "oxygen"   // Non-oxygen gas breathed, if any.
+	var/poison_type = "plasma"   // Poisonous air.
+	var/exhale_type = "carbon_dioxide"      // Exhaled gas type.
 
 	var/cold_level_1 = 260  // Cold damage level 1 below this point.
 	var/cold_level_2 = 200  // Cold damage level 2 below this point.
@@ -43,8 +45,15 @@
 	var/flags = 0       // Various specific features.
 	var/bloodflags=0
 	var/bodyflags=0
+
+	var/list/abilities = list()	// For species-derived or admin-given powers
+
+	var/blood_color = "#A10808" //Red.
 	var/flesh_color = "#FFC896" //Pink.
-	var/list/abilities = list()  // For species-derived or admin-given powers
+
+	//Used in icon caching.
+	var/race_key = 0
+	var/icon/icon_template
 
 /datum/species/proc/create_organs(var/mob/living/carbon/human/H) //Handles creation of mob organs.
 	//This is a basic humanoid limb setup.
@@ -88,6 +97,11 @@
 
 /datum/species/proc/handle_post_spawn(var/mob/living/carbon/human/H) //Handles anything not already covered by basic species assignment.
 	return
+
+// Used for species-specific names (Vox, etc)
+/datum/species/proc/makeName(var/gender,var/mob/living/carbon/human/H=null)
+	if(gender==FEMALE)	return capitalize(pick(first_names_female)) + " " + capitalize(pick(last_names))
+	else				return capitalize(pick(first_names_male)) + " " + capitalize(pick(last_names))
 
 /datum/species/proc/handle_death(var/mob/living/carbon/human/H) //Handles any species-specific death events (such as dionaea nymph spawns).
 	return
@@ -186,11 +200,71 @@
 	cold_level_3 = 0
 
 	eyes = "vox_eyes_s"
+
 	breath_type = "nitrogen"
+	poison_type = "oxygen"
 
 	flags = NO_SCAN | IS_WHITELISTED | NO_BLOOD
 
+	flesh_color = "#808D11"
+
+	makeName(var/gender,var/mob/living/carbon/human/H=null)
+		var/sounds = rand(2,8)
+		var/i = 0
+		var/newname = ""
+
+		while(i<=sounds)
+			i++
+			newname += pick(vox_name_syllables)
+		return capitalize(newname)
+
 /datum/species/vox/handle_post_spawn(var/mob/living/carbon/human/H)
+
+	H.verbs += /mob/living/carbon/human/proc/leap
+	..()
+
+/datum/species/vox/armalis/handle_post_spawn(var/mob/living/carbon/human/H)
+
+	H.verbs += /mob/living/carbon/human/proc/gut
+	..()
+
+/datum/species/vox/armalis
+	name = "Vox Armalis"
+	icobase = 'icons/mob/human_races/r_armalis.dmi'
+	deform = 'icons/mob/human_races/r_armalis.dmi'
+	language = "Vox-pidgin"
+	path = /mob/living/carbon/human/voxarmalis
+	warning_low_pressure = 50
+	hazard_low_pressure = 0
+
+	cold_level_1 = 80
+	cold_level_2 = 50
+	cold_level_3 = 0
+
+	heat_level_1 = 2000
+	heat_level_2 = 3000
+	heat_level_3 = 4000
+
+	brute_mod = 0.2
+	burn_mod = 0.2
+
+	eyes = "blank_eyes"
+	breath_type = "nitrogen"
+	poison_type = "oxygen"
+
+	flags = NO_SCAN | NO_BLOOD | HAS_TAIL | NO_PAIN | IS_WHITELISTED
+
+	blood_color = "#2299FC"
+	flesh_color = "#808D11"
+
+	tail = "armalis_tail"
+	icon_template = 'icons/mob/human_races/r_armalis.dmi'
+
+/datum/species/vox/create_organs(var/mob/living/carbon/human/H)
+
+	..() //create organs first.
+
+	//Now apply cortical stack.
 	var/datum/organ/external/affected = H.get_organ("head")
 
 	//To avoid duplicates.
@@ -208,8 +282,6 @@
 		var/datum/game_mode/vox/heist/M = ticker.mode
 		M.cortical_stacks += I
 		M.raiders[H.mind] = I
-
-	return ..()
 
 
 
@@ -265,6 +337,7 @@
 	// Both must be set or it's only a 45% chance of manifesting.
 	default_mutations=list(M_REMOTE_TALK)
 	default_block_names=list("REMOTETALK")
+
 
 /datum/species/diona
 	name = "Diona"
@@ -333,6 +406,6 @@
 	heat_level_2 = 3000
 	heat_level_3 = 4000
 
-	flags = IS_WHITELISTED | NO_BREATHE | NO_SCAN | NO_BLOOD | NO_PAIN | IS_SYNTHETIC
+	flags = IS_WHITELISTED | NO_BREATHE | NO_SCAN | NO_BLOOD | NO_PAIN | IS_SYNTHETIC | NO_INTORGANS
 
 	flesh_color = "#AAAAAA"

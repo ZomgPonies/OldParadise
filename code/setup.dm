@@ -227,6 +227,7 @@ var/MAX_EXPLOSION_RANGE = 14
 #define HIDESUITSTORAGE	2	//APPLIES ONLY TO THE EXTERIOR SUIT!!
 #define HIDEJUMPSUIT	4	//APPLIES ONLY TO THE EXTERIOR SUIT!!
 #define HIDESHOES		8	//APPLIES ONLY TO THE EXTERIOR SUIT!!
+#define HIDETAIL 		16	//APPLIES ONLY TO THE EXTERIOR SUIT!!
 #define HIDEMASK	1	//APPLIES ONLY TO HELMETS/MASKS!!
 #define HIDEEARS	2	//APPLIES ONLY TO HELMETS/MASKS!! (ears means headsets and such)
 #define HIDEEYES	4	//APPLIES ONLY TO HELMETS/MASKS!! (eyes means glasses)
@@ -483,6 +484,8 @@ var/list/global_mutations = list() // list of hidden mutation things
 #define CANWEAKEN	2
 #define CANPARALYSE	4
 #define CANPUSH		8
+#define LEAPING		16
+#define PASSEMOTES	32      //Mob has a cortical borer or holders inside of it that need to see emotes.
 #define GODMODE		4096
 #define FAKEDEATH	8192	//Replaces stuff like changeling.changeling_fakedeath
 #define DISFIGURED	16384	//I'll probably move this elsewhere if I ever get wround to writing a bitflag mob-damage system
@@ -565,6 +568,9 @@ var/list/liftable_structures = list(\
 #define SEE_INVISIBLE_LEVEL_TWO 45	//Used by some other stuff in code. It's really poorly organized.
 #define INVISIBILITY_LEVEL_TWO 45	//Used by some other stuff in code. It's really poorly organized.
 
+#define INVISIBILITY_SPIRIT 50
+#define SEE_SPIRITS 50
+
 #define INVISIBILITY_OBSERVER 60
 #define SEE_INVISIBLE_OBSERVER 60
 
@@ -587,11 +593,15 @@ var/list/liftable_structures = list(\
 // Reference list for disposal sort junctions. Set the sortType variable on disposal sort junctions to
 // the index of the sort department that you want. For example, sortType set to 2 will reroute all packages
 // tagged for the Cargo Bay.
+
+//If you don't want to fuck up disposals, add to this list, and don't change the order.
+//If you insist on changing the order, you'll have to change every sort junction to reflect the new order. --Pete
+
 var/list/TAGGERLOCATIONS = list("Disposals",
 	"Cargo Bay", "QM Office", "Engineering", "CE Office",
-	"Atmospherics", "Security", "HoS Office", "Medbay",
+	"Atmospherics", "HoS Office", "Security", "Medbay",
 	"CMO Office", "Chemistry", "Research", "RD Office",
-	"Robotics", "HoP Office", "Library", "Chapel", "Theatre",
+	"Robotics", "HoP Office", "Library", "Chapel", "Captain's Office",
 	"Bar", "Kitchen", "Hydroponics", "Janitor Closet","Genetics")
 
 #define HOSTILE_STANCE_IDLE 1
@@ -679,8 +689,7 @@ var/list/TAGGERLOCATIONS = list("Disposals",
 #define SOUND_MIDI		2
 #define SOUND_AMBIENCE	4
 #define SOUND_LOBBY		8
-#define SOUND_VOICES	16
-#define SOUND_STREAMING 32
+#define SOUND_STREAMING 16
 
 #define SOUND_DEFAULT (SOUND_ADMINHELP|SOUND_MIDI|SOUND_AMBIENCE|SOUND_LOBBY|SOUND_STREAMING)
 #define TOGGLES_DEFAULT (CHAT_OOC|CHAT_DEAD|CHAT_GHOSTEARS|CHAT_GHOSTSIGHT|CHAT_PRAYER|CHAT_RADIO|CHAT_ATTACKLOGS|CHAT_LOOC)
@@ -699,6 +708,7 @@ var/list/TAGGERLOCATIONS = list("Disposals",
 #define BE_VOX			2048
 #define BE_SLIME		4096
 #define BE_VAMPIRE		8192
+#define BE_MUTINEER		16384
 
 var/list/be_special_flags = list(
 	"Traitor" = BE_TRAITOR,
@@ -714,7 +724,8 @@ var/list/be_special_flags = list(
 	"Ninja" = BE_NINJA,
 	"Vox" = BE_VOX,
 	"Slime" = BE_SLIME,
-	"Vampire" = BE_VAMPIRE
+	"Vampire" = BE_VAMPIRE,
+	"Mutineer" = BE_MUTINEER
 	)
 
 #define AGE_MIN 17			//youngest a character can be
@@ -743,6 +754,7 @@ var/list/be_special_flags = list(
 #define IMPTRACK_HUD		7 // tracking implant
 #define SPECIALROLE_HUD 	8 // AntagHUD image
 #define STATUS_HUD_OOC		9 // STATUS_HUD without virus db check for someone being ill.
+#define NATIONS_HUD			10 //Show nations icons during nations gamemode
 
 //Pulse levels, very simplified
 #define PULSE_NONE		0	//so !M.pulse checks would be possible

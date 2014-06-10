@@ -13,6 +13,10 @@
 		living_mob_list += src
 	..()
 
+/mob/proc/generate_name()
+	return name
+
+
 /mob/proc/Cell()
 	set category = "Admin"
 	set hidden = 1
@@ -495,6 +499,7 @@ var/list/slot_equipment_priority = list( \
 	return
 */
 
+
 /mob/verb/memory()
 	set name = "Notes"
 	set category = "IC"
@@ -554,12 +559,22 @@ var/list/slot_equipment_priority = list( \
 		else
 			return "\blue [copytext(msg, 1, 37)]... <a href='byond://?src=\ref[src];flavor_more=1'>More...</a>"
 
+/mob/proc/is_dead()
+	return stat == DEAD
+
+
 /*
 /mob/verb/help()
 	set name = "Help"
 	src << browse('html/help.html', "window=help")
 	return
 */
+
+
+/mob
+
+	var/newPlayerType = /mob/new_player
+
 /*
 /mob/verb/abandon_mob()
 	set name = "Respawn"
@@ -604,14 +619,13 @@ var/list/slot_equipment_priority = list( \
 		log_game("[usr.key] AM failed due to disconnect.")
 		return
 
-	var/mob/new_player/M = new /mob/new_player()
+	var/mob/newPlayer = new newPlayerType()
 	if(!client)
 		log_game("[usr.key] AM failed due to disconnect.")
-		del(M)
+		del(newPlayer)
 		return
 
-	M.key = key
-//	M.Login()	//wat
+	newPlayer.key = key
 	return
 */
 /mob/verb/observe()
@@ -787,6 +801,17 @@ var/list/slot_equipment_priority = list( \
 
 /mob/proc/is_active()
 	return (0 >= usr.stat)
+
+/mob/proc/is_mechanical()
+	if(mind && (mind.assigned_role == "Cyborg" || mind.assigned_role == "AI"))
+		return 1
+	return istype(src, /mob/living/silicon) || get_species() == "Machine"
+
+/mob/proc/is_ready()
+	return client && !!mind
+
+/mob/proc/get_gender()
+	return gender
 
 /mob/proc/see(message)
 	if(!is_active())
@@ -1143,7 +1168,7 @@ mob/proc/yank_out_object()
 	if((usr in respawnable_list) && (stat==2 || istype(usr,/mob/dead/observer)))
 		var/list/creatures = list("Mouse")
 		for(var/mob/living/L in living_mob_list)
-			if(safe_respawn(L.type))
+			if(safe_respawn(L.type) && L.stat!=2)
 				if(!L.key)
 					creatures += L
 		var/picked = input("Please select an NPC to respawn as", "Respawn as NPC")  as null|anything in creatures
@@ -1168,31 +1193,26 @@ mob/proc/yank_out_object()
 
 
 /mob/proc/become_mouse()
-	if(usr in respawnable_list)
-		var/timedifference = world.time - client.time_died_as_mouse
-		if(client.time_died_as_mouse && timedifference <= mouse_respawn_time * 600)
-			var/timedifference_text
-			timedifference_text = time2text(mouse_respawn_time * 600 - timedifference,"mm:ss")
-			src << "<span class='warning'>You may only spawn again as a mouse more than [mouse_respawn_time] minutes after your death. You have [timedifference_text] left.</span>"
-			return
-
-		//find a viable mouse candidate
-		var/mob/living/simple_animal/mouse/host
-		var/obj/machinery/atmospherics/unary/vent_pump/vent_found
-		var/list/found_vents = list()
-		for(var/obj/machinery/atmospherics/unary/vent_pump/v in world)
-			if(!v.welded && v.z == src.z)
-				found_vents.Add(v)
-		if(found_vents.len)
-			vent_found = pick(found_vents)
-			host = new /mob/living/simple_animal/mouse(vent_found.loc)
-		else
-			src << "<span class='warning'>Unable to find any unwelded vents to spawn mice at.</span>"
-
-		if(host)
-			host.ckey = src.ckey
-			host << "<span class='info'>You are now a mouse. Try to avoid interaction with players, and do not give hints away that you are more than a simple rodent.</span>"
-	else
-		usr << "You are not dead or you have given up your right to be respawned!"
+	var/timedifference = world.time - client.time_died_as_mouse
+	if(client.time_died_as_mouse && timedifference <= mouse_respawn_time * 600)
+		var/timedifference_text
+		timedifference_text = time2text(mouse_respawn_time * 600 - timedifference,"mm:ss")
+		src << "<span class='warning'>You may only spawn again as a mouse more than [mouse_respawn_time] minutes after your death. You have [timedifference_text] left.</span>"
 		return
 
+	//find a viable mouse candidate
+	var/mob/living/simple_animal/mouse/host
+	var/obj/machinery/atmospherics/unary/vent_pump/vent_found
+	var/list/found_vents = list()
+	for(var/obj/machinery/atmospherics/unary/vent_pump/v in world)
+		if(!v.welded && v.z == src.z)
+			found_vents.Add(v)
+	if(found_vents.len)
+		vent_found = pick(found_vents)
+		host = new /mob/living/simple_animal/mouse(vent_found.loc)
+	else
+		src << "<span class='warning'>Unable to find any unwelded vents to spawn mice at.</span>"
+
+	if(host)
+		host.ckey = src.ckey
+		host << "<span class='info'>You are now a mouse. Try to avoid interaction with players, and do not give hints away that you are more than a simple rodent.</span>"

@@ -31,6 +31,7 @@
 	path = "data/player_saves/[copytext(ckey,1,2)]/[ckey]/[filename]"
 	savefile_version = SAVEFILE_VERSION_MAX
 
+/*
 /datum/preferences/proc/load_preferences()
 	if(!path)				return 0
 	if(!fexists(path))		return 0
@@ -95,6 +96,7 @@
 	S["volume"]				<< volume
 	return 1
 
+
 //saving volume changes
 /datum/preferences/proc/save_volume()
 	if(!path)				return 0
@@ -104,6 +106,7 @@
 
 	S["volume"]				<< volume
 	return 1
+*/
 
 /datum/preferences/proc/load_save(dir)
 	var/savefile/S = new /savefile(path)
@@ -178,7 +181,7 @@
 	if(isnull(species)) species = "Human"
 	if(isnull(language)) language = "None"
 	if(isnull(nanotrasen_relation)) nanotrasen_relation = initial(nanotrasen_relation)
-	if(!real_name) real_name = random_name(gender)
+	if(!real_name) real_name = random_name(gender,species)
 	be_random_name	= sanitize_integer(be_random_name, 0, 1, initial(be_random_name))
 	gender			= sanitize_gender(gender)
 	age				= sanitize_integer(age, AGE_MIN, AGE_MAX, initial(age))
@@ -244,7 +247,7 @@
 	S.cd = pick(saves)
 	load_save(S.cd)
 	return 1
-
+/*
 /datum/preferences/proc/load_character(slot)
 	if(!path)				return 0
 	if(!fexists(path))		return 0
@@ -258,7 +261,7 @@
 		S["default_slot"] << slot
 	S.cd = "/character[slot]"
 	load_save(S.cd)
-/* Now loaded by proc load_save(S.cd)
+ Now loaded by proc load_save(S.cd)
 	//Character
 	S["OOC_Notes"]			>> metadata
 	S["real_name"]			>> real_name
@@ -360,7 +363,7 @@
 	if(!player_alt_titles) player_alt_titles = new()
 	if(!organ_data) src.organ_data = list()
 	//if(!skin_style) skin_style = "Default"
-*/
+
 	return 1
 
 /datum/preferences/proc/save_character()
@@ -430,7 +433,7 @@
 	//S["skin_style"]			<< skin_style
 
 	return 1
-
+*/
 
 #undef SAVEFILE_VERSION_MAX
 #undef SAVEFILE_VERSION_MIN

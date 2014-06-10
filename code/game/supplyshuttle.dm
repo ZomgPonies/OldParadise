@@ -38,8 +38,8 @@ var/list/mechtoys = list(
 //SUPPLY PACKS MOVED TO /code/defines/obj/supplypacks.dm
 
 /obj/structure/plasticflaps //HOW DO YOU CALL THOSE THINGS ANYWAY
-	name = "\improper Plastic flaps"
-	desc = "I definitely cant get past those. No way."
+	name = "\improper plastic flaps"
+	desc = "Completely impassable - or are they?"
 	icon = 'icons/obj/stationobjs.dmi' //Change this.
 	icon_state = "plasticflaps"
 	density = 0
@@ -57,7 +57,7 @@ var/list/mechtoys = list(
 
 	else if(istype(A, /mob/living)) // You Shall Not Pass!
 		var/mob/living/M = A
-		if(!M.lying && !istype(M, /mob/living/carbon/monkey) && !istype(M, /mob/living/carbon/slime) && !istype(M, /mob/living/simple_animal/mouse))  //If your not laying down, or a small creature, no pass.
+		if(!M.lying && !istype(M, /mob/living/carbon/monkey) && !istype(M, /mob/living/carbon/slime) && !istype(M, /mob/living/simple_animal/mouse) && !istype(M, /mob/living/silicon/robot/drone))  //If your not laying down, or a small creature, no pass.
 			return 0
 	return ..()
 
@@ -216,6 +216,8 @@ var/list/mechtoys = list(
 			return 1
 		if(istype(A,/obj/item/weapon/disk/nuclear))
 			return 1
+		if(istype(A,/obj/item/flag/nation))
+			return 1
 		if(istype(A,/obj/machinery/nuclearbomb))
 			return 1
 		if(istype(A,/obj/item/device/radio/beacon))
@@ -242,6 +244,8 @@ var/list/mechtoys = list(
 
 			// Must be in a crate!
 			if(istype(MA,/obj/structure/closet/crate))
+				callHook("sell_crate", list(MA, shuttle))
+
 				points += points_per_crate
 				var/find_slip = 1
 
@@ -498,36 +502,8 @@ var/list/mechtoys = list(
 		user << "\blue Special supplies unlocked."
 		hacked = 1
 		return
-	if(istype(I, /obj/item/weapon/screwdriver))
-		playsound(loc, 'sound/items/Screwdriver.ogg', 50, 1)
-		if(do_after(user, 20))
-			if (stat & BROKEN)
-				user << "\blue The broken glass falls out."
-				var/obj/structure/computerframe/A = new /obj/structure/computerframe( loc )
-				getFromPool(/obj/item/weapon/shard, loc)
-				var/obj/item/weapon/circuitboard/supplycomp/M = new /obj/item/weapon/circuitboard/supplycomp( A )
-				for (var/obj/C in src)
-					C.loc = loc
-				A.circuit = M
-				A.state = 3
-				A.icon_state = "3"
-				A.anchored = 1
-				del(src)
-			else
-				user << "\blue You disconnect the monitor."
-				var/obj/structure/computerframe/A = new /obj/structure/computerframe( loc )
-				var/obj/item/weapon/circuitboard/supplycomp/M = new /obj/item/weapon/circuitboard/supplycomp( A )
-				if(can_order_contraband)
-					M.contraband_enabled = 1
-				for (var/obj/C in src)
-					C.loc = loc
-				A.circuit = M
-				A.state = 4
-				A.icon_state = "4"
-				A.anchored = 1
-				del(src)
 	else
-		attack_hand(user)
+		..()
 	return
 
 /obj/machinery/computer/supplycomp/Topic(href, href_list)

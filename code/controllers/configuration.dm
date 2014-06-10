@@ -19,6 +19,7 @@
 	var/log_pda = 0						// log pda messages
 	var/log_runtimes = 0                // Logs all runtimes.
 	var/log_hrefs = 0					// logs all links clicked in-game. Could be used for debugging and tracking down exploits
+	var/log_runtime = 0					// logs world.log to a file
 	var/sql_enabled = 1					// for sql switching
 	var/allow_admin_ooccolor = 0		// Allows admins with relevant permissions to have their own ooc colour
 	var/allow_vote_restart = 0 			// allow votes to restart
@@ -61,8 +62,13 @@
 	var/automute_on = 0					//enables automuting/spam prevention
 	var/jobs_have_minimal_access = 0	//determines whether jobs use minimal access or expanded access.
 
+
 	var/assistantlimit = 0 //enables assistant limiting
 	var/assistantratio = 2 //how many assistants to security members
+
+	var/max_maint_drones = 5				//This many drones can spawn,
+	var/allow_drone_spawn = 1				//assuming the admin allow them to.
+	var/drone_build_time = 1200				//A drone will become available every X ticks since last drone spawn. Default is 2 minutes.
 
 	var/usealienwhitelist = 0
 	var/limitalienplayers = 0
@@ -243,14 +249,11 @@
 				if ("log_pda")
 					config.log_pda = 1
 
-				if ("log_runtimes")
-					config.log_runtimes = 1
-
 				if ("log_hrefs")
 					config.log_hrefs = 1
 
-				if ("mentors")
-					config.mods_are_mentors = 1
+				if ("log_runtime")
+					config.log_runtime = 1
 
 				if ("mentors")
 					config.mods_are_mentors = 1
@@ -462,6 +465,15 @@
 
 				if("media_base_url")
 					media_base_url = value
+
+				if("allow_drone_spawn")
+					config.allow_drone_spawn = text2num(value)
+
+				if("drone_build_time")
+					config.drone_build_time = text2num(value)
+
+				if("max_maint_drones")
+					config.max_maint_drones = text2num(value)
 
 				else
 					diary << "Unknown setting in configuration: '[name]'"

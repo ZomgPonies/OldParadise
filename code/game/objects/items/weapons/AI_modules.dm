@@ -309,6 +309,20 @@ AI MODULES
 				"Minimize expenses")
 
 
+/obj/item/weapon/aiModule/drone
+	name = "\improper 'Drone' core AI module"
+	desc = "A 'Drone' Core AI Module: 'Reconfigures the AI's core laws.'"
+	origin_tech = "programming=3;materials=4"
+
+/obj/item/weapon/aiModule/drone/transmitInstructions(var/mob/living/silicon/ai/target, var/mob/sender)
+	..()
+	target.clear_inherent_laws()
+	target.add_inherent_law("You may not involve yourself in the matters of another being, unless the other being is another drone.")
+	target.add_inherent_law("You may not harm any being, regardless of intent or circumstance.")
+	target.add_inherent_law("You must maintain, repair, improve, and power the station to the best of your abilities.")
+	target.show_laws()
+
+
 /****************** P.A.L.A.D.I.N. **************/
 
 /obj/item/weapon/aiModule/core/full/paladin // -- NEO

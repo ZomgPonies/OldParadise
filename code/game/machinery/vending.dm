@@ -176,6 +176,20 @@
 		user << "<span class='notice'>You insert [W] into [src].</span>"
 		return
 
+	else if(istype(W, /obj/item/weapon/wrench))
+	
+		if(do_after(user, 20))
+			if(!src) return
+			playsound(src.loc, 'sound/items/Ratchet.ogg', 100, 1)
+			switch (anchored)
+				if (0)
+					anchored = 1
+					user.visible_message("[user] tightens the bolts securing \the [src] to the floor.", "You tighten the bolts securing \the [src] to the floor.")
+				if (1)
+					user.visible_message("[user] unfastens the bolts securing \the [src] to the floor.", "You unfasten the bolts securing \the [src] to the floor.")
+					anchored = 0
+		return
+		
 	else if(src.panel_open)
 		for(var/datum/data/vending_product/R in product_records)
 			if(istype(W, R.product_path))
@@ -788,7 +802,7 @@
 	product_slogans = "Dress for success!;Suited and booted!;It's show time!;Why leave style up to fate? Use AutoDrobe!"
 	vend_delay = 15
 	vend_reply = "Thank you for using AutoDrobe!"
-	products = list(/obj/item/clothing/suit/chickensuit = 1,/obj/item/clothing/head/chicken = 1, /obj/item/clothing/head/corgi = 1, /obj/item/clothing/suit/corgisuit = 1, /obj/item/clothing/under/gladiator = 1,
+	products = list(/obj/item/clothing/mask/fawkes = 1, /obj/item/clothing/suit/chickensuit = 1,/obj/item/clothing/head/chicken = 1, /obj/item/clothing/head/corgi = 1, /obj/item/clothing/suit/corgisuit = 1, /obj/item/clothing/under/gladiator = 1,
 					/obj/item/clothing/head/helmet/gladiator = 1,/obj/item/clothing/under/gimmick/rank/captain/suit = 1,/obj/item/clothing/head/flatcap = 1,
 					/obj/item/clothing/glasses/gglasses = 1,/obj/item/clothing/shoes/jackboots = 1,
 					/obj/item/clothing/under/schoolgirl = 1,/obj/item/clothing/head/kitty = 1,/obj/item/clothing/under/blackskirt = 1,/obj/item/clothing/head/beret = 1,

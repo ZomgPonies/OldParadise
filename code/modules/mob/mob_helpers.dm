@@ -101,7 +101,7 @@ proc/isembryo(A)
 	return 0
 
 /proc/isAIEye(A)
-	if(istype(A, /mob/camera/aiEye))
+	if(istype(A, /mob/aiEye))
 		return 1
 	return 0
 
@@ -130,8 +130,18 @@ proc/isobserver(A)
 		return 1
 	return 0
 
+/proc/isSpirit(A)
+	if(istype(A, /mob/spirit))
+		return 1
+	return 0
+
 proc/isovermind(A)
 	if(istype(A, /mob/camera/blob))
+		return 1
+	return 0
+
+/proc/ismask(A)
+	if(istype(A, /mob/spirit/mask))
 		return 1
 	return 0
 

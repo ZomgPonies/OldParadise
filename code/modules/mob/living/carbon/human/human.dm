@@ -5,7 +5,7 @@
 	voice_name = "unknown"
 	icon = 'icons/mob/human.dmi'
 	icon_state = "body_m_s"
-	var/list/hud_list[9]
+	var/list/hud_list[10]
 	var/datum/species/species //Contains icon generation and language information, set during New().
 	var/embedded_flag	  //To check if we've need to roll for damage on movement while an item is imbedded in us.
 
@@ -28,6 +28,10 @@
 /mob/living/carbon/human/vox/New(var/new_loc)
 	h_style = "Short Vox Quills"
 	..(new_loc, "Vox")
+
+/mob/living/carbon/human/voxarmalis/New(var/new_loc)
+	h_style = "Bald"
+	..(new_loc, "Vox Armalis")
 
 /mob/living/carbon/human/skellington/New(var/new_loc)
 	h_style = "Bald"
@@ -84,7 +88,7 @@
 	hud_list[IMPTRACK_HUD]    = image('icons/mob/hud.dmi', src, "hudblank")
 	hud_list[SPECIALROLE_HUD] = image('icons/mob/hud.dmi', src, "hudblank")
 	hud_list[STATUS_HUD_OOC]  = image('icons/mob/hud.dmi', src, "hudhealthy")
-
+	hud_list[NATIONS_HUD] = image('icons/mob/hud.dmi', src, "hudblank")
 
 	..()
 
@@ -119,6 +123,18 @@
 						src << "\red [tmob] is restraining [M], you cannot push past"
 					now_pushing = 0
 					return
+
+		//Leaping mobs just land on the tile, no pushing, no anything.
+		if(status_flags & LEAPING)
+			loc = tmob.loc
+			status_flags &= ~LEAPING
+			now_pushing = 0
+			return
+
+		if(istype(tmob,/mob/living/silicon/robot/drone)) //I have no idea why the hell this isn't already happening. How do mice do it?
+			loc = tmob.loc
+			now_pushing = 0
+			return
 
 		//BubbleWrap: people in handcuffs are always switched around as if they were on 'help' intent to prevent a person being pulled from being seperated from their puller
 		if((tmob.a_intent == "help" || tmob.restrained()) && (a_intent == "help" || src.restrained()) && tmob.canmove && canmove) // mutual brohugs all around!
@@ -973,7 +989,7 @@
 
 /mob/living/carbon/human/proc/morph()
 	set name = "Morph"
-	set category = "Superpower"
+	set category = "Abilities"
 
 	if(stat!=CONSCIOUS)
 		reset_view(0)
@@ -1052,7 +1068,7 @@
 
 /mob/living/carbon/human/proc/remotesay()
 	set name = "Project mind"
-	set category = "Superpower"
+	set category = "Abilities"
 
 	if(stat!=CONSCIOUS)
 		reset_view(0)
@@ -1080,7 +1096,7 @@
 
 /mob/living/carbon/human/proc/remoteobserve()
 	set name = "Remote View"
-	set category = "Superpower"
+	set category = "Abilities"
 
 	if(stat!=CONSCIOUS)
 		remoteview_target = null
@@ -1246,6 +1262,11 @@
 				visible_implants += O
 
 	return(visible_implants)
+
+/mob/living/carbon/human/generate_name()
+	name = species.makeName(gender,src)
+	real_name = name
+	return name
 
 /mob/living/carbon/human/proc/handle_embedded_objects()
 
@@ -1414,3 +1435,104 @@
 			return 0
 	return 1
 
+
+//Putting a couple of procs here that I don't know where else to dump.
+//Mostly going to be used for Vox and Vox Armalis, but other human mobs might like them (for adminbuse).
+
+/mob/living/carbon/human/proc/leap()
+	set category = "Abilities"
+	set name = "Leap"
+	set desc = "Leap at a target and grab them aggressively."
+
+	if(last_special > world.time)
+		return
+
+	if(stat || paralysis || stunned || weakened || lying)
+		src << "You cannot leap in your current state."
+		return
+
+	var/list/choices = list()
+	for(var/mob/living/M in view(6,src))
+		if(!istype(M,/mob/living/silicon))
+			choices += M
+	choices -= src
+
+	var/mob/living/T = input(src,"Who do you wish to leap at?") in null|choices
+
+	if(!T || !src || src.stat) return
+
+	if(get_dist(get_turf(T), get_turf(src)) > 6) return
+
+	last_special = world.time + 100
+	status_flags |= LEAPING
+
+	src.visible_message("<span class='warning'><b>\The [src]</b> leaps at [T]!</span>")
+	src.throw_at(get_step(get_turf(T),get_turf(src)), 5, 1)
+	playsound(src.loc, 'sound/voice/shriek1.ogg', 50, 1)
+
+	sleep(5)
+
+	if(status_flags & LEAPING) status_flags &= ~LEAPING
+
+	if(!src.Adjacent(T))
+		src << "\red You miss!"
+		return
+
+	T.Weaken(5)
+
+	var/use_hand = "left"
+	if(l_hand)
+		if(r_hand)
+			src << "\red You need to have one hand free to grab someone."
+			return
+		else
+			use_hand = "right"
+
+	src.visible_message("<span class='warning'><b>\The [src]</b> seizes [T] aggressively!</span>")
+
+	var/obj/item/weapon/grab/G = new(src,T)
+	if(use_hand == "left")
+		l_hand = G
+	else
+		r_hand = G
+
+	G.state = GRAB_AGGRESSIVE
+	G.icon_state = "grabbed1"
+	G.synch()
+
+/mob/living/carbon/human/proc/gut()
+	set category = "Abilities"
+	set name = "Gut"
+	set desc = "While grabbing someone aggressively, rip their guts out or tear them apart."
+
+	if(last_special > world.time)
+		return
+
+	if(stat || paralysis || stunned || weakened || lying)
+		src << "\red You cannot do that in your current state."
+		return
+
+	var/obj/item/weapon/grab/G = locate() in src
+	if(!G || !istype(G))
+		src << "\red You are not grabbing anyone."
+		return
+
+	if(G.state < GRAB_AGGRESSIVE)
+		src << "\red You must have an aggressive grab to gut your prey!"
+		return
+
+	last_special = world.time + 50
+
+	visible_message("<span class='warning'><b>\The [src]</b> rips viciously at \the [G.affecting]'s body with its claws!</span>")
+
+	if(istype(G.affecting,/mob/living/carbon/human))
+		var/mob/living/carbon/human/H = G.affecting
+		H.apply_damage(50,BRUTE)
+		if(H.stat == 2)
+			H.gib()
+	else
+		var/mob/living/M = G.affecting
+		if(!istype(M)) return //wut
+		M.apply_damage(50,BRUTE)
+		if(M.stat == 2)
+			M.gib()
