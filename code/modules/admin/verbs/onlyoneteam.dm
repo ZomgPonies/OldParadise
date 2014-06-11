@@ -17,7 +17,7 @@
 				continue
 			del(I)
 
-		H << "<B>You are part of the Cyberiad dodgeball tournament. Throw dodgeballs at crewmembers wearing a different color than you. OOC: Use THROW on an EMPTY-HAND to catch thrown dodgeballs.</B>"
+		H << "<B>You are part of the [station_name()] dodgeball tournament. Throw dodgeballs at crewmembers wearing a different color than you. OOC: Use THROW on an EMPTY-HAND to catch thrown dodgeballs.</B>"
 
 		H.equip_to_slot_or_del(new /obj/item/device/radio/headset/heads/captain(H), slot_l_ear)
 //		H.equip_to_slot_or_del(new /obj/item/clothing/head/beret(H), slot_head)
@@ -30,10 +30,11 @@
 			team_alpha += H
 
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/color/red/dodgeball(H), slot_w_uniform)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/soft/red(H), slot_head)
 
 			var/obj/item/weapon/card/id/W = new(H)
 			W.name = "[H.real_name]'s ID Card"
-			W.icon_state = "centcom"
+			W.icon_state = "red"
 			W.access = get_all_accesses()
 			W.access += get_all_centcom_access()
 			W.assignment = "Professional Pee-Wee League Dodgeball Player"
@@ -45,10 +46,11 @@
 			team_bravo += H
 
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/color/blue/dodgeball(H), slot_w_uniform)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/soft/blue(H), slot_head)
 
 			var/obj/item/weapon/card/id/W = new(H)
 			W.name = "[H.real_name]'s ID Card"
-			W.icon_state = "centcom"
+			W.icon_state = "blue"
 			W.access = get_all_accesses()
 			W.access += get_all_centcom_access()
 			W.assignment = "Professional Pee-Wee League Dodgeball Player"
@@ -58,7 +60,7 @@
 	message_admins("\blue [key_name_admin(usr)] used DODGEBAWWWWWWWL! -NO ATTACK LOGS WILL BE SENT TO ADMINS FROM THIS POINT FORTH-", 1)
 	nologevent = 1
 	log_admin("[key_name(usr)] used dodgeball.")
-	world << sound('sound/music/nowyouman.ogg')
+	world << sound('sound/music/THUNDERDOME.ogg') // This is probably more fitting than the old music -- Dave
 
 /obj/item/weapon/beach_ball/dodgeball
 	name = "dodgeball"
