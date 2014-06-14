@@ -78,6 +78,34 @@
 		src.emag.name = "Polyacid spray"
 		return
 
+/obj/item/weapon/reagent_containers/borghypo/stoxin
+	name = "Cyborg Hypospray"
+	desc = "An advanced chemical synthesizer and injection system, designed for heavy-duty medical equipment. This one is loaded with sleep toxin"
+	reagent_ids = list("stoxin")
+
+/obj/item/weapon/robot_module/surgery
+	name = "medical - surgery robot module"
+
+
+	New()
+		src.modules += new /obj/item/device/flashlight(src)
+		src.modules += new /obj/item/device/flash(src)
+		src.modules += new /obj/item/borg/sight/hud/med(src)
+		src.modules += new /obj/item/device/healthanalyzer(src)
+		src.modules += new /obj/item/weapon/reagent_containers/borghypo/stoxin(src)
+		src.modules += new /obj/item/weapon/retractor(src)
+		src.modules += new /obj/item/weapon/hemostat(src)
+		src.modules += new /obj/item/weapon/cautery(src)
+		src.modules += new /obj/item/weapon/scalpel(src)
+		src.modules += new /obj/item/weapon/circular_saw(src)
+		src.modules += new /obj/item/weapon/bonegel(src)
+		src.modules += new /obj/item/weapon/FixOVein(src)
+		src.modules += new /obj/item/weapon/bonesetter(src)
+		src.emag = new /obj/item/weapon/reagent_containers/spray(src)
+
+		src.emag.reagents.add_reagent("pacid", 250)
+		src.emag.name = "Polyacid spray"
+		return
 
 
 /obj/item/weapon/robot_module/engineering
