@@ -197,7 +197,34 @@
 					user << "<span class='danger'>The generator already has plenty of plasma.</span>"
 					return
 
-		..()
+	if(!servos)
+		if(istype(W,/obj/item/powerarmor/servos))
+			servos = W
+			W.loc = src
+			servos.parent = src
+			user << "<span class='notice'>You add some servos to the armor.</span>"
+	if(!reactive)
+		if(istype(W,/obj/item/powerarmor/reactive))
+			reactive = W
+			W.loc = src
+			reactive.parent = src
+			user << "<span class='notice'>You add some reactive plating to the armor.</span>"
+	if(!atmoseal)
+		if(istype(W,/obj/item/powerarmor/atmoseal))
+			atmoseal = W
+			W.loc = src
+			atmoseal.parent = src
+			user << "<span class='notice'>You add an atmospheric seals to the armor.</span>"
+	if(!power)
+		if(istype(W,/obj/item/powerarmor/power))
+			power = W
+			W.loc = src
+			power.parent = src
+			user << "<span class='notice'>You add a power module to the armor.</span>"
+	else
+		user << "<span class='danger'>The armor already contains a module of that type..</span>"
+		return
+	..()
 
 /obj/item/clothing/head/space/powered
 	name = "Powered armor helmet"
@@ -207,6 +234,7 @@
 	item_state = "swat"
 	armor = list(melee = 40, bullet = 30, laser = 20,energy = 15, bomb = 25, bio = 10, rad = 10)
 	var/obj/item/clothing/suit/space/powered/parent
+	slowdown = 1
 
 /obj/item/clothing/head/space/powered/proc/atmotoggle()
 	set category = "Object"
@@ -242,6 +270,7 @@
 	icon_state = "power_armour_gloves"
 	item_state = "power_armour_gloves"
 	armor = list(melee = 40, bullet = 30, laser = 20,energy = 15, bomb = 25, bio = 10, rad = 10)
+	slowdown = 1
 
 /obj/item/clothing/shoes/powered
 	name = "Powered armor boots"
@@ -250,7 +279,7 @@
 	icon_state = "power_armour_boots"
 	item_state = "swat"
 	armor = list(melee = 40, bullet = 30, laser = 20,energy = 15, bomb = 25, bio = 10, rad = 10)
-
+	slowdown = 2
 
 obj/item/clothing/suit/space/powered/spawnable/regular/New()
 	servos = new /obj/item/powerarmor/servos(src)

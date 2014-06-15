@@ -105,7 +105,7 @@ var/last_chew = 0
 
 	var/mob/living/carbon/human/H = A
 	if (!H.handcuffed) return
-	if (H.a_intent != "hurt") return
+	if (H.a_intent != "harm") return
 	if (H.zone_sel.selecting != "mouth") return
 	if (H.wear_mask) return
 	if (istype(H.wear_suit, /obj/item/clothing/suit/straight_jacket)) return
@@ -120,6 +120,8 @@ var/last_chew = 0
 
 	if(O.take_damage(3,0,1,"teeth marks"))
 		H:UpdateDamageIcon()
+		if(prob(10))
+			O.droplimb()
 
 	last_chew = world.time
 
