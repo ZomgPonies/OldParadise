@@ -713,21 +713,6 @@ var/global/list/brutefireloss_overlays = list("1" = image("icon" = 'icons/mob/sc
 				if(species.heat_level_3 to INFINITY)
 					apply_damage(HEAT_GAS_DAMAGE_LEVEL_3, BURN, "head", used_weapon = "Excessive Heat")
 					fire_alert = max(fire_alert, 2)
-
-			//breathing in hot/cold air also heats/cools you a bit
-			var/temp_adj = breath.temperature - bodytemperature
-			if (temp_adj < 0)
-				temp_adj /= (BODYTEMP_COLD_DIVISOR * 5)	//don't raise temperature as much as if we were directly exposed
-			else
-				temp_adj /= (BODYTEMP_HEAT_DIVISOR * 5)	//don't raise temperature as much as if we were directly exposed
-
-			var/relative_density = breath.total_moles() / (MOLES_CELLSTANDARD * BREATH_PERCENTAGE)
-			temp_adj *= relative_density
-
-			if (temp_adj > BODYTEMP_HEATING_MAX) temp_adj = BODYTEMP_HEATING_MAX
-			if (temp_adj < BODYTEMP_COOLING_MAX) temp_adj = BODYTEMP_COOLING_MAX
-			//world << "Breath: [breath.temperature], [src]: [bodytemperature], Adjusting: [temp_adj]"
-			bodytemperature += temp_adj
 		return 1
 
 	proc/handle_environment(datum/gas_mixture/environment)
