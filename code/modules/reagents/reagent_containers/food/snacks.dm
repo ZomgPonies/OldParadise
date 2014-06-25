@@ -3388,7 +3388,7 @@
 	New()
 		..()
 		reagents.add_reagent("nutriment", 10)
-		reagents.add_reagent("hyperzine", 5
+		reagents.add_reagent("hyperzine", 5)
 
 /obj/item/weapon/reagent_containers/food/snacks/jam/orangejam
 	name = "Orange Jam"
