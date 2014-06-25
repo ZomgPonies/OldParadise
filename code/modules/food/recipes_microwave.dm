@@ -1378,4 +1378,24 @@
 	reagents = list("sugar" = 5, "frostoil" = 5)
 	result = /obj/item/weapon/reagent_containers/food/snacks/mint
 
+/datum/recipe/pancake_dough
+	reagents = list("milk" = 5)
+	items = list(
+		/obj/item/weapon/reagent_containers/food/snacks/egg,
+		/obj/item/weapon/reagent_containers/food/snacks/flour
+	)
+	result = /obj/item/weapon/reagent_containers/food/snacks/pancake/pancake_dough
 
+/datum/recipe/pancake
+	reagents = list("milk" = 5)
+	items = list(
+		/obj/item/weapon/reagent_containers/food/snacks/pancake/pancake_dough
+	)
+	result = /obj/item/weapon/reagent_containers/food/snacks/pancake/pancake
+
+/datum/recipe/orangejam
+	reagents = list("sugar" = 5)
+	items = list(
+		/obj/item/weapon/reagent_containers/food/snacks/grown/orange
+	)
+	result = /obj/item/weapon/reagent_containers/food/snacks/jam/orangejam

@@ -3351,3 +3351,54 @@
 		..()
 		reagents.add_reagent("nutriment", 3)
 
+/obj/item/weapon/reagent_containers/food/snacks/pancake/pancake_dough
+	name = "Pancake Dough"
+	desc = "This is obviously used to make Pancakes"
+	icon = 'icons/obj/food_ingredients.dmi'
+	icon_state = "pancake_dough"
+	bitesize = 2
+	New()
+		..()
+		reagents.add_reagent("nutriment", 2)
+
+/obj/item/weapon/reagent_containers/food/snacks/pancake/pancake
+	name = "Pancake"
+	desc = "A plain Pancake"
+	icon_state = "pancake"
+	bitesize = 2
+	New()
+		..()
+		reagents.add_reagent("nutriment", 2)
+
+//pancake + jam = jampancake
+/obj/item/weapon/reagent_containers/food/snacks/pancake/pancake/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if(istype(W,/obj/item/weapon/reagent_containers/food/snacks/jam/orangejam))
+		new /obj/item/weapon/reagent_containers/food/snacks/pancake/jampancake(src)
+		user << "You spread some jam on the pancake."
+		del(W)
+		del(src)
+	else
+		..()
+
+/obj/item/weapon/reagent_containers/food/snacks/pancake/jampancake
+	name = "Pancake with jam"
+	desc = "Like from your grandma"
+	icon_state = "jampancake"
+	bitesize = 2
+	New()
+		..()
+		reagents.add_reagent("nutriment", 10)
+		reagents.add_reagent("hyperzine", 5
+
+/obj/item/weapon/reagent_containers/food/snacks/jam/orangejam
+	name = "Orange Jam"
+	desc = "Bottle with delicious Orange Jam"
+	icon_state = "orangejam"
+	bitesize = 2
+	New()
+		..()
+		reagents.add_reagent("hyperzine", 5)
+
+
+
+
