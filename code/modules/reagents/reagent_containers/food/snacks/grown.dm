@@ -174,7 +174,7 @@
 	New()
 		..()
 		reagents.add_reagent("nutriment", 1+round((potency / 10), 1))
-		reagents.add_reagent("potassium", 1+round((potency / 10), 1))
+		reagents.add_reagent("potassium", 1+round((potency / 20), 1))
 
 		spawn(5)	//So potency can be set in the proc that creates these crops
 			bitesize = reagents.total_volume
@@ -531,7 +531,7 @@
 		spawn(5)	//So potency can be set in the proc that creates these crops
 			reagents.add_reagent("nutriment", 1+round((potency / 6), 1))
 			bitesize = 1+round(reagents.total_volume / 2, 1)
-			reagents.add_reagent("phosphorus", 1+round((potency / 10), 1))
+			reagents.add_reagent("phosphorus", 1+round((potency / 20), 1))
 
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/pumpkin/attackby(obj/item/weapon/W as obj, mob/user as mob)
