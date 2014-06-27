@@ -56,7 +56,7 @@
 	desc = "The noise made by rubbing it's antennae together is actually a complex form of communication for Kidan."
 	speech_verb = "rubs it's antenna together"
 	colour = "tajaran"
-	key = "l"
+	key = "4"
 	flags = RESTRICTED
 
 /datum/language/slime
@@ -71,6 +71,12 @@
 	name = "Sol Common"
 	desc = "A bastardized hybrid of informal English and elements of Mandarin Chinese; the common language of the Sol system."
 	key = "1"
+	flags = RESTRICTED
+
+/datum/language/trinary
+	name = "Trinary"
+	desc = "A modification of binary to allow fuzzy logic. 0 is no, 1 maybe, 2 yes. Credited with giving Machine People the ability to think creatively."
+	key = "5"
 	flags = RESTRICTED
 
 

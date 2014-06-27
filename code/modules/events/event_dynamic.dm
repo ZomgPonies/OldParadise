@@ -91,19 +91,20 @@ var/global/list/possibleEvents = list()
 		possibleEvents[/datum/event/brand_intelligence] = 50 + 25 * active_with_role["Engineer"]
 		possibleEvents[/datum/event/spider_infestation] = 50 + 25 * active_with_role["Security"]
 
-	possibleEvents[/datum/event/viral_infection] = 25 + active_with_role["Medical"] * 50
+
 	if(active_with_role["Medical"] > 0)
 		possibleEvents[/datum/event/radiation_storm] = active_with_role["Medical"] * 50
 		possibleEvents[/datum/event/spontaneous_appendicitis] = active_with_role["Medical"] * 150
-		possibleEvents[/datum/event/viral_outbreak] = active_with_role["Medical"] * 10
+		possibleEvents[/datum/event/viral_outbreak] = active_with_role["Medical"] * 5
 		possibleEvents[/datum/event/organ_failure] = active_with_role["Medical"] * 50
+		possibleEvents[/datum/event/viral_infection] = 25 + active_with_role["Medical"] * 50
 
 	possibleEvents[/datum/event/prison_break] = active_with_role["Security"] * 50
 	if(active_with_role["Security"] > 0)
 		if(aliens_allowed && !sent_aliens_to_station)
 			possibleEvents[/datum/event/alien_infestation] = max(active_with_role["Security"], 5) + 2.5
 		if(!sent_ninja_to_station && toggle_space_ninja)
-			possibleEvents[/datum/event/space_ninja] = active_with_role["Security"] * 20
+			possibleEvents[/datum/event/space_ninja] = active_with_role["Security"] * 5
 	possibleEvents[/datum/event/undead] = active_with_role["Security"] * 15
 	possibleEvents[/datum/event/ghosts] = active_with_role["Security"] * 25
 	possibleEvents[/datum/event/tear] = active_with_role["Security"] * 25

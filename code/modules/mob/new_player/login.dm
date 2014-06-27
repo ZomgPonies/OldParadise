@@ -26,9 +26,8 @@
 	if(watch_locations.len>0)
 		loc = pick(watch_locations)
 */
+	update_music()
 	new_player_panel()
 	spawn(40)
 		if(client)
-			nanomanager.send_resources(client)
 			handle_privacy_poll()
-			client.playtitlemusic()

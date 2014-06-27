@@ -1,16 +1,16 @@
 //admin verb groups - They can overlap if you so wish. Only one of each verb will exist in the verbs list regardless
 var/list/admin_verbs_default = list(
 //	/datum/admins/proc/show_player_panel,	/*shows an interface for individual players, with various links (links require additional flags*/
-	/client/proc/toggleadminhelpsound,	/*toggles whether we hear a sound when adminhelps/PMs are used*/
 	/client/proc/deadmin_self,			/*destroys our own admin datum so we can play as a regular player*/
 	/client/proc/hide_verbs,			/*hides all our adminverbs*/
 	/client/proc/hide_most_verbs,		/*hides all our hideable adminverbs*/
 	/client/proc/debug_variables,		/*allows us to -see- the variables of any instance in the game. +VAREDIT needed to modify*/
-	/client/proc/check_antagonists,		/*shows all antags*/
+//	/client/proc/check_antagonists,		/*shows all antags*/
 	/client/proc/cmd_mentor_check_new_players
 //	/client/proc/deadchat				/*toggles deadchat on/off*/
 	)
 var/list/admin_verbs_admin = list(
+	/client/proc/check_antagonists,		/*shows all antags*/
 	/datum/admins/proc/show_player_panel,
 	/client/proc/player_panel,			/*shows an interface for all players, with links to various panels (old style)*/
 	/client/proc/player_panel_new,		/*shows an interface for all players, with links to various panels*/
@@ -28,7 +28,6 @@ var/list/admin_verbs_admin = list(
 	/client/proc/cmd_admin_subtle_message,	/*send an message to somebody as a 'voice in their head'*/
 	/client/proc/cmd_admin_delete,		/*delete an instance/object/mob/etc*/
 	/client/proc/cmd_admin_check_contents,	/*displays the contents of an instance*/
-	/datum/admins/proc/access_news_network,	/*allows access of newscasters*/
 	/client/proc/giveruntimelog,		/*allows us to give access to runtime logs to somebody*/
 	/client/proc/getruntimelog,			/*allows us to access runtime logs to somebody*/
 	/client/proc/getserverlog,			/*allows us to fetch server logs (diary) for other days*/
@@ -41,9 +40,6 @@ var/list/admin_verbs_admin = list(
 	/client/proc/jumptoturf,			/*allows us to jump to a specific turf*/
 	/client/proc/admin_call_shuttle,	/*allows us to call the emergency shuttle*/
 	/client/proc/admin_cancel_shuttle,	/*allows us to cancel the emergency shuttle, sending it back to centcomm*/
-	/client/proc/cmd_admin_direct_narrate,	/*send text directly to a player with no padding. Useful for narratives and fluff-text*/
-	/client/proc/cmd_admin_world_narrate,	/*sends text to all players with no padding*/
-	/client/proc/cmd_admin_create_centcom_report,
 	/client/proc/check_words,			/*displays cult-words*/
 	/client/proc/check_ai_laws,			/*shows AI and borg laws*/
 	/client/proc/admin_memo,			/*admin memo system. show/delete/write. +SERVER needed to delete admin memos of others*/
@@ -61,7 +57,6 @@ var/list/admin_verbs_admin = list(
 	/client/proc/cmd_mod_say,
 	/datum/admins/proc/show_player_info,
 	/client/proc/free_slot,			/*frees slot for chosen job*/
-	/client/proc/cmd_admin_change_custom_event,
 	/client/proc/cmd_admin_rejuvenate,
 	/client/proc/toggleattacklogs,
 	/client/proc/toggledebuglogs,
@@ -70,7 +65,6 @@ var/list/admin_verbs_admin = list(
 	/client/proc/check_customitem_activity,
 	/client/proc/man_up,
 	/client/proc/global_man_up,
-	/client/proc/response_team, // Response Teams admin verb
 	/client/proc/delbook
 )
 var/list/admin_verbs_ban = list(
@@ -81,7 +75,7 @@ var/list/admin_verbs_sounds = list(
 	/client/proc/play_local_sound,
 	/client/proc/play_sound
 	)
-var/list/admin_verbs_fun = list(
+var/list/admin_verbs_event = list(
 	/client/proc/object_talk,
 	/client/proc/cmd_admin_dress,
 	/client/proc/cmd_admin_gib_self,
@@ -95,10 +89,17 @@ var/list/admin_verbs_fun = list(
 	/client/proc/cmd_admin_add_random_ai_law,
 	/client/proc/make_sound,
 	/client/proc/toggle_random_events,
-	/client/proc/set_ooc,
 	/client/proc/editappear,
+	/client/proc/toggle_random_events,
+	/client/proc/cmd_admin_change_custom_event,
+	/datum/admins/proc/access_news_network,	/*allows access of newscasters*/
+	/client/proc/cmd_admin_direct_narrate,	/*send text directly to a player with no padding. Useful for narratives and fluff-text*/
+	/client/proc/cmd_admin_world_narrate,	/*sends text to all players with no padding*/
+	/client/proc/response_team, // Response Teams admin verb
+	/client/proc/cmd_admin_create_centcom_report,
 	/client/proc/gib_money // /vg/
 	)
+
 var/list/admin_verbs_spawn = list(
 	/datum/admins/proc/spawn_atom,		/*allows us to spawn instances*/
 	/client/proc/respawn_character
@@ -118,11 +119,23 @@ var/list/admin_verbs_server = list(
 	/client/proc/cmd_debug_del_all,
 	/datum/admins/proc/toggle_aliens,
 	/datum/admins/proc/toggle_space_ninja,
-	/client/proc/toggle_random_events,
 	/client/proc/check_customitem_activity,
 	/client/proc/delbook,
 	/client/proc/toggle_antagHUD_use,
-	/client/proc/toggle_antagHUD_restrictions
+	/client/proc/toggle_antagHUD_restrictions,
+	/client/proc/set_ooc,
+
+	//Doubling of certain event verbs for senior admins
+	/datum/admins/proc/access_news_network,	/*allows access of newscasters*/
+	/client/proc/cmd_admin_direct_narrate,	/*send text directly to a player with no padding. Useful for narratives and fluff-text*/
+	/client/proc/cmd_admin_world_narrate,	/*sends text to all players with no padding*/
+	/client/proc/toggle_random_events,
+	/client/proc/one_click_antag,
+	/client/proc/cmd_admin_change_custom_event,
+	/client/proc/cmd_admin_create_centcom_report,
+	/client/proc/cmd_admin_dress,
+	/client/proc/response_team // Response Teams admin verb
+
 	)
 var/list/admin_verbs_debug = list(
 	/client/proc/cmd_admin_list_open_jobs,
@@ -226,7 +239,6 @@ var/list/admin_verbs_hideable = list(
 var/list/admin_verbs_mod = list(
 	/client/proc/cmd_admin_pm_context,	/*right-click adminPM interface*/
 	/client/proc/cmd_admin_pm_panel,	/*admin-pm list*/
-	/client/proc/debug_variables,		/*allows us to -see- the variables of any instance in the game.*/
 	/client/proc/toggledebuglogs,
 	/datum/admins/proc/PlayerNotes,
 	/client/proc/admin_ghost,			/*allows us to ghost/reenter body at will*/
@@ -236,20 +248,9 @@ var/list/admin_verbs_mod = list(
 	/client/proc/dsay,
 	/datum/admins/proc/show_player_panel,
 	/client/proc/jobbans,
-	/client/proc/cmd_admin_subtle_message 	/*send an message to somebody as a 'voice in their head'*/
+//	/client/proc/cmd_admin_subtle_message 	/*send an message to somebody as a 'voice in their head'*/
 )
 
-
-var/list/admin_verbs_mentor = list(
-	/client/proc/cmd_admin_pm_context,
-	/client/proc/cmd_admin_pm_panel,
-	/datum/admins/proc/PlayerNotes,
-	/client/proc/admin_ghost,
-	/client/proc/cmd_mod_say,
-	/datum/admins/proc/show_player_info,
-//	/client/proc/dsay,
-	/client/proc/cmd_admin_subtle_message
-)
 
 /client/proc/add_admin_verbs()
 	if(holder)
@@ -257,7 +258,7 @@ var/list/admin_verbs_mentor = list(
 		if(holder.rights & R_BUILDMODE)		verbs += /client/proc/togglebuildmodeself
 		if(holder.rights & R_ADMIN)			verbs += admin_verbs_admin
 		if(holder.rights & R_BAN)			verbs += admin_verbs_ban
-		if(holder.rights & R_FUN)			verbs += admin_verbs_fun
+		if(holder.rights & R_EVENT)			verbs += admin_verbs_event
 		if(holder.rights & R_SERVER)		verbs += admin_verbs_server
 		if(holder.rights & R_DEBUG)			verbs += admin_verbs_debug
 		if(holder.rights & R_POSSESS)		verbs += admin_verbs_possess
@@ -267,7 +268,6 @@ var/list/admin_verbs_mentor = list(
 		if(holder.rights & R_SOUNDS)		verbs += admin_verbs_sounds
 		if(holder.rights & R_SPAWN)			verbs += admin_verbs_spawn
 		if(holder.rights & R_MOD)			verbs += admin_verbs_mod
-		if(holder.rights & R_MENTOR)		verbs += admin_verbs_mentor
 
 /client/proc/remove_admin_verbs()
 	verbs.Remove(
@@ -275,7 +275,7 @@ var/list/admin_verbs_mentor = list(
 		/client/proc/togglebuildmodeself,
 		admin_verbs_admin,
 		admin_verbs_ban,
-		admin_verbs_fun,
+		admin_verbs_event,
 		admin_verbs_server,
 		admin_verbs_debug,
 		admin_verbs_possess,
@@ -444,7 +444,7 @@ var/list/admin_verbs_mentor = list(
 	return
 
 /client/proc/colorooc()
-	set category = "Fun"
+	set category = "Admin"
 	set name = "OOC Text Color"
 	if(!holder)	return
 	var/new_ooccolor = input(src, "Please select your OOC colour.", "OOC colour") as color|null
@@ -539,7 +539,7 @@ var/list/admin_verbs_mentor = list(
 	feedback_add_details("admin_verb","DB") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
 /client/proc/give_spell(mob/T as mob in mob_list) // -- Urist
-	set category = "Fun"
+	set category = "Event"
 	set name = "Give Spell"
 	set desc = "Gives a spell to a mob."
 	var/obj/effect/proc_holder/spell/S = input("Choose the spell to give to that guy", "ABRAKADABRA") as null|anything in spells
@@ -550,7 +550,7 @@ var/list/admin_verbs_mentor = list(
 	message_admins("\blue [key_name_admin(usr)] gave [key_name(T)] the spell [S].", 1)
 
 /client/proc/give_disease(mob/T as mob in mob_list) // -- Giacom
-	set category = "Fun"
+	set category = "Event"
 	set name = "Give Disease (old)"
 	set desc = "Gives a (tg-style) Disease to a mob."
 	var/datum/disease/D = input("Choose the disease to give to that guy", "ACHOO") as null|anything in diseases
@@ -561,7 +561,7 @@ var/list/admin_verbs_mentor = list(
 	message_admins("\blue [key_name_admin(usr)] gave [key_name(T)] the disease [D].", 1)
 
 /client/proc/give_disease2(mob/T as mob in mob_list) // -- Giacom
-	set category = "Fun"
+	set category = "Event"
 	set name = "Give Disease"
 	set desc = "Gives a Disease to a mob."
 
@@ -589,7 +589,7 @@ var/list/admin_verbs_mentor = list(
 	message_admins("\blue [key_name_admin(usr)] gave [key_name(T)] a [(greater)? "greater":"lesser"] disease2 with infection chance [D.infectionchance].", 1)
 
 /client/proc/make_sound(var/obj/O in world) // -- TLE
-	set category = "Special Verbs"
+	set category = "Event"
 	set name = "Make Sound"
 	set desc = "Display a message to everyone who can hear the target"
 	if(O)
@@ -605,13 +605,13 @@ var/list/admin_verbs_mentor = list(
 
 /client/proc/togglebuildmodeself()
 	set name = "Toggle Build Mode Self"
-	set category = "Special Verbs"
+	set category = "Event"
 	if(src.mob)
 		togglebuildmode(src.mob)
 	feedback_add_details("admin_verb","TBMS") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
 /client/proc/object_talk(var/msg as text) // -- TLE
-	set category = "Special Verbs"
+	set category = "Event"
 	set name = "oSay"
 	set desc = "Display a message to everyone who can hear the target"
 	if(mob.control_object)
@@ -693,9 +693,9 @@ var/list/admin_verbs_mentor = list(
 
 /client/proc/editappear(mob/living/carbon/human/M as mob in world)
 	set name = "Edit Appearance"
-	set category = "Fun"
+	set category = "Event"
 
-	if(!check_rights(R_FUN))	return
+	if(!check_rights(R_SERVER|R_EVENT))	return
 
 	if(!istype(M, /mob/living/carbon/human))
 		usr << "\red You can only do this to humans!"
@@ -813,7 +813,7 @@ var/list/admin_verbs_mentor = list(
 
 
 /client/proc/man_up(mob/T as mob in mob_list)
-	set category = "Fun"
+	set category = "Admin"
 	set name = "Man Up"
 	set desc = "Tells mob to man up and deal with it."
 
@@ -824,7 +824,7 @@ var/list/admin_verbs_mentor = list(
 	message_admins("\blue [key_name_admin(usr)] told [key_name(T)] to man up and deal with it.", 1)
 
 /client/proc/global_man_up()
-	set category = "Fun"
+	set category = "Admin"
 	set name = "Man Up Global"
 	set desc = "Tells everyone to man up and deal with it."
 

@@ -506,7 +506,7 @@ var/list/sortMobsOrder = list(	"/mob/living/silicon/ai",
 		return -M
 
 
-/proc/key_name(var/whom, var/include_link = null, var/include_name = 1)
+/proc/key_name(var/whom, var/include_link = null, var/include_name = 1, var/type = null)
 	var/mob/M
 	var/client/C
 	var/key
@@ -530,7 +530,7 @@ var/list/sortMobsOrder = list(	"/mob/living/silicon/ai",
 
 	if(key)
 		if(include_link && C)
-			. += "<a href='?priv_msg=\ref[C]'>"
+			. += "<a href='?priv_msg=\ref[C];type=[type]'>"
 
 		if(C && C.holder && C.holder.fakekey && !include_name)
 			. += "Administrator"
@@ -561,31 +561,6 @@ var/list/sortMobsOrder = list(	"/mob/living/silicon/ai",
 	while(loc && loc.loc && !istype(loc.loc, /turf/))
 		loc = loc.loc
 	return loc
-
-
-// Registers the on-close verb for a browse window (client/verb/.windowclose)
-// this will be called when the close-button of a window is pressed.
-//
-// This is usually only needed for devices that regularly update the browse window,
-// e.g. canisters, timers, etc.
-//
-// windowid should be the specified window name
-// e.g. code is	: user << browse(text, "window=fred")
-// then use 	: onclose(user, "fred")
-//
-// Optionally, specify the "ref" parameter as the controlled atom (usually src)
-// to pass a "close=1" parameter to the atom's Topic() proc for special handling.
-// Otherwise, the user mob's machine var will be reset directly.
-//
-/proc/onclose(mob/user, windowid, var/atom/ref=null)
-	if(!user.client) return
-	var/param = "null"
-	if(ref)
-		param = "\ref[ref]"
-
-	winset(user, windowid, "on-close=\".windowclose [param]\"")
-
-	//world << "OnClose [user]: [windowid] : ["on-close=\".windowclose [param]\""]"
 
 
 // the on-close client verb
@@ -1348,8 +1323,23 @@ proc/is_hot(obj/item/W as obj)
 
 	return 0
 
-//Is this even used for anything besides balloons? Yes I took out the W:lit stuff because : really shouldnt be used.
-/proc/is_sharp(obj/item/W as obj)		// For the record, WHAT THE HELL IS THIS METHOD OF DOING IT?
+
+//Whether or not the given item counts as sharp in terms of dealing damage
+/proc/is_sharp(obj/O as obj)
+	if (!O) return 0
+	if (O.sharp) return 1
+	if (O.edge) return 1
+	return 0
+
+//Whether or not the given item counts as cutting with an edge in terms of removing limbs
+/proc/has_edge(obj/O as obj)
+	if (!O) return 0
+	if (O.edge) return 1
+	return 0
+
+//Returns 1 if the given item is capable of popping things like balloons, inflatable barriers, or cutting police tape.
+/proc/can_puncture(obj/item/W as obj)		// For the record, WHAT THE HELL IS THIS METHOD OF DOING IT?
+	if(!W) return 0
 	if(W.sharp) return 1
 	return ( \
 		W.sharp													  || \
@@ -1359,20 +1349,7 @@ proc/is_hot(obj/item/W as obj)
 		istype(W, /obj/item/weapon/lighter/zippo)				  || \
 		istype(W, /obj/item/weapon/match)            		      || \
 		istype(W, /obj/item/clothing/mask/cigarette) 		      || \
-		istype(W, /obj/item/weapon/wirecutters)                   || \
-		istype(W, /obj/item/weapon/circular_saw)                  || \
-		istype(W, /obj/item/weapon/melee/energy/sword)            || \
-		istype(W, /obj/item/weapon/melee/energy/blade)            || \
-		istype(W, /obj/item/weapon/shovel)                        || \
-		istype(W, /obj/item/weapon/kitchenknife)                  || \
-		istype(W, /obj/item/weapon/butch)						  || \
-		istype(W, /obj/item/weapon/scalpel)                       || \
-		istype(W, /obj/item/weapon/kitchen/utensil/knife)         || \
-		istype(W, /obj/item/weapon/shard)                         || \
-		istype(W, /obj/item/weapon/broken_bottle)				  || \
-		istype(W, /obj/item/weapon/reagent_containers/syringe)    || \
-		istype(W, /obj/item/weapon/kitchen/utensil/fork) && W.icon_state != "forkloaded" || \
-		istype(W, /obj/item/weapon/twohanded/fireaxe) \
+		istype(W, /obj/item/weapon/shovel) \
 	)
 
 /proc/is_surgery_tool(obj/item/W as obj)
@@ -1489,6 +1466,8 @@ proc/rotate_icon(file, state, step = 1, aa = FALSE)
 
 	return result
 
+/proc/format_text(text)
+	return replacetext(replacetext(text,"\proper ",""),"\improper ","")
 
 /*
 Standard way to write links -Sayu
@@ -1498,6 +1477,7 @@ Standard way to write links -Sayu
 	if(istype(arglist,/list))
 		arglist = list2params(arglist)
 	return "<a href='?src=\ref[D];[arglist]'>[content]</a>"
+
 
 
 /proc/get_location_accessible(mob/M, location)

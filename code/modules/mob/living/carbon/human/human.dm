@@ -195,8 +195,8 @@
 		if(ticker.mode:malf_mode_declared)
 			stat(null, "Time left: [max(ticker.mode:AI_win_timeleft/(ticker.mode:apcs/3), 0)]")
 	if(emergency_shuttle)
-		if(emergency_shuttle.online && emergency_shuttle.location < 2)
-			var/timeleft = emergency_shuttle.timeleft()
+		if(emergency_shuttle.has_eta() && !emergency_shuttle.returned())
+			var/timeleft = emergency_shuttle.estimate_arrival_time()
 			if (timeleft)
 				stat(null, "ETA-[(timeleft / 60) % 60]:[add_zero(num2text(timeleft % 60), 2)]")
 
@@ -565,7 +565,10 @@
 
 /mob/living/carbon/human/Topic(href, href_list)
 	var/pickpocket = 0
+
 	if(!usr.stat && usr.canmove && !usr.restrained() && in_range(src, usr))
+
+		// if looting pockets with gloves, do it quietly
 		if(href_list["pockets"])
 			if(usr:gloves)
 				var/obj/item/clothing/gloves/G = usr:gloves
@@ -601,6 +604,47 @@
 				// Display a warning if the user mocks up
 				src << "<span class='warning'>You feel your [pocket_side] pocket being fumbled with!</span>"
 
+
+		// if looting id with gloves, do it quietly - this allows pickpocket gloves to take/place id stealthily - Bone White
+		if(href_list["item"])
+			var/itemTarget = href_list["item"]
+			if(itemTarget == "id")
+				if(usr:gloves)
+					var/obj/item/clothing/gloves/G = usr:gloves
+					pickpocket = G.pickpocket
+				if(pickpocket)
+					var/obj/item/worn_id = src.wear_id
+					var/obj/item/place_item = usr.get_active_hand() // Item to place in the pocket, if it's empty
+
+					if(worn_id)
+						usr << "<span class='notice'>You try to remove [src]'s ID.</span>"
+					else if(place_item && place_item.mob_can_equip(src, slot_wear_id, 1))
+						usr << "<span class='notice'>You try to place [place_item] onto [src].</span>"
+					else
+						return
+
+					if(do_mob(usr, src, STRIP_DELAY))
+						if(worn_id)
+							u_equip(worn_id)
+							usr.put_in_hands(worn_id)
+						else
+							if(place_item)
+								usr.u_equip(place_item)
+							equip_to_slot_if_possible(place_item, slot_wear_id, 0, 1)
+
+						// Update strip window
+						if(usr.machine == src && in_range(src, usr))
+							show_inv(usr)
+
+
+
+					else if(!pickpocket)
+						// Display a warning if the user mocks up
+						src << "<span class='warning'>You feel your ID slot being fumbled with!</span>"
+
+
+
+
 	if (href_list["refresh"])
 		if((machine)&&(in_range(src, usr)))
 			show_inv(machine)
@@ -615,17 +659,18 @@
 		if(ishuman(usr) && usr:gloves)
 			var/obj/item/clothing/gloves/G = usr:gloves
 			pickpocket = G.pickpocket
-		O.source = usr
-		O.target = src
-		O.item = usr.get_active_hand()
-		O.s_loc = usr.loc
-		O.t_loc = loc
-		O.place = href_list["item"]
-		O.pickpocket = pickpocket //Stealthy
-		requests += O
-		spawn( 0 )
-			O.process()
-			return
+		if(!pickpocket || href_list["item"] != "id")  // Stop the non-stealthy verbose strip if pickpocketing id.
+			O.source = usr
+			O.target = src
+			O.item = usr.get_active_hand()
+			O.s_loc = usr.loc
+			O.t_loc = loc
+			O.place = href_list["item"]
+			O.pickpocket = pickpocket //Stealthy
+			requests += O
+			spawn( 0 )
+				O.process()
+				return
 
 	if (href_list["criminal"])
 		if(hasHUD(usr,"security"))
@@ -1005,6 +1050,11 @@
 		src.verbs -= /mob/living/carbon/human/proc/morph
 		return
 
+	if(!ishuman(src))
+		src.verbs -= /mob/living/carbon/human/proc/morph
+		return
+
+
 	var/new_facial = input("Please select facial hair color.", "Character Generation",rgb(r_facial,g_facial,b_facial)) as color
 	if(new_facial)
 		r_facial = hex2num(copytext(new_facial, 2, 4))
@@ -1321,7 +1371,7 @@
 		return
 
 	usr << "Don't move until counting is finished."
-	var/time = world.timeofday
+	var/time = world.time
 	sleep(60)
 	if(usr.l_move_time >= time)	//checks if our mob has moved during the sleep()
 		usr << "You moved while counting. Try again."
@@ -1430,6 +1480,14 @@
 		update_hair()
 		update_body()
 
+/mob/living/carbon/human/proc/unexpose_brain()
+	var/datum/organ/external/head/H = get_organ("head")
+	if(H)
+		H.brained=0
+		update_hair()
+		update_body()
+
+
 /mob/living/carbon/human/canSingulothPull(var/obj/machinery/singularity/singulo)
 	if(!..())
 		return 0
@@ -1452,7 +1510,7 @@
 	if(last_special > world.time)
 		return
 
-	if(stat || paralysis || stunned || weakened || lying)
+	if(stat || paralysis || stunned || weakened || lying || handcuffed)
 		src << "You cannot leap in your current state."
 		return
 
@@ -1541,3 +1599,78 @@
 		M.apply_damage(50,BRUTE)
 		if(M.stat == 2)
 			M.gib()
+
+/mob/living/carbon/human/assess_threat(var/obj/machinery/bot/secbot/judgebot, var/lasercolor)
+	if(judgebot.emagged == 2)
+		return 10 //Everyone is a criminal!
+
+	var/threatcount = 0
+
+	//Lasertag bullshit
+	if(lasercolor)
+		if(lasercolor == "b")//Lasertag turrets target the opposing team, how great is that? -Sieve
+			if(istype(wear_suit, /obj/item/clothing/suit/redtag))
+				threatcount += 4
+			if((istype(r_hand,/obj/item/weapon/gun/energy/laser/redtag)) || (istype(l_hand,/obj/item/weapon/gun/energy/laser/redtag)))
+				threatcount += 4
+			if(istype(belt, /obj/item/weapon/gun/energy/laser/redtag))
+				threatcount += 2
+
+		if(lasercolor == "r")
+			if(istype(wear_suit, /obj/item/clothing/suit/bluetag))
+				threatcount += 4
+			if((istype(r_hand,/obj/item/weapon/gun/energy/laser/bluetag)) || (istype(l_hand,/obj/item/weapon/gun/energy/laser/bluetag)))
+				threatcount += 4
+			if(istype(belt, /obj/item/weapon/gun/energy/laser/bluetag))
+				threatcount += 2
+
+		return threatcount
+
+	//Check for ID
+	var/obj/item/weapon/card/id/idcard = get_idcard()
+	if(judgebot.idcheck && !idcard)
+		threatcount += 4
+
+	//Check for weapons
+	if(judgebot.weaponscheck)
+		if(!idcard || !(access_weapons in idcard.access))
+			if(judgebot.check_for_weapons(l_hand))
+				threatcount += 4
+			if(judgebot.check_for_weapons(r_hand))
+				threatcount += 4
+			if(judgebot.check_for_weapons(belt))
+				threatcount += 2
+
+	//Check for arrest warrant
+	if(judgebot.check_records)
+		var/perpname = get_face_name(get_id_name())
+		var/datum/data/record/R = find_record("name", perpname, data_core.security)
+		if(R && R.fields["criminal"])
+			switch(R.fields["criminal"])
+				if("*Arrest*")
+					threatcount += 5
+				if("Incarcerated")
+					threatcount += 2
+				if("Parolled")
+					threatcount += 2
+
+	//Check for dresscode violations
+	if(istype(head, /obj/item/clothing/head/wizard) || istype(head, /obj/item/clothing/head/helmet/space/rig/wizard))
+		threatcount += 2
+
+	//Check for nonhuman scum
+	if(dna && dna.mutantrace && dna.mutantrace != "none")
+		threatcount += 1
+
+	//Loyalty implants imply trustworthyness
+	if(isloyal(src))
+		threatcount -= 1
+
+	//Agent cards lower threatlevel.
+	if(istype(idcard, /obj/item/weapon/card/id/syndicate))
+		threatcount -= 2
+
+	return threatcount
+
+/mob/living/carbon/human/canBeHandcuffed()
+	return 1

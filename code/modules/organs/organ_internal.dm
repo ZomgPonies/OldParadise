@@ -22,6 +22,7 @@
 	return damage >= min_broken_damage
 
 
+
 /datum/organ/internal/New(mob/living/carbon/human/H)
 	..()
 	var/datum/organ/external/E = H.organs_by_name[src.parent_organ]
@@ -31,6 +32,37 @@
 	H.internal_organs[src.name] = src
 	src.owner = H
 
+/datum/organ/internal/process()
+
+	//Process infections
+	if (!germ_level)
+		return
+
+	if (robotic >= 2)	//TODO make robotic internal and external organs separate types of organ instead of a flag
+		germ_level = 0
+		return
+
+	var/antibiotics = owner.reagents.get_reagent_amount("spaceacillin")
+
+	if (germ_level > 0 && antibiotics > 5)
+		if (prob(4*antibiotics)) germ_level--
+		if (antibiotics > 30) germ_level--
+
+	if (germ_level >= INFECTION_LEVEL_ONE/2)
+		if(prob(round(germ_level/6)))	//aiming for germ level to go from ambient to INFECTION_LEVEL_TWO in an average of 15 minutes
+			germ_level++
+		if(prob(1))
+			take_damage(1,silent=0)
+
+	if (germ_level >= INFECTION_LEVEL_TWO)
+		var/datum/organ/external/parent = owner.get_organ(parent_organ)
+		if (parent.germ_level < germ_level && ( parent.germ_level < INFECTION_LEVEL_ONE*2 || prob(30) ))
+			parent.germ_level++
+
+		if (prob(5))	//about once every 20 seconds
+			take_damage(1,silent=prob(30))
+
+
 /datum/organ/internal/proc/take_damage(amount, var/silent=0)
 	if(src.robotic == 2)
 		src.damage += amount * 0.8
@@ -38,14 +70,8 @@
 		src.damage += amount
 
 	var/datum/organ/external/parent = owner.get_organ(parent_organ)
-	var/datum/organ/internal/eyes/E
-	var/datum/organ/internal/heart/H
 	if (!silent)
-		if(istype(E))
-			owner.custom_pain("Your eyes burn like mad!", 1)
-		if(istype(H))
-			owner.custom_pain("You feel a sudden, stabbing pain inside of your [parent.display_name]!", 1)
-		else owner.custom_pain("Something inside your [parent.display_name] hurts a lot.", 1)
+		owner.custom_pain("Something inside your [parent.display_name] hurts a lot.", 1)
 
 /datum/organ/internal/proc/emp_act(severity)
 	switch(robotic)
@@ -102,7 +128,7 @@
 				owner.drip(10)
 			if(prob(4))
 				spawn owner.emote("me", 1, "gasps for air!")
-				owner.losebreath += 5
+				owner.losebreath += 15
 
 /datum/organ/internal/liver
 	name = "liver"

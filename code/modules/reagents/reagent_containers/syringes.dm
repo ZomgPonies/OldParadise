@@ -14,6 +14,8 @@
 	amount_per_transfer_from_this = 5
 	possible_transfer_amounts = null //list(5,10,15)
 	volume = 15
+	w_class = 1
+	sharp = 1
 	var/mode = SYRINGE_DRAW
 
 	on_reagent_change()
@@ -257,7 +259,7 @@
 
 		if(istype(target, /mob/living/carbon/human))
 
-			var/target_zone = check_zone(user.zone_sel.selecting, target)
+			var/target_zone = ran_zone(check_zone(user.zone_sel.selecting, target))
 			var/datum/organ/external/affecting = target:get_organ(target_zone)
 
 			if (!affecting)

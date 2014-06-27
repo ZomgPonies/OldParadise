@@ -1,3 +1,4 @@
+
 //
 // Gravity Generator
 //
@@ -30,9 +31,6 @@ var/const/GRAV_NEEDS_WRENCH = 3
 /obj/machinery/gravity_generator/ex_act(severity)
 	if(severity == 1) // Very sturdy.
 		set_broken()
-
-/obj/machinery/gravity_generator/meteorhit()
-	return
 
 /obj/machinery/gravity_generator/update_icon()
 	..()
@@ -301,7 +299,6 @@ var/const/GRAV_NEEDS_WRENCH = 3
 				if (A.z != 1) continue
 				A.gravitychange(0,A)
 
-
 	update_icon()
 	update_list()
 	src.updateUsrDialog()
@@ -325,7 +322,7 @@ var/const/GRAV_NEEDS_WRENCH = 3
 				charge_count -= 2
 
 			if(charge_count % 4 == 0 && prob(75)) // Let them know it is charging/discharging.
-				playsound(src.loc, 'sound/effects/EMPulse.ogg', 75, 1)
+				playsound(src.loc, 'sound/effects/EMPulse.ogg', 100, 1)
 
 			updateDialog()
 			if(prob(25)) // To help stop "Your clothes feel warm" spam.
@@ -359,11 +356,13 @@ var/const/GRAV_NEEDS_WRENCH = 3
 // Shake everyone on the z level to let them know that gravity was enagaged/disenagaged.
 /obj/machinery/gravity_generator/main/proc/shake_everyone()
 	var/turf/our_turf = get_turf(src)
-	for(var/mob/M in player_list)
+	for(var/mob/M in mob_list)
 		var/turf/their_turf = get_turf(M)
-		if(M.client && their_turf.z == our_turf.z)
-			shake_camera(M, 15, 1)
-			M.playsound_local(our_turf, 'sound/machines/signal.ogg', 100)
+		if(their_turf.z == our_turf.z)
+			M.update_gravity(M.mob_has_gravity())
+			if(M.client)
+				shake_camera(M, 15, 1)
+				M.playsound_local(our_turf, 'sound/effects/alert.ogg', 100, 1, 0.5)
 
 /obj/machinery/gravity_generator/main/proc/gravity_in_level()
 	var/turf/T = get_turf(src)

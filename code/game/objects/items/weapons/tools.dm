@@ -108,6 +108,8 @@
 	m_amt = 80
 	origin_tech = "materials=1;engineering=1"
 	attack_verb = list("pinched", "nipped")
+	sharp = 1
+	edge = 1
 
 /obj/item/weapon/wirecutters/New()
 	if(prob(50))
@@ -253,7 +255,7 @@
 		playsound(src.loc, 'sound/effects/refill.ogg', 50, 1, -6)
 		return
 	else if (istype(O, /obj/structure/reagent_dispensers/fueltank) && get_dist(src,O) <= 1 && src.welding)
-		message_admins("[key_name_admin(user)] triggered a fueltank explosion.")
+		msg_admin_attack("[key_name_admin(user)] triggered a fueltank explosion.")
 		log_game("[key_name(user)] triggered a fueltank explosion.")
 		user << "\red That was stupid of you."
 		var/obj/structure/reagent_dispensers/fueltank/tank = O

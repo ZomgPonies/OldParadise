@@ -30,7 +30,7 @@ datum
 		var/mildly_toxic = 0
 		var/overdose = 0
 		var/overdose_dam = 1
-		var/addictiveness = 1
+		var/addictiveness = 0 //switched to zero until time to properly overhaul addiction
 		//var/list/viruses = list()
 		var/color = "#000000" // rgb: 0, 0, 0 (does not support alpha channels - yet!)
 
@@ -40,45 +40,46 @@ datum
 				var/datum/reagent/self = src
 				src = null										  //of the reagent to the mob on TOUCHING it.
 
-				if(!istype(self.holder.my_atom, /obj/effect/effect/chem_smoke))
-					// If the chemicals are in a smoke cloud, do not try to let the chemicals "penetrate" into the mob's system (balance station 13) -- Doohl
+				if(self.holder)		//for catching rare runtimes
+					if(!istype(self.holder.my_atom, /obj/effect/effect/chem_smoke))
+						// If the chemicals are in a smoke cloud, do not try to let the chemicals "penetrate" into the mob's system (balance station 13) -- Doohl
 
-					if(method == TOUCH)
+						if(method == TOUCH)
 
-						var/chance = 1
-						var/block  = 0
+							var/chance = 1
+							var/block  = 0
 
-						for(var/obj/item/clothing/C in M.get_equipped_items())
-							if(C.permeability_coefficient < chance) chance = C.permeability_coefficient
-							if(istype(C, /obj/item/clothing/suit/bio_suit))
-								// bio suits are just about completely fool-proof - Doohl
-								// kind of a hacky way of making bio suits more resistant to chemicals but w/e
-								if(prob(75))
-									block = 1
+							for(var/obj/item/clothing/C in M.get_equipped_items())
+								if(C.permeability_coefficient < chance) chance = C.permeability_coefficient
+								if(istype(C, /obj/item/clothing/suit/bio_suit))
+									// bio suits are just about completely fool-proof - Doohl
+									// kind of a hacky way of making bio suits more resistant to chemicals but w/e
+									if(prob(75))
+										block = 1
 
-							if(istype(C, /obj/item/clothing/head/bio_hood))
-								if(prob(75))
-									block = 1
+								if(istype(C, /obj/item/clothing/head/bio_hood))
+									if(prob(75))
+										block = 1
 
-						chance = chance * 100
+							chance = chance * 100
 
-						if(prob(chance) && !block)
-							if(M.reagents)
-								M.reagents.add_reagent(self.id,self.volume/2)
+							if(prob(chance) && !block)
+								if(M.reagents)
+									M.reagents.add_reagent(self.id,self.volume/2)
 
 
-				if(method == INGEST && istype(M, /mob/living/carbon))
-					if(prob(1 * self.addictiveness))
-						if(prob(5 * volume))
-							var/datum/disease/addiction/A = new /datum/disease/addiction
-							A.addicted_to = self
-							A.name = "[self.name] Addiction"
-							A.addiction ="[self.name]"
-							A.cure = self.id
-							M.viruses += A
-							A.affected_mob = M
-							A.holder = M
-				return 1
+					if(method == INGEST && istype(M, /mob/living/carbon))
+						if(prob(1 * self.addictiveness))
+							if(prob(5 * volume))
+								var/datum/disease/addiction/A = new /datum/disease/addiction
+								A.addicted_to = self
+								A.name = "[self.name] Addiction"
+								A.addiction ="[self.name]"
+								A.cure = self.id
+								M.viruses += A
+								A.affected_mob = M
+								A.holder = M
+					return 1
 
 			reaction_obj(var/obj/O, var/volume) //By default we transfer a small part of the reagent to the object
 				src = null						//if it can hold reagents. nope!
@@ -146,10 +147,15 @@ datum
 						else //injected
 							M.contract_disease(D, 1, 0)
 				if(self.data && self.data["virus2"] && istype(M, /mob/living/carbon))//infecting...
-					if(method == TOUCH)
-						infect_virus2(M,self.data["virus2"])
-					else
-						infect_virus2(M,self.data["virus2"],1)
+					var/list/vlist = self.data["virus2"]
+					if (vlist.len)
+						for (var/ID in vlist)
+							var/datum/disease2/disease/V = vlist[ID]
+
+							if(method == TOUCH)
+								infect_virus2(M,V.getcopy())
+							else
+								infect_virus2(M,V.getcopy(),1) //injected, force infection!
 				if(self.data && self.data["antibodies"] && istype(M, /mob/living/carbon))//... and curing
 					var/mob/living/carbon/C = M
 					C.antibodies |= self.data["antibodies"]
@@ -173,6 +179,9 @@ datum
 						var/datum/disease/newVirus = D.Copy(1)
 						blood_prop.viruses += newVirus
 						newVirus.holder = blood_prop
+
+					if(self.data["virus2"])
+						blood_prop.virus2 = virus_copylist(self.data["virus2"])
 
 
 				else if(istype(self.data["donor"], /mob/living/carbon/monkey))
@@ -1467,14 +1476,14 @@ datum
 				var/turf/the_turf = get_turf(O)
 				var/datum/gas_mixture/napalm = new
 				var/datum/gas/volatile_fuel/fuel = new
-				fuel.moles = 5
+				fuel.moles = volume
 				napalm.trace_gases += fuel
 				the_turf.assume_air(napalm)
 			reaction_turf(var/turf/T, var/volume)
 				src = null
 				var/datum/gas_mixture/napalm = new
 				var/datum/gas/volatile_fuel/fuel = new
-				fuel.moles = 5
+				fuel.moles = volume
 				napalm.trace_gases += fuel
 				T.assume_air(napalm)
 				return

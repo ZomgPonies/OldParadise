@@ -32,6 +32,7 @@
 	return 0
 
 
+//if null is passed for def_zone, then this should return something appropriate for all zones (e.g. area effect damage)
 /mob/living/proc/getarmor(var/def_zone, var/type)
 	return 0
 
@@ -53,12 +54,15 @@
 			signaler.signal()
 */
 	var/absorb = run_armor_check(def_zone, P.flag)
-	if(absorb >= 2)
-		P.on_hit(src,2)
-		return 2
+	var/proj_sharp = is_sharp(P)
+	var/proj_edge = has_edge(P)
+	if ((proj_sharp || proj_edge) && prob(getarmor(def_zone, P.flag)))
+		proj_sharp = 0
+		proj_edge = 0
+
 	if(!P.nodamage)
-		apply_damage((P.damage/(absorb+1)), P.damage_type, def_zone, absorb, 0, P)
-	P.on_hit(src, absorb)
+		apply_damage(P.damage, P.damage_type, def_zone, absorb, 0, P, sharp=proj_sharp, edge=proj_edge)
+	P.on_hit(src, absorb, def_zone)
 	if(istype(P, /obj/item/projectile/beam/lightning))
 		if(P.damage >= 200)
 			src.dust()
@@ -77,7 +81,8 @@
 		src.visible_message("\red [src] has been hit by [O].")
 		var/armor = run_armor_check(zone, "melee", "Your armor has protected your [zone].", "Your armor has softened hit to your [zone].")
 		if(armor < 2)
-			apply_damage(O.throwforce*(speed/5), dtype, zone, armor, O.sharp, O)
+			apply_damage(O.throwforce*(speed/5), dtype, zone, armor, O, sharp=is_sharp(O), edge=has_edge(O))
+
 		if(!O.fingerprintslast)
 			return
 
@@ -163,10 +168,13 @@
 	var/oxy=0
 	var/turf/T=loc
 	if(istype(T))
+		if(istype(T,/turf/space))
+			ExtinguishMob() //If there's no oxygen in the tile we're on, put out the fire
+			return 1
 		var/datum/gas_mixture/G = loc.return_air() // Check if we're standing in an oxygenless environment
 		if(G)
 			oxy=G.oxygen
-	if(oxy < 1 || fire_stacks <= 0)
+	if(oxy < 10 || fire_stacks <= 0)
 		ExtinguishMob() //If there's no oxygen in the tile we're on, put out the fire
 		return 1
 	var/turf/location = get_turf(src)

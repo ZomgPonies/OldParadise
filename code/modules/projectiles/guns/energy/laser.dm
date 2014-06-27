@@ -56,8 +56,9 @@ obj/item/weapon/gun/energy/laser/retro
 	if(isrobot(src.loc))
 		var/mob/living/silicon/robot/R = src.loc
 		if(R && R.cell)
-			R.cell.use(100)
+			R.cell.use(500)
 			in_chamber = new/obj/item/projectile/beam(src)
+			fire_delay = 12
 			return 1
 	return 0
 
@@ -96,7 +97,7 @@ obj/item/weapon/gun/energy/laser/retro
 	fire_sound = 'sound/weapons/laser3.ogg'
 	origin_tech = "combat=5;materials=3;magnets=2;syndicate=2"
 	projectile_type = "/obj/item/projectile/beam/xray"
-	charge_cost = 50
+	charge_cost = 500
 
 
 ////////Laser Tag////////////////////

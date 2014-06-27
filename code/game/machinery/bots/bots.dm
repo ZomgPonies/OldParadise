@@ -13,6 +13,7 @@
 	var/brute_dam_coeff = 1.0
 	var/open = 0//Maint panel
 	var/locked = 1
+	var/hacked = 0 //Used to differentiate between being hacked by silicons and emagged by humans.
 	//var/emagged = 0 //Urist: Moving that var to the general /bot tree as it's used by most bots
 
 
@@ -64,7 +65,7 @@
 	if(M.melee_damage_upper == 0)	return
 	src.health -= M.melee_damage_upper
 	src.visible_message("\red <B>[M] has [M.attacktext] [src]!</B>")
-	add_logs(M, src, "attacked", admin=0)
+	add_logs(M, src, "attacked")
 	if(prob(10))
 		new /obj/effect/decal/cleanable/oil(src.loc)
 	healthcheck()

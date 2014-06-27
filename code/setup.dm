@@ -35,19 +35,19 @@
 
 #define TEMPERATURE_DAMAGE_COEFFICIENT 1.5	//This is used in handle_temperature_damage() for humans, and in reagents that affect body temperature. Temperature damage is multiplied by this amount.
 #define BODYTEMP_AUTORECOVERY_DIVISOR 12 //This is the divisor which handles how much of the temperature difference between the current body temperature and 310.15K (optimal temperature) humans auto-regenerate each tick. The higher the number, the slower the recovery. This is applied each tick, so long as the mob is alive.
-#define BODYTEMP_AUTORECOVERY_MINIMUM 10 //Minimum amount of kelvin moved toward 310.15K per tick. So long as abs(310.15 - bodytemp) is more than 50.
+#define BODYTEMP_AUTORECOVERY_MINIMUM 1 //Minimum amount of kelvin moved toward 310.15K per tick. So long as abs(310.15 - bodytemp) is more than 50.
 #define BODYTEMP_COLD_DIVISOR 6 //Similar to the BODYTEMP_AUTORECOVERY_DIVISOR, but this is the divisor which is applied at the stage that follows autorecovery. This is the divisor which comes into play when the human's loc temperature is lower than their body temperature. Make it lower to lose bodytemp faster.
 #define BODYTEMP_HEAT_DIVISOR 6 //Similar to the BODYTEMP_AUTORECOVERY_DIVISOR, but this is the divisor which is applied at the stage that follows autorecovery. This is the divisor which comes into play when the human's loc temperature is higher than their body temperature. Make it lower to gain bodytemp faster.
-#define BODYTEMP_COOLING_MAX 30 //The maximum number of degrees that your body can cool in 1 tick, when in a cold area.
+#define BODYTEMP_COOLING_MAX -30 //The maximum number of degrees that your body can cool in 1 tick, when in a cold area.
 #define BODYTEMP_HEATING_MAX 30 //The maximum number of degrees that your body can heat up in 1 tick, when in a hot area.
 
 #define BODYTEMP_HEAT_DAMAGE_LIMIT 360.15 // The limit the human body can take before it starts taking damage from heat.
 #define BODYTEMP_COLD_DAMAGE_LIMIT 260.15 // The limit the human body can take before it starts taking damage from coldness.
 
 #define SPACE_HELMET_MIN_COLD_PROTECITON_TEMPERATURE 2.0 //what min_cold_protection_temperature is set to for space-helmet quality headwear. MUST NOT BE 0.
-#define SPACE_HELMET_MAX_HEAT_PROTECITON_TEMPERATURE 5000
+#define SPACE_HELMET_MAX_HEAT_PROTECITON_TEMPERATURE 10000
 #define SPACE_SUIT_MIN_COLD_PROTECITON_TEMPERATURE 2.0 //what min_cold_protection_temperature is set to for space-suit quality jumpsuits or suits. MUST NOT BE 0.
-#define SPACE_SUIT_MAX_HEAT_PROTECITON_TEMPERATURE 5000	//These need better heat protect
+#define SPACE_SUIT_MAX_HEAT_PROTECITON_TEMPERATURE 10000	//These need better heat protect
 #define FIRESUIT_MAX_HEAT_PROTECITON_TEMPERATURE 30000 //what max_heat_protection_temperature is set to for firesuit quality headwear. MUST NOT BE 0.
 #define FIRE_HELMET_MAX_HEAT_PROTECITON_TEMPERATURE 30000 //for fire helmet quality items (red and white hardhats)
 #define HELMET_MIN_COLD_PROTECITON_TEMPERATURE 160	//For normal helmets
@@ -656,7 +656,7 @@ var/list/TAGGERLOCATIONS = list("Disposals",
 #define R_BUILDMODE		1
 #define R_ADMIN			2
 #define R_BAN			4
-#define R_FUN			8
+#define R_EVENT			8
 #define R_SERVER		16
 #define R_DEBUG			32
 #define R_POSSESS		64
@@ -667,9 +667,8 @@ var/list/TAGGERLOCATIONS = list("Disposals",
 #define R_SOUNDS		2048
 #define R_SPAWN			4096
 #define R_MOD			8192
-#define R_MENTOR		16384
 
-#define R_MAXPERMISSION 16384 //This holds the maximum value for a permission. It is used in iteration, so keep it updated.
+#define R_MAXPERMISSION 8192 //This holds the maximum value for a permission. It is used in iteration, so keep it updated.
 
 #define R_HOST			65535
 
@@ -688,8 +687,8 @@ var/list/TAGGERLOCATIONS = list("Disposals",
 #define SOUND_ADMINHELP	1
 #define SOUND_MIDI		2
 #define SOUND_AMBIENCE	4
-#define SOUND_LOBBY		8
-#define SOUND_STREAMING 16
+#define SOUND_LOBBY		8 //Removed, can be replaced with any other sound bitflag as needed.
+#define SOUND_STREAMING	16
 
 #define SOUND_DEFAULT (SOUND_ADMINHELP|SOUND_MIDI|SOUND_AMBIENCE|SOUND_LOBBY|SOUND_STREAMING)
 #define TOGGLES_DEFAULT (CHAT_OOC|CHAT_DEAD|CHAT_GHOSTEARS|CHAT_GHOSTSIGHT|CHAT_PRAYER|CHAT_RADIO|CHAT_ATTACKLOGS|CHAT_LOOC)
@@ -814,15 +813,6 @@ var/list/RESTRICTED_CAMERA_NETWORKS = list( //Those networks can only be accesse
 #define WHITELISTED 1  // Language is available if the speaker is whitelisted.
 #define RESTRICTED 2   // Language can only be accquired by spawning or an admin.
 
-
-//computer3 error codes, move lower in the file when it passes dev -Sayu
-#define PROG_CRASH      1  // Generic crash
-#define MISSING_PERIPHERAL  2  // Missing hardware
-#define BUSTED_ASS_COMPUTER  4  // Self-perpetuating error.  BAC will continue to crash forever.
-#define MISSING_PROGRAM    8  // Some files try to automatically launch a program.  This is that failing.
-#define FILE_DRM      16  // Some files want to not be copied/moved.  This is them complaining that you tried.
-#define NETWORK_FAILURE  32
-
 //Flags for zone sleeping
 #define ZONE_ACTIVE 1
 #define ZONE_SLEEPING 0
@@ -857,3 +847,43 @@ var/list/RESTRICTED_CAMERA_NETWORKS = list( //Those networks can only be accesse
 #define COLOR_YELLOW 	"#FFFF00"
 #define COLOR_ORANGE 	"#FF9900"
 #define COLOR_WHITE 	"#FFFFFF"
+
+
+
+/*
+	Shuttles
+*/
+
+// these define the time taken for the shuttle to get to SS13
+// and the time before it leaves again
+#define SHUTTLE_PREPTIME 				300	// 5 minutes = 300 seconds - after this time, the shuttle departs centcom and cannot be recalled
+#define SHUTTLE_LEAVETIME 				180	// 3 minutes = 180 seconds - the duration for which the shuttle will wait at the station after arriving
+#define SHUTTLE_TRANSIT_DURATION		300	// 5 minutes = 300 seconds - how long it takes for the shuttle to get to the station
+#define SHUTTLE_TRANSIT_DURATION_RETURN 120	// 2 minutes = 120 seconds - for some reason it takes less time to come back, go figure.
+
+//Shuttle moving status
+#define SHUTTLE_IDLE		0
+#define SHUTTLE_WARMUP		1
+#define SHUTTLE_INTRANSIT	2
+
+//Germs and infection
+#define GERM_LEVEL_AMBIENT		110		//maximum germ level you can reach by standing still
+#define GERM_LEVEL_MOVE_CAP		200		//maximum germ level you can reach by running around
+
+#define INFECTION_LEVEL_ONE		100
+#define INFECTION_LEVEL_TWO		500
+#define INFECTION_LEVEL_THREE	1000
+
+//computer3 error codes, move lower in the file when it passes dev -Sayu
+ #define PROG_CRASH      1  // Generic crash
+ #define MISSING_PERIPHERAL  2  // Missing hardware
+ #define BUSTED_ASS_COMPUTER  4  // Self-perpetuating error.  BAC will continue to crash forever.
+ #define MISSING_PROGRAM    8  // Some files try to automatically launch a program.  This is that failing.
+ #define FILE_DRM      16  // Some files want to not be copied/moved.  This is them complaining that you tried.
+ #define NETWORK_FAILURE  32
+
+//Ferry shuttle processing status
+#define IDLE_STATE		0
+#define WAIT_LAUNCH		1
+#define WAIT_ARRIVE		2
+#define WAIT_FINISH		3

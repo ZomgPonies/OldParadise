@@ -35,14 +35,14 @@
 	usr << "You will [(prefs.toggles & CHAT_RADIO) ? "now" : "no longer"] see radio chatter from radios or speakers"
 	feedback_add_details("admin_verb","THR") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
-/client/proc/toggleadminhelpsound()
+/client/verb/toggleadminhelpsound()
 	set name = "Hear/Silence Adminhelps"
 	set category = "Preferences"
 	set desc = "Toggle hearing a notification when admin PMs are recieved"
 	if(!holder)	return
 	prefs.sound ^= SOUND_ADMINHELP
 	prefs.save_preferences(src)
-	usr << "You will [(prefs.toggles & SOUND_ADMINHELP) ? "now" : "no longer"] hear a sound when adminhelps arrive."
+	usr << "You will [(prefs.sound & SOUND_ADMINHELP) ? "now" : "no longer"] hear a sound when adminhelps arrive."
 	feedback_add_details("admin_verb","AHS") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
 /client/verb/deadchat() // Deadchat toggle is usable by anyone.
@@ -68,32 +68,6 @@
 	src << "You will [(prefs.toggles & CHAT_PRAYER) ? "now" : "no longer"] see prayerchat."
 	feedback_add_details("admin_verb","TP") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
-/client/verb/toggletitlemusic()
-	set name = "Hear/Silence LobbyMusic"
-	set category = "Preferences"
-	set desc = "Toggles hearing the GameLobby music"
-	prefs.sound ^= SOUND_LOBBY
-	prefs.save_preferences(src)
-	if(prefs.sound & SOUND_LOBBY)
-		src << "You will now hear music in the game lobby."
-		if(istype(mob, /mob/new_player))
-			playtitlemusic()
-	else
-		src << "You will no longer hear music in the game lobby."
-		if(istype(mob, /mob/new_player))
-			src << sound(null, repeat = 0, wait = 0, volume = 85, channel = 1) // stop the jamsz
-	feedback_add_details("admin_verb","TLobby") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
-
-/*
-/client/verb/togglevoices()
-	set name = "Toggle player voices"
-	set category = "Preferences"
-	set desc = "Toggle hearing player voice sounds"
-	prefs.sound ^= SOUND_VOICES
-	prefs.save_preferences()
-	src << "You will [(prefs.sound & SOUND_VOICES) ? "now" : "no longer"] hear voices of players around you, or your own voice."
-	feedback_add_details("admin_verb","TVoice") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
-*/
 
 /client/verb/togglemidis()
 	set name = "Hear/Silence Midis"
@@ -198,7 +172,8 @@
 
 	prefs.sound ^= SOUND_STREAMING
 	prefs.save_preferences(src)
-	usr << "You will [(prefs.toggles & SOUND_STREAMING) ? "now" : "no longer"] hear streamed media."
+	usr << "You will [(prefs.sound & SOUND_STREAMING) ? "now" : "no longer"] hear streamed media."
 	// Restart.
-	media.stop_music()
-	media.update_music()
+	if(media)
+		media.stop_music()
+		media.update_music()

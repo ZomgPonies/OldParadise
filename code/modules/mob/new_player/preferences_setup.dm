@@ -210,18 +210,18 @@ datum/preferences
 		preview_icon.Blend(new /icon(icobase, "groin_[g]"), ICON_OVERLAY)
 		preview_icon.Blend(new /icon(icobase, "head_[g]"), ICON_OVERLAY)
 
-		for(var/name in list("l_arm","r_arm","l_leg","r_leg","l_foot","r_foot","l_hand","r_hand"))
-			// make sure the organ is added to the list so it's drawn
-			if(organ_data[name] == null)
-				organ_data[name] = null
-
-		for(var/name in organ_data)
+		for(var/name in list("r_arm","r_hand","r_leg","r_foot","l_leg","l_foot","l_arm","l_hand"))
 			if(organ_data[name] == "amputated") continue
 
 			var/icon/temp = new /icon(icobase, "[name]")
 			if(organ_data[name] == "cyborg")
 				temp.MapColors(rgb(77,77,77), rgb(150,150,150), rgb(28,28,28), rgb(0,0,0))
 
+			preview_icon.Blend(temp, ICON_OVERLAY)
+
+		//Tail
+		if(current_species && (current_species.flags & HAS_TAIL))
+			var/icon/temp = new/icon("icon" = 'icons/effects/species.dmi', "icon_state" = "[current_species.tail]_s")
 			preview_icon.Blend(temp, ICON_OVERLAY)
 
 		// Skin color
@@ -262,7 +262,7 @@ datum/preferences
 		var/uniform_dmi='icons/mob/uniform.dmi'
 		if(disabilities&DISABILITY_FLAG_FAT)
 			uniform_dmi='icons/mob/uniform_fat.dmi'
-		if(job_civilian_low & ASSISTANT)//This gives the preview icon clothes depending on which job(if any) is set to 'high'
+		if(job_support_low & ASSISTANT)//This gives the preview icon clothes depending on which job(if any) is set to 'high'
 			clothes_s = new /icon(uniform_dmi, "grey_s")
 			clothes_s.Blend(new /icon('icons/mob/feet.dmi', "black"), ICON_UNDERLAY)
 			if(backbag == 2)
@@ -270,8 +270,8 @@ datum/preferences
 			else if(backbag == 3 || backbag == 4)
 				clothes_s.Blend(new /icon('icons/mob/back.dmi', "satchel"), ICON_OVERLAY)
 
-		else if(job_civilian_high)//I hate how this looks, but there's no reason to go through this switch if it's empty
-			switch(job_civilian_high)
+		else if(job_support_high)//I hate how this looks, but there's no reason to go through this switch if it's empty
+			switch(job_support_high)
 				if(HOP)
 					clothes_s = new /icon(uniform_dmi, "hop_s")
 					clothes_s.Blend(new /icon('icons/mob/feet.dmi', "brown"), ICON_UNDERLAY)

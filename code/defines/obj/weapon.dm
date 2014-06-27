@@ -283,6 +283,7 @@
 	icon = 'icons/obj/shards.dmi'
 	icon_state = "large"
 	sharp = 1
+	edge = 1
 	desc = "Could probably be used as ... a throwing weapon?"
 	w_class = 1.0
 	force = 5.0
@@ -518,6 +519,8 @@
 	icon_state = "hatchet"
 	flags = FPRINT | TABLEPASS | CONDUCT
 	force = 12.0
+	sharp = 1
+	edge = 1
 	w_class = 2.0
 	throwforce = 15.0
 	throw_speed = 4
@@ -540,6 +543,8 @@
 	desc = "A sharp and curved blade on a long fibremetal handle, this tool makes it easy to reap what you sow."
 	force = 13.0
 	throwforce = 5.0
+	sharp = 1
+	edge = 1
 	throw_speed = 1
 	throw_range = 3
 	w_class = 4.0
@@ -873,3 +878,23 @@ proc
             result.Insert(temp, "[angle]")
 
         return result*/
+
+
+/obj/item/weapon/fan
+	name = "desk fan"
+	icon = 'icons/obj/decorations.dmi'
+	icon_state = "fan"
+	desc = "A smal desktop fan. Button seems to be stuck in the 'on' position."
+
+/obj/item/weapon/newton
+	name = "newton cradle"
+	icon = 'icons/obj/decorations.dmi'
+	icon_state = "newton"
+	desc = "A device bored paper pushers use to remind themselves that the time did not stop yet. Contains gravity."
+
+/obj/item/weapon/balltoy
+	name = "ball toy"
+	icon = 'icons/obj/decorations.dmi'
+	icon_state = "rollball"
+	desc = "A device bored paper pushers use to remind themselves that the time did not stop yet."
+

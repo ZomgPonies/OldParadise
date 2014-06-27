@@ -55,6 +55,7 @@
 		CB = magazine.get_round(0)
 		chambered = null
 		CB.loc = get_turf(src.loc)
+		CB.SpinAnimation(10, 1)
 		CB.update_icon()
 		num_unloaded++
 	if (num_unloaded)
@@ -235,7 +236,7 @@
 				playsound(user, fire_sound, 50, 1)
 				user.visible_message("<span class='danger'>[user.name] fires [src] at \his head!</span>", "<span class='danger'>You fire [src] at your head!</span>", "You hear a [istype(in_chamber, /obj/item/projectile/beam) ? "laser blast" : "gunshot"]!")
 				if(!P.nodamage)
-					user.apply_damage(300, BRUTE, affecting) // You are dead, dead, dead.
+					user.apply_damage(300, BRUTE, affecting, sharp=1) // You are dead, dead, dead.
 				return
 
 	spun = 0

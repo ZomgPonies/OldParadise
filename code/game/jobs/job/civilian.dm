@@ -2,14 +2,14 @@
 /datum/job/bartender
 	title = "Bartender"
 	flag = BARTENDER
-	department_flag = CIVILIAN
+	department_flag = SUPPORT
 	faction = "Station"
 	total_positions = 1
 	spawn_positions = 1
 	supervisors = "the head of personnel"
 	selection_color = "#dddddd"
-	access = list(access_hydroponics, access_bar, access_kitchen, access_morgue)
-	minimal_access = list(access_bar, access_maint_tunnels)
+	access = list(access_hydroponics, access_bar, access_kitchen, access_morgue, access_weapons)
+	minimal_access = list(access_bar, access_maint_tunnels, access_weapons)
 
 
 	equip(var/mob/living/carbon/human/H)
@@ -48,7 +48,7 @@
 /datum/job/chef
 	title = "Chef"
 	flag = CHEF
-	department_flag = CIVILIAN
+	department_flag = SUPPORT
 	faction = "Station"
 	total_positions = 1
 	spawn_positions = 1
@@ -77,7 +77,7 @@
 /datum/job/hydro
 	title = "Botanist"
 	flag = BOTANIST
-	department_flag = CIVILIAN
+	department_flag = SUPPORT
 	faction = "Station"
 	total_positions = 3
 	spawn_positions = 2
@@ -90,16 +90,18 @@
 
 	equip(var/mob/living/carbon/human/H)
 		if(!H)	return 0
-		H.equip_or_collect(new /obj/item/clothing/under/rank/hydroponics(H), slot_w_uniform)
-		H.equip_or_collect(new /obj/item/clothing/shoes/black(H), slot_shoes)
-		H.equip_or_collect(new /obj/item/clothing/gloves/botanic_leather(H), slot_gloves)
-		H.equip_or_collect(new /obj/item/clothing/suit/apron(H), slot_wear_suit)
-		H.equip_or_collect(new /obj/item/device/analyzer/plant_analyzer(H), slot_s_store)
-		H.equip_or_collect(new /obj/item/device/pda/botanist(H), slot_wear_pda)
-		if(H.backbag == 1)
-			H.equip_or_collect(new /obj/item/weapon/storage/box/survival(H), slot_r_hand)
-		else
-			H.equip_or_collect(new /obj/item/weapon/storage/box/survival(H.back), slot_in_backpack)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/rank/hydroponics(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/black(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/gloves/botanic_leather(H), slot_gloves)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/apron(H), slot_wear_suit)
+		H.equip_to_slot_or_del(new /obj/item/device/analyzer/plant_analyzer(H), slot_s_store)
+		H.equip_to_slot_or_del(new /obj/item/device/pda/botanist(H), slot_belt)
+		switch(H.backbag)
+			if(1) H.equip_to_slot_or_del(new /obj/item/weapon/storage/box/survival(H), slot_r_hand)
+			if(2) H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack(H), slot_back)
+			if(3) H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/satchel_hyd(H), slot_back)
+			if(4) H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/satchel(H), slot_back)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/box/survival(H.back), slot_in_backpack)
 		return 1
 
 
@@ -108,7 +110,7 @@
 /datum/job/qm
 	title = "Quartermaster"
 	flag = QUARTERMASTER
-	department_flag = CIVILIAN
+	department_flag = SUPPORT
 	faction = "Station"
 	total_positions = 1
 	spawn_positions = 1
@@ -138,7 +140,7 @@
 /datum/job/cargo_tech
 	title = "Cargo Technician"
 	flag = CARGOTECH
-	department_flag = CIVILIAN
+	department_flag = SUPPORT
 	faction = "Station"
 	total_positions = 2
 	spawn_positions = 2
@@ -166,7 +168,7 @@
 /datum/job/mining
 	title = "Shaft Miner"
 	flag = MINER
-	department_flag = CIVILIAN
+	department_flag = SUPPORT
 	faction = "Station"
 	total_positions = 3
 	spawn_positions = 3
@@ -205,7 +207,7 @@
 /datum/job/clown
 	title = "Clown"
 	flag = CLOWN
-	department_flag = CIVILIAN
+	department_flag = SUPPORT
 	faction = "Station"
 	total_positions = 1
 	spawn_positions = 1
@@ -242,7 +244,7 @@
 /datum/job/mime
 	title = "Mime"
 	flag = MIME
-	department_flag = CIVILIAN
+	department_flag = SUPPORT
 	faction = "Station"
 	total_positions = 1
 	spawn_positions = 1
@@ -287,7 +289,7 @@
 /datum/job/janitor
 	title = "Janitor"
 	flag = JANITOR
-	department_flag = CIVILIAN
+	department_flag = SUPPORT
 	faction = "Station"
 	total_positions = 1
 	spawn_positions = 1
@@ -316,7 +318,7 @@
 /datum/job/librarian
 	title = "Librarian"
 	flag = LIBRARIAN
-	department_flag = CIVILIAN
+	department_flag = SUPPORT
 	faction = "Station"
 	total_positions = 1
 	spawn_positions = 1
@@ -339,49 +341,6 @@
 		else
 			H.equip_or_collect(new /obj/item/weapon/storage/box/survival(H.back), slot_in_backpack)
 		return 1
-
-
-
-//var/global/lawyer = 0//Checks for another lawyer //This changed clothes on 2nd lawyer, both IA get the same dreds.
-/datum/job/lawyer
-	title = "Internal Affairs Agent"
-	flag = LAWYER
-	department_flag = CIVILIAN
-	faction = "Station"
-	total_positions = 2
-	spawn_positions = 2
-	supervisors = "the captain"
-	selection_color = "#dddddd"
-	access = list(access_lawyer, access_court, access_sec_doors, access_maint_tunnels)
-	minimal_access = list(access_lawyer, access_court, access_sec_doors, access_maint_tunnels)
-	alt_titles = list("Lawyer","Public Defender")
-
-	equip(var/mob/living/carbon/human/H)
-		if(!H)	return 0
-		H.equip_or_collect(new /obj/item/device/radio/headset/headset_sec(H), slot_l_ear)
-		switch(H.backbag)
-			if(2) H.equip_or_collect(new /obj/item/weapon/storage/backpack(H), slot_back)
-			if(3) H.equip_or_collect(new /obj/item/weapon/storage/backpack/satchel_norm(H), slot_back)
-			if(4) H.equip_or_collect(new /obj/item/weapon/storage/backpack/satchel(H), slot_back)
-		H.equip_or_collect(new /obj/item/clothing/under/rank/internalaffairs(H), slot_w_uniform)
-		H.equip_or_collect(new /obj/item/clothing/suit/storage/internalaffairs(H), slot_wear_suit)
-		H.equip_or_collect(new /obj/item/clothing/shoes/brown(H), slot_shoes)
-		H.equip_or_collect(new /obj/item/clothing/glasses/sunglasses/big(H), slot_glasses)
-		H.equip_or_collect(new /obj/item/device/pda/lawyer(H), slot_wear_pda)
-		H.equip_or_collect(new /obj/item/weapon/storage/briefcase(H), slot_l_hand)
-		H.equip_or_collect(new /obj/item/device/laser_pointer(H), slot_l_store)
-		if(H.backbag == 1)
-			H.equip_or_collect(new /obj/item/weapon/storage/box/survival(H), slot_r_hand)
-		else
-			H.equip_or_collect(new /obj/item/weapon/storage/box/survival(H.back), slot_in_backpack)
-		var/obj/item/weapon/implant/loyalty/L = new/obj/item/weapon/implant/loyalty(H)
-		L.imp_in = H
-		L.implanted = 1
-		var/datum/organ/external/affected = H.organs_by_name["head"]
-		affected.implants += L
-		L.part = affected
-		return 1
-
 
 /datum/job/barber
 	title = "Barber"

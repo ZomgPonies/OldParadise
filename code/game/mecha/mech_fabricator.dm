@@ -91,7 +91,7 @@
 						/obj/item/mecha_parts/part/durand_right_arm,
 						/obj/item/mecha_parts/part/durand_left_leg,
 						/obj/item/mecha_parts/part/durand_right_leg,
-						/obj/item/mecha_parts/part/durand_armour
+						/obj/item/mecha_parts/part/durand_armor
 					),
 	"H.O.N.K"=list(
 						/obj/item/mecha_parts/chassis/honker,
@@ -205,16 +205,6 @@
 	M << "<font color='red'>You don't have required permissions to use [src]</font>"
 	return 0
 
-/obj/machinery/mecha_part_fabricator/check_access(obj/item/weapon/card/id/I)
-	if(istype(I, /obj/item/device/pda))
-		var/obj/item/device/pda/pda = I
-		I = pda.id
-	if(!istype(I) || !I.access) //not ID or no access
-		return 0
-	for(var/req in req_access)
-		if(!(req in I.access)) //doesn't have this access
-			return 0
-	return 1
 
 /obj/machinery/mecha_part_fabricator/proc/emag()
 	sleep()

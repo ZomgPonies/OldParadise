@@ -61,6 +61,12 @@ mineral/silver
 	spread_chance = 10
 	ore = /obj/item/weapon/ore/silver
 
+mineral/platinum
+	name = "Platinum"
+	result_amount = 5
+	spread_chance = 10
+	ore = /obj/item/weapon/ore/osmium
+
 mineral/plasma
 	name = "Plasma"
 	result_amount = 5
@@ -74,17 +80,18 @@ mineral/clown
 	spread = 0
 	ore = /obj/item/weapon/ore/clown
 
-mineral/gibtonite
-	display_name = "Gibtonite"
-	name = "Gibtonite"
-	result_amount = 1
+mineral/coal
+	name = "Coal"
+	result_amount = 5
+	spread_chance = 25
+	ore = /obj/item/weapon/ore/coal
+
+mineral/hydrogen
+	name = "Hydrogen"
+	result_amount = 5
 	spread_chance = 10
-	ore = /obj/item/weapon/twohanded/required/gibtonite
-	UpdateTurf(var/turf/T)
-		if(!istype(T,/turf/simulated/mineral/gibtonite))
-			T.ChangeTurf(/turf/simulated/mineral/gibtonite)
-		else
-			..()
+	ore = /obj/item/weapon/ore/coal
+
 
 mineral/cave
 	display_name = "Cave"

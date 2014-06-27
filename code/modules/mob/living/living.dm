@@ -431,7 +431,8 @@
 	else
 		stop_pulling()
 		. = ..()
-	if ((s_active && !( s_active in contents ) ))
+
+	if (s_active && !( s_active in contents ) && get_turf(s_active) != get_turf(src))	//check !( s_active in contents ) first so we hopefully don't have to call get_turf() so much.
 		s_active.close(src)
 
 	if(update_slimes)
@@ -705,3 +706,16 @@
 						CM.drop_from_inventory(CM.legcuffed)
 						CM.legcuffed = null
 						CM.update_inv_legcuffed()
+
+/mob/living/update_gravity(has_gravity)
+	if(!ticker)
+		return
+	float(!has_gravity)
+
+/mob/living/proc/float(on)
+	if(on && !floating)
+		animate(src, pixel_y = 2, time = 10, loop = -1)
+		floating = 1
+	else if(!on && floating)
+		animate(src, pixel_y = initial(pixel_y), time = 10)
+		floating = 0

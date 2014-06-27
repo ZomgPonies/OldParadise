@@ -3,6 +3,12 @@
 	update_hud()
 	return
 
+/mob/living/carbon/Life()
+	..()
+
+	// Increase germ_level regularly
+	if(germ_level < GERM_LEVEL_AMBIENT && prob(80))	//if you're just standing there, you shouldn't get more germs beyond an ambient level
+		germ_level++
 
 /mob/living/carbon/Move(NewLoc, direct)
 	. = ..()
@@ -13,6 +19,10 @@
 				src.nutrition -= HUNGER_FACTOR/10
 		if((M_FAT in src.mutations) && src.m_intent == "run" && src.bodytemperature <= 360)
 			src.bodytemperature += 2
+
+		// Moving around increases germ_level faster
+		if(germ_level < GERM_LEVEL_MOVE_CAP && prob(8))
+			germ_level++
 
 /mob/living/carbon/relaymove(var/mob/user, direction)
 	if(user in src.stomach_contents)
@@ -347,12 +357,14 @@
 		throw_mode_on()
 
 /mob/living/carbon/proc/throw_mode_off()
-	in_throw_mode = 0
-	throw_icon.icon_state = "act_throw_off"
+	src.in_throw_mode = 0
+	if(src.throw_icon) //in case we don't have the HUD and we use the hotkey
+		src.throw_icon.icon_state = "act_throw_off"
 
 /mob/living/carbon/proc/throw_mode_on()
-	in_throw_mode = 1
-	throw_icon.icon_state = "act_throw_on"
+	src.in_throw_mode = 1
+	if(src.throw_icon)
+		src.throw_icon.icon_state = "act_throw_on"
 
 /mob/proc/throw_item(atom/target)
 	return
@@ -566,3 +578,9 @@
 	else
 		src << "You do not have enough chemicals stored to reproduce."
 		return
+
+/mob/living/carbon/proc/assess_threat()
+	return
+
+/mob/living/carbon/proc/canBeHandcuffed()
+	return 0

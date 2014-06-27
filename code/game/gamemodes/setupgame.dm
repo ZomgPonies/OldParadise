@@ -11,7 +11,7 @@
 	assigned_blocks[assigned]=name
 	dna_activity_bounds[assigned]=activity_bounds
 	//Debug message_admins("[name] assigned to block #[assigned].")
-	testing("[name] assigned to block #[assigned].")
+//	testing("[name] assigned to block #[assigned].")
 	return assigned
 
 /proc/setupgenetics()
@@ -30,7 +30,7 @@
 	for(var/i=1;i<DNA_SE_LENGTH;i++)
 		numsToAssign += i
 
-	testing("Assigning DNA blocks:")
+//	testing("Assigning DNA blocks:")
 	//message_admins("Assigning DNA blocks:")
 
 	// Standard muts
@@ -114,7 +114,7 @@
 			blocks_assigned[G.block]=assignedToBlock
 			//testing("DNA2: Gene [G.name] assigned to block [G.block].")
 
-	testing("DNA2: [numsToAssign.len] blocks are unused: [english_list(numsToAssign)]")
+//	testing("DNA2: [numsToAssign.len] blocks are unused: [english_list(numsToAssign)]")
 
 // Run AFTER genetics setup and AFTER species setup.
 /proc/setup_species()
