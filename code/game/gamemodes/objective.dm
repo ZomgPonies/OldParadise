@@ -228,7 +228,7 @@ datum/objective/anti_revolution/demote
 
 			if(!istype(I)) return 1
 
-			if(I.assignment == "Civilian")
+			if(I.assignment == "Assistant")
 				return 1
 			else
 				return 0
