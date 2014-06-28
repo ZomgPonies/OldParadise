@@ -29,7 +29,6 @@
 					<A href='?src=\ref[src];secretsadmin=manifest'>Show Crew Manifest</A><BR>
 					<A href='?src=\ref[src];secretsadmin=DNA'>List DNA (Blood)</A><BR>
 					<A href='?src=\ref[src];secretsadmin=fingerprints'>List Fingerprints</A><BR><BR>
-					<A href='?src=\ref[src];secretsfun=moveshuttle'>Move a shuttle</A><BR>
 					<A href='?src=\ref[src];secretsfun=blackout'>Break all lights</A><BR>
 					<A href='?src=\ref[src];secretsfun=whiteout'>Fix all lights</A><BR>
 					<A href='?src=\ref[src];secretsfun=floorlava'>The floor is lava! (DANGEROUS: extremely lame)</A><BR>
@@ -61,11 +60,10 @@
 					<BR>
 					"}
 		if (1)
-			if(check_rights(R_FUN,0))
+			if(check_rights((R_EVENT|R_SERVER),0))
 				dat += {"
 					<B>'Random' Events</B><BR>
 					<BR>
-					<A href='?src=\ref[src];secretsfun=gravity'>Toggle station artificial gravity</A><BR>
 					<A href='?src=\ref[src];secretsfun=wave'>Spawn a wave of meteors (aka lagocolyptic shower)</A><BR>
 					<A href='?src=\ref[src];secretsfun=blackhole'>Spawn a vortex anomaly</A><BR>
 					<A href='?src=\ref[src];secretsfun=gravanomalies'>Spawn a gravitational anomaly</A><BR>
@@ -92,13 +90,18 @@
 					<A href='?src=\ref[src];secretsfun=ionstorm'>Spawn an Ion Storm</A><BR>
 					<A href='?src=\ref[src];secretsfun=spacevines'>Spawn Space-Vines</A><BR>
 					<A href='?src=\ref[src];secretsfun=comms_blackout'>Trigger a communication blackout</A><BR>
+					<BR>
+					<A href='?src=\ref[src];secretsfun=launchshuttle'>Launch a shuttle</A><BR>
+					<A href='?src=\ref[src];secretsfun=forcelaunchshuttle'>Force launch a shuttle</A><BR>
+					<A href='?src=\ref[src];secretsfun=jumpshuttle'>Jump a shuttle</A><BR>
+					<A href='?src=\ref[src];secretsfun=moveshuttle'>Move a shuttle</A><BR>
 					<BR>"}
 
 
 
 
 		if (2)
-			if(check_rights(R_FUN,0))
+			if(check_rights((R_SERVER|R_EVENT),0))
 				dat += {"
 					<B>Fun Secrets</B><BR>
 					<BR>

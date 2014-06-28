@@ -17,9 +17,10 @@ var/global/nologevent = 0
 		var/rendered = "<span class=\"admin\"><span class=\"prefix\">ATTACK:</span> <span class=\"message\">[text]</span></span>"
 		for(var/client/C in admins)
 			if(R_ADMIN & C.holder.rights)
-				if(!istype(C, /mob/living))
-					var/msg = rendered
-					C << msg
+				if(C.prefs.toggles & CHAT_ATTACKLOGS)
+					if(!istype(C, /mob/living))
+						var/msg = rendered
+						C << msg
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////Panels
@@ -293,7 +294,7 @@ var/global/nologevent = 0
 
 
 /datum/admins/proc/access_news_network() //MARKER
-	set category = "Fun"
+	set category = "Event"
 	set name = "Access Newscaster Network"
 	set desc = "Allows you to view, add and edit news feeds."
 
@@ -693,7 +694,7 @@ var/global/nologevent = 0
 	feedback_add_details("admin_verb","TE") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
 /datum/admins/proc/toggleAI()
-	set category = "Server"
+	set category = "Event"
 	set desc="People can't be AI"
 	set name="Toggle AI"
 	config.allow_ai = !( config.allow_ai )
@@ -720,7 +721,7 @@ var/global/nologevent = 0
 	feedback_add_details("admin_verb","TR") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
 /datum/admins/proc/toggle_aliens()
-	set category = "Server"
+	set category = "Event"
 	set desc="Toggle alien mobs"
 	set name="Toggle Aliens"
 	aliens_allowed = !aliens_allowed
@@ -730,7 +731,7 @@ var/global/nologevent = 0
 
 
 /datum/admins/proc/toggle_space_ninja()
-	set category = "Server"
+	set category = "Event"
 	set desc="Toggle space ninjas spawning."
 	set name="Toggle Space Ninjas"
 	toggle_space_ninja = !toggle_space_ninja

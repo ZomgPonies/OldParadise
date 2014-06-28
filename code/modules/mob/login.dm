@@ -56,8 +56,7 @@
 		if(H.species && H.species.abilities)
 			client.verbs |= H.species.abilities
 
-	nanomanager.send_resources(client)
-
 	CallHook("Login", list("client" = src.client, "mob" = src))
 
+	update_music()
 

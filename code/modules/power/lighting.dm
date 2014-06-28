@@ -219,6 +219,18 @@
 	desc = "A small lighting fixture."
 	light_type = /obj/item/weapon/light/bulb
 
+// the desk lamps are a bit special
+/obj/machinery/light/small/lamp
+	name = "desk lamp"
+	icon_state = "lamp1"
+	base_state = "lamp"
+	desc = "A desk lamp with an adjustable mount."
+
+// green-shaded desk lamp
+/obj/machinery/light/small/lamp/green
+	desc = "A classic green-shaded desk lamp."
+	icon_state = "lampgreen1"
+	base_state = "lampgreen"
 
 /obj/machinery/light/spot
 	name = "spotlight"
@@ -619,7 +631,7 @@
 
 // called when on fire
 
-/obj/machinery/light/temperature_expose(datum/gas_mixture/air, exposed_temperature, exposed_volume)
+/obj/machinery/light/fire_act(datum/gas_mixture/air, exposed_temperature, exposed_volume)
 	if(prob(max(0, exposed_temperature - 673)))   //0% at <400C, 100% at >500C
 		broken()
 

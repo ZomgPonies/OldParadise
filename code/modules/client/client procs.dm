@@ -329,10 +329,9 @@
 
 	send_resources()
 
-/*
-	if(prefs.lastchangelog != changelog_hash) //bolds the changelog button on the interface so we know there are updates.
-		winset(src, "rpane.changelog", "background-color=#eaeaea;font-style=bold")
-*/
+	nanomanager.send_resources(src)
+
+	media.update_music()
 
 	//////////////
 	//DISCONNECT//

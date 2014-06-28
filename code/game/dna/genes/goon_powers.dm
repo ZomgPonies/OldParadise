@@ -56,7 +56,7 @@
 		if(!istype(T))
 			return
 		if(T.lighting_lumcount <= 2)
-			M.alpha -= 25
+			M.alpha = round(255 * 1.15)
 		else
 			M.alpha = round(255 * 0.80)
 
@@ -170,6 +170,7 @@
 		C.ExtinguishMob()
 
 		C.visible_message("\red A cloud of fine ice crystals engulfs [C]!")
+		log_admin("[ckey(usr.key)] has used cryokinesis on [ckey(C.key)].")
 
 	//playsound(usr.loc, 'bamf.ogg', 50, 0)
 

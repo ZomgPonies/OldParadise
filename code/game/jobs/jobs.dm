@@ -28,7 +28,7 @@ var/const/XENOBIOLOGIST		=(1<<9)
 var/const/PARAMEDIC			=(1<<10)
 
 
-var/const/CIVILIAN			=(1<<2)
+var/const/SUPPORT			=(1<<2)
 
 var/const/HOP				=(1<<0)
 var/const/BARTENDER			=(1<<1)
@@ -43,7 +43,7 @@ var/const/LAWYER			=(1<<9)
 var/const/CHAPLAIN			=(1<<10)
 var/const/CLOWN				=(1<<11)
 var/const/MIME				=(1<<12)
-var/const/ASSISTANT			=(1<<13)
+var/const/CIVILIAN			=(1<<13)
 
 
 var/const/KARMA				=(1<<3)
@@ -55,6 +55,7 @@ var/const/BARBER			=(1<<3)
 var/const/MECHANIC			=(1<<4)
 var/const/BRIGDOC			=(1<<5)
 var/const/JUDGE				=(1<<6)
+
 
 var/list/assistant_occupations = list(
 )
@@ -98,7 +99,7 @@ var/list/science_positions = list(
 )
 
 //BS12 EDIT
-var/list/civilian_positions = list(
+var/list/support_positions = list(
 	"Head of Personnel",
 	"Bartender",
 	"Botanist",
@@ -110,12 +111,10 @@ var/list/civilian_positions = list(
 	"Shaft Miner",
 	"Internal Affairs Agent",
 	"Chaplain",
-	"Assistant",
 	"Clown",
 	"Mime",
 	"Barber",
 	"Magistrate"
-
 )
 
 
@@ -129,6 +128,10 @@ var/list/security_positions = list(
 	"Brig Physician"
 )
 
+
+var/list/civilian_positions = list(
+	"Civilian"
+)
 
 var/list/nonhuman_positions = list(
 	"AI",
@@ -145,6 +148,7 @@ var/list/whitelisted_positions = list(
 	"Brig Physician",
 	"Magistrate"
 )
+
 
 /proc/guest_jobbans(var/job)
 	return (job in whitelisted_positions)

@@ -279,7 +279,7 @@
 	activate(var/mob/living/carbon/mob,var/multiplier)
 		mob.emote("me",1,pick("sniffles...", "clears their throat..."))
 
-
+/* commented out for now, fuck spiders
 /datum/disease2/effect/spider
 	name = "Arachnogenesis Effect"
 	stage = 4
@@ -290,7 +290,7 @@
 		new /obj/effect/spider/spiderling(placemob)
 		mob.emote("me",1,"vomits up a live spider!")
 
-
+*/
 
 /datum/disease2/effect/orbweapon
 	name = "Biolobulin Effect"
@@ -785,7 +785,7 @@ var/list/compatible_mobs = list(/mob/living/carbon/human, /mob/living/carbon/mon
 	name = "Watery Eyes"
 	stage = 1
 	activate(var/mob/living/carbon/mob,var/multiplier)
-		mob << "<span class='warning'Your eyes sting and water!</span>"
+		mob << "<span class='warning'>Your eyes sting and water!</span>"
 
 /datum/disease2/effect/wheeze
 	name = "Wheezing"

@@ -71,6 +71,10 @@
 /var/const/access_salvage_captain = 69 // Salvage ship captain's quarters
 /var/const/access_mechanic = 70
 
+
+
+/var/const/access_weapons = 99 //Weapon authorization for secbots
+
 	//BEGIN CENTCOM ACCESS
 	/*Should leave plenty of room if we need to add more access levels.
 /var/const/Mostly for admin fun times.*/
@@ -83,6 +87,17 @@
 /var/const/access_cent_teleporter = 107//Teleporter.
 /var/const/access_cent_creed = 108//Creed's office.
 /var/const/access_cent_captain = 109//Captain's office/ID comp/AI.
+
+	//EMBASSIES
+
+/var/const/embassy_tajaran = 120
+/var/const/embassy_skrell = 121
+/var/const/embassy_unathi = 122
+/var/const/embassy_diona = 123
+/var/const/embassy_kidan = 124
+/var/const/embassy_slime = 125
+/var/const/embassy_grey = 126
+/var/const/embassy_vox = 127
 
 	//The Syndicate
 /var/const/access_syndicate = 150//General Syndicate Access
@@ -208,7 +223,7 @@
 	            access_hydroponics, access_library, access_lawyer, access_virology, access_psychiatrist, access_cmo, access_qm, access_clown, access_mime, access_surgery,
 	            access_theatre, access_research, access_mining, access_mailsorting,
 	            access_heads_vault, access_mining_station, access_xenobiology, access_ce, access_hop, access_hos, access_RC_announce,
-	            access_keycard_auth, access_tcomsat, access_gateway, access_xenoarch, access_paramedic, access_blueshield, access_customs, access_mechanic)
+	            access_keycard_auth, access_tcomsat, access_gateway, access_xenoarch, access_paramedic, access_blueshield, access_customs, access_mechanic,access_weapons)
 
 /proc/get_all_centcom_access()
 	return list(access_cent_general, access_cent_thunder, access_cent_specops, access_cent_medical, access_cent_living, access_cent_storage, access_cent_teleporter, access_cent_creed, access_cent_captain)
@@ -395,6 +410,8 @@
 			return "Customs"
 		if(access_mechanic)
 			return "Mechanic Workshop"
+		if(access_weapons)
+			return "Weapon Permit"
 
 /proc/get_centcom_access_desc(A)
 	switch(A)
