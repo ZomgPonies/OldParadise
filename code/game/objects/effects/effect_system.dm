@@ -381,164 +381,6 @@ steam.start() -- spawns the effect
 					smoke.delete()
 					src.total_smoke--
 
-
-/////////////////////////////////////////////
-// Chem smoke
-/////////////////////////////////////////////
-
-
-/obj/effect/effect/chem_smoke
-	name = "smoke"
-	opacity = 1
-	anchored = 0.0
-	mouse_opacity = 0
-	var/amount = 6.0
-
-	icon = 'icons/effects/chemsmoke.dmi'
-	pixel_x = -32
-	pixel_y = -32
-
-/obj/effect/effect/chem_smoke/New()
-	..()
-	var/datum/reagents/R = new/datum/reagents(500)
-	reagents = R
-	R.my_atom = src
-
-	spawn (200+rand(10,30))
-		delete()
-	return
-
-/obj/effect/effect/chem_smoke/Move()
-	..()
-	for(var/atom/A in view(2, src))
-		if(reagents.has_reagent("radium")||reagents.has_reagent("uranium")||reagents.has_reagent("carbon")||reagents.has_reagent("thermite"))//Prevents unholy radium spam by reducing the number of 'greenglows' down to something reasonable -Sieve
-			if(prob(5))
-				reagents.reaction(A)
-		else
-			reagents.reaction(A)
-
-	return
-
-/obj/effect/effect/chem_smoke/Crossed(mob/living/carbon/M as mob )
-	..()
-	reagents.reaction(M)
-
-	return
-
-/datum/effect/effect/system/chem_smoke_spread
-	var/total_smoke = 0 // To stop it being spammed and lagging!
-	var/direction
-	var/obj/chemholder
-
-	New()
-		..()
-		chemholder = new/obj()
-		var/datum/reagents/R = new/datum/reagents(500)
-		chemholder.reagents = R
-		R.my_atom = chemholder
-
-	set_up(var/datum/reagents/carry = null, n = 5, c = 0, loca, direct, silent = 0)
-		if(n > 20)
-			n = 20
-		number = n
-		cardinals = c
-		carry.copy_to(chemholder, carry.total_volume)
-
-
-		if(istype(loca, /turf/))
-			location = loca
-		else
-			location = get_turf(loca)
-		if(direct)
-			direction = direct
-		if(!silent)
-			var/contained = ""
-			for(var/reagent in carry.reagent_list)
-				contained += " [reagent] "
-			if(contained)
-				contained = "\[[contained]\]"
-			var/area/A = get_area(location)
-
-			var/where = "[A.name] | [location.x], [location.y]"
-			var/whereLink = "<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[location.x];Y=[location.y];Z=[location.z]'>[where]</a>"
-
-			if(carry.my_atom.fingerprintslast)
-				var/mob/M = get_mob_by_key(carry.my_atom.fingerprintslast)
-				var/more = ""
-				if(M)
-					more = "(<A HREF='?_src_=holder;adminmoreinfo=\ref[M]'>?</a>)"
-				message_admins("A chemical smoke reaction has taken place in ([whereLink])[contained]. Last associated key is [carry.my_atom.fingerprintslast][more].", 0, 1)
-				log_game("A chemical smoke reaction has taken place in ([where])[contained]. Last associated key is [carry.my_atom.fingerprintslast].")
-			else
-				message_admins("A chemical smoke reaction has taken place in ([whereLink]). No associated key.", 0, 1)
-				log_game("A chemical smoke reaction has taken place in ([where])[contained]. No associated key.")
-
-	start()
-		var/i = 0
-
-		var/color = mix_color_from_reagents(chemholder.reagents.reagent_list)
-
-		for(i=0, i<src.number, i++)
-			if(src.total_smoke > 20)
-				return
-			spawn(0)
-				if(holder)
-					src.location = get_turf(holder)
-				var/obj/effect/effect/chem_smoke/smoke = new /obj/effect/effect/chem_smoke(src.location)
-				src.total_smoke++
-				var/direction = src.direction
-				if(!direction)
-					if(src.cardinals)
-						direction = pick(cardinal)
-					else
-						direction = pick(alldirs)
-
-				if(chemholder.reagents.total_volume != 1) // can't split 1 very well
-					chemholder.reagents.copy_to(smoke, chemholder.reagents.total_volume / number) // copy reagents to each smoke, divide evenly
-
-				if(color)
-					smoke.icon += color // give the smoke color, if it has any to begin with
-				else
-					// if no color, just use the old smoke icon
-					smoke.icon = 'icons/effects/96x96.dmi'
-					smoke.icon_state = "smoke"
-
-				for(i=0, i<pick(0,1,1,1,2,2,2,3), i++)
-					sleep(10)
-					step(smoke,direction)
-				spawn(150+rand(10,30))
-					if(smoke) smoke.delete()
-					src.total_smoke--
-
-// Goon compat.
-/datum/effect/effect/system/chem_smoke_spread/fart
-
-	set_up(var/mob/M, n = 5, c = 0, loca, direct)
-		if(n > 20)
-			n = 20
-		number = n
-		cardinals = c
-
-		chemholder.reagents.add_reagent("space_drugs", rand(1,10))
-
-		if(istype(loca, /turf/))
-			location = loca
-		else
-			location = get_turf(loca)
-		if(direct)
-			direction = direct
-
-		var/contained = "\[[chemholder.reagents.get_reagent_ids()]\]"
-		var/area/A = get_area(location)
-
-		var/where = "[A.name] | [location.x], [location.y]"
-		var/whereLink=formatJumpTo(location,where)
-
-		var/more = "(<A HREF='?_src_=holder;adminmoreinfo=\ref[M]'>?</a>)"
-		message_admins("[M][more] produced a toxic fart in ([whereLink])[contained].", 0, 1)
-		log_game("[M][more] produced a toxic fart in ([where])[contained].")
-
-
 /////////////////////////////////////////////
 // Sleep smoke
 /////////////////////////////////////////////
@@ -947,7 +789,7 @@ steam.start() -- spawns the effect
 			F.create_reagents(10)
 			if (reagents)
 				for(var/datum/reagent/R in reagents.reagent_list)
-					F.reagents.add_reagent(R.id,1)
+					F.reagents.add_reagent(R.id, 1, safety = 1)		//added safety check since reagents in the foam have already had a chance to react
 
 // foam disolves when heated
 // except metal foams
@@ -1019,9 +861,9 @@ steam.start() -- spawns the effect
 
 				if(carried_reagents)
 					for(var/id in carried_reagents)
-						F.reagents.add_reagent(id,1)
+						F.reagents.add_reagent(id, 1, null, 1) //makes a safety call because all reagents should have already reacted anyway
 				else
-					F.reagents.add_reagent("water", 1)
+					F.reagents.add_reagent("water", 1, safety = 1)
 
 // wall formed by metal foams
 // dense and opaque, but easy to break

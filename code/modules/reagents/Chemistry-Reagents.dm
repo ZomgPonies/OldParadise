@@ -815,7 +815,12 @@ datum
 				src = null
 				// Only add one dirt per turf.  Was causing people to crash.
 				if(!istype(T, /turf/space) && !(locate(/obj/effect/decal/cleanable/dirt) in T))
-					new /obj/effect/decal/cleanable/dirt(T)
+					var/obj/effect/decal/cleanable/dirt/dirtoverlay = locate(/obj/effect/decal/cleanable/dirt, T)
+					if (!dirtoverlay)
+						dirtoverlay = new/obj/effect/decal/cleanable/dirt(T)
+						dirtoverlay.alpha = volume*30
+					else
+						dirtoverlay.alpha = min(dirtoverlay.alpha+volume*30, 255)
 
 		chlorine
 			name = "Chlorine"
@@ -1110,7 +1115,9 @@ datum
 				src = null
 				if(volume >= 3)
 					if(!istype(T, /turf/space))
-						new /obj/effect/decal/cleanable/greenglow(T)
+						var/obj/effect/decal/cleanable/greenglow/glow = locate(/obj/effect/decal/cleanable/greenglow, T)
+						if(!glow)
+							new /obj/effect/decal/cleanable/greenglow(T)
 						return
 
 
@@ -1149,9 +1156,9 @@ datum
 				src = null
 				if(volume >= 5)
 					if(istype(T, /turf/simulated/wall))
-						T:thermite = 1
-						T.overlays.Cut()
-						T.overlays = image('icons/effects/effects.dmi',icon_state = "thermite")
+						var/turf/simulated/wall/W = T
+						W.thermite = 1
+						W.overlays += image('icons/effects/effects.dmi',icon_state = "#673910")
 				return
 
 			on_mob_life(var/mob/living/M as mob)
@@ -1309,7 +1316,10 @@ datum
 				src = null
 				if(volume >= 3)
 					if(!istype(T, /turf/space))
-						new /obj/effect/decal/cleanable/greenglow(T)
+						var/obj/effect/decal/cleanable/greenglow/glow = locate(/obj/effect/decal/cleanable/greenglow, T)
+						if(!glow)
+							new /obj/effect/decal/cleanable/greenglow(T)
+						return
 
 		aluminum
 			name = "Aluminum"
@@ -1366,18 +1376,20 @@ datum
 				else
 					if(O)
 						O.clean_blood()
+
 			reaction_turf(var/turf/T, var/volume)
 				if(volume >= 1)
+					if(istype(T, /turf/simulated))
+						var/turf/simulated/S = T
+						S.dirt = 0
 					T.overlays.Cut()
 					T.clean_blood()
-					for(var/obj/effect/decal/cleanable/C in src)
+					for(var/obj/effect/decal/cleanable/C in T.contents)
+						src.reaction_obj(C, volume)
 						del(C)
 
 					for(var/mob/living/carbon/slime/M in T)
 						M.adjustToxLoss(rand(5,10))
-			reaction_turf(var/turf/simulated/S, var/volume)
-				if(volume >= 1)
-					S.dirt = 0
 			reaction_mob(var/mob/M, var/method=TOUCH, var/volume)
 				if(iscarbon(M))
 					var/mob/living/carbon/C = M

@@ -112,8 +112,8 @@ datum
 					if(preserve_data)
 						trans_data = copy_data(current_reagent)
 
-					R.add_reagent(current_reagent.id, (current_reagent_transfer * multiplier), trans_data)
-					src.remove_reagent(current_reagent.id, current_reagent_transfer)
+					R.add_reagent(current_reagent.id, (current_reagent_transfer * multiplier), trans_data, safety = 1)	//safety checks on these so all chemicals are transferred
+					src.remove_reagent(current_reagent.id, current_reagent_transfer, safety = 1)							// to the target container before handling reactions
 
 				src.update_total()
 				R.update_total()
@@ -121,7 +121,7 @@ datum
 				src.handle_reactions()
 				return amount
 
-			trans_to_ingest(var/obj/target, var/amount=1, var/multiplier=1, var/preserve_data=1)//For items ingested. A delay is added between ingestion and addition of the reagents
+			trans_to_ingest(var/obj/target, var/amount=1, var/multiplier=1, var/preserve_data=1, var/safety = 0)//For items ingested. A delay is added between ingestion and addition of the reagents
 				if (!target )
 					return
 				if (!target.reagents || src.total_volume<=0)
@@ -182,12 +182,13 @@ datum
 					var/current_reagent_transfer = current_reagent.volume * part
 					if(preserve_data)
 						trans_data = copy_data(current_reagent)
-					R.add_reagent(current_reagent.id, (current_reagent_transfer * multiplier), trans_data)
+					R.add_reagent(current_reagent.id, (current_reagent_transfer * multiplier), trans_data, safety = 1)	//safety check so all chemicals are transferred before reacting
 
 				src.update_total()
 				R.update_total()
-				R.handle_reactions()
-				src.handle_reactions()
+				if(!safety)
+					R.handle_reactions()
+					src.handle_reactions()
 				return amount
 
 			trans_id_to(var/obj/target, var/reagent, var/amount=1, var/preserve_data=1)//Not sure why this proc didn't exist before. It does now! /N
@@ -444,7 +445,7 @@ datum
 									else R.reaction_obj(A, R.volume+volume_modifier)
 				return
 
-			add_reagent(var/reagent, var/amount, var/list/data=null)
+			add_reagent(var/reagent, var/amount, var/list/data=null, var/safety = 0)
 				if(!isnum(amount)) return 1
 				update_total()
 				if(total_volume + amount > maximum_volume) amount = (maximum_volume - total_volume) //Doesnt fit in. Make it disappear. Shouldnt happen. Will happen.
@@ -482,7 +483,8 @@ datum
 												preserve += D
 										R.data["viruses"] = preserve
 
-						handle_reactions()
+						if(!safety)
+							handle_reactions()
 						return 0
 
 				var/datum/reagent/D = chemical_reagents_list[reagent]
@@ -501,17 +503,18 @@ datum
 					//debug
 					update_total()
 					my_atom.on_reagent_change()
-					handle_reactions()
+					if(!safety)
+						handle_reactions()
 					return 0
 				else
 					warning("[my_atom] attempted to add a reagent called '[reagent]' which doesn't exist. ([usr])")
 
-				handle_reactions()
+				if(!safety)
+					handle_reactions()
 
 				return 1
 
-			remove_reagent(var/reagent, var/amount, var/safety)//Added a safety check for the trans_id_to
-
+			remove_reagent(var/reagent, var/amount, var/safety = 0)//Added a safety check for the trans_id_to
 				if(!isnum(amount)) return 1
 
 				for(var/A in reagent_list)

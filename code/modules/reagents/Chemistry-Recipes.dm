@@ -466,17 +466,15 @@ datum
 			id = "chemsmoke"
 			result = null
 			required_reagents = list("potassium" = 1, "sugar" = 1, "phosphorus" = 1)
-			result_amount = null
+			result_amount = 0.4	//change this to balance the amount of smoke generated
 			secondary = 1
 			on_reaction(var/datum/reagents/holder, var/created_volume)
 				var/location = get_turf(holder.my_atom)
 				var/datum/effect/effect/system/chem_smoke_spread/S = new /datum/effect/effect/system/chem_smoke_spread
 				S.attach(location)
-				S.set_up(holder, 10, 0, location)
+				S.set_up(holder, created_volume, 0, location)
 				playsound(location, 'sound/effects/smoke.ogg', 50, 1, -3)
 				spawn(0)
-					S.start()
-					sleep(10)
 					S.start()
 				holder.clear_reagents()
 				return
