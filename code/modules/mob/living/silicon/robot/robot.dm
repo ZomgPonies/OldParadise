@@ -181,7 +181,7 @@
 	if(module)
 		return
 
-	var/list/modules = list("Standard", "Engineering", "Medical", "Miner", "Janitor", "Service", "Security")
+	var/list/modules = list("Standard", "Engineering", "Medical","Medical - Surgery", "Miner", "Janitor", "Service", "Security")
 	if(security_level == (SEC_LEVEL_GAMMA || SEC_LEVEL_EPSILON) || crisis)
 		src << "\red Crisis mode active. Combat module available."
 		modules+="Combat"
@@ -228,6 +228,17 @@
 			module_sprites["Advanced Droid"] = "droid-medical"
 			module_sprites["Needles"] = "medicalrobot"
 			module_sprites["Standard"] = "surgeon"
+
+		if("Medical - Surgery")
+			module = new /obj/item/weapon/robot_module/surgery(src)
+			channels = list("Medical" = 1)
+			if(camera && "Robots" in camera.network)
+				camera.network.Add("Medical")
+			module_sprites["Basic"] = "Medbot"
+			module_sprites["Advanced Droid"] = "droid-medical"
+			module_sprites["Needles"] = "medicalrobot"
+			module_sprites["Standard"] = "surgeon"
+
 
 		if("Security")
 			module = new /obj/item/weapon/robot_module/security(src)
