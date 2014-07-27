@@ -7,7 +7,7 @@ var/list/possible_changeling_IDs = list("Alpha","Beta","Gamma","Delta","Epsilon"
 /datum/game_mode/changeling
 	name = "changeling"
 	config_tag = "changeling"
-	restricted_jobs = list("AI", "Cyborg", "Head of Security", "Captain", "Head of Personnel")
+	restricted_jobs = list("AI", "Cyborg")
 	protected_jobs = list("Security Officer", "Warden", "Detective", "Head of Security", "Captain", "Head of Personnel", "Blueshield", "Nanotrasen Representative", "Nanotrasen Recruiter")
 	required_players = 2
 	required_players_secret = 10
