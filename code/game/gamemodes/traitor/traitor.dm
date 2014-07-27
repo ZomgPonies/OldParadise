@@ -7,8 +7,8 @@
 /datum/game_mode/traitor
 	name = "traitor"
 	config_tag = "traitor"
-	restricted_jobs = list("AI", "Cyborg", "Head of Security", "Captain", "Head of Personnel")
-	protected_jobs = list("Security Officer", "Warden", "Detective", "Head of Security", "Captain", "Head of Personnel", "Blueshield", "Nanotrasen Representative", "Nanotrasen Recruiter")
+	restricted_jobs = list("Cyborg")
+	protected_jobs = list("Security Officer", "Warden", "Detective", "Head of Security", "Internal Affairs Agent", "Captain", "Head of Personnel", "Blueshield", "Nanotrasen Representative", "Nanotrasen Recruiter")
 	required_players = 0
 	required_enemies = 1
 	recommended_enemies = 4
