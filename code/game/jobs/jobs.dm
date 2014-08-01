@@ -44,6 +44,7 @@ var/const/CHAPLAIN			=(1<<10)
 var/const/CLOWN				=(1<<11)
 var/const/MIME				=(1<<12)
 var/const/CIVILIAN			=(1<<13)
+var/const/HOIA              =(1<<14)
 
 
 var/const/KARMA				=(1<<3)
@@ -64,6 +65,7 @@ var/list/assistant_occupations = list(
 
 var/list/command_positions = list(
 	"Captain",
+	"Head of Internal Affairs",
 	"Head of Personnel",
 	"Head of Security",
 	"Chief Engineer",
@@ -117,7 +119,8 @@ var/list/support_positions = list(
 	"Barber",
 	"Magistrate",
 	"Nanotrasen Representative",
-	"Nanotrasen Recruiter"
+	"Nanotrasen Recruiter",
+	"Head of Internal Affairs"
 )
 
 
