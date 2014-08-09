@@ -155,11 +155,14 @@
 		if("Emergency Response Team")
 			if(is_ert_blocked())
 				usr << "\red All emergency response teams are dispatched and can not be called at this time."
+			if(send_emergency_team)
+				usr << "\red Central Command has already dispatched an emergency response team!"
 				return
+				
 
 			trigger_armed_response_team(1)
 			feedback_inc("alert_keycard_auth_ert",1)
-
+			send_emergency_team = 1
 /obj/machinery/keycard_auth/proc/is_ert_blocked()
 	return ticker.mode && ticker.mode.ert_disabled
 

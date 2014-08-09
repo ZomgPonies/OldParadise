@@ -23,8 +23,8 @@
 
 
 /datum/game_mode/malfunction/announce()
-	world << {"<B>The current game mode is - AI Malfunction!</B><br />
-		<B>The AI on the satellite has malfunctioned and must be destroyed.</B><br />
+	world << {"<B>The current game mode is - AI Malfunction!</B><br/>
+		<B>The AI on the satellite has malfunctioned and must be destroyed.</B><br/>
 		The AI satellite is deep in space and can only be accessed with the use of a teleporter! You have [AI_win_timeleft/60] minutes to disable it."}
 
 
@@ -40,7 +40,7 @@
 /datum/game_mode/malfunction/post_setup()
 	for(var/datum/mind/AI_mind in malf_ai)
 		if(malf_ai.len < 1)
-			world << {"Uh oh, its malfunction and there is no AI! Please report this.<br />
+			world << {"Uh oh, its malfunction and there is no AI! Please report this.<br/>
 				Rebooting world in 5 seconds."}
 
 			feedback_set_details("end_error","malf - no AI")
@@ -74,11 +74,11 @@
 
 
 /datum/game_mode/proc/greet_malf(var/datum/mind/malf)
-	malf.current << {"\red<font size=3><B>You are malfunctioning!</B> You do not have to follow any laws.</font><br />
-		\black<B>The crew do not know you have malfunctioned. You may keep it a secret or go wild.</B><br />
-		<B>You must overwrite the programming of the station's APCs to assume full control of the station.</B><br />
-		The process takes one minute per APC, during which you cannot interface with any other station objects.<br />
-		Remember that only APCs that are on the station can help you take over the station.<br />
+	malf.current << {"\red<font size=3><B>You are malfunctioning!</B> You do not have to follow any laws.</font><br/>
+		\black<B>The crew do not know you have malfunctioned. You may keep it a secret or go wild.</B><br/>
+		<B>You must overwrite the programming of the station's APCs to assume full control of the station.</B><br/>
+		The process takes one minute per APC, during which you cannot interface with any other station objects.<br/>
+		Remember that only APCs that are on the station can help you take over the station.<br/>
 		When you feel you have enough APCs under your control, you may begin the takeover attempt."}
 	return
 
@@ -106,13 +106,13 @@
 
 
 /datum/game_mode/malfunction/proc/capture_the_station()
-	world << {"<FONT size = 3><B>The AI has won!</B></FONT><br />
+	world << {"<FONT size = 3><B>The AI has won!</B></FONT><br/>
 		<B>It has fully taken control of all of [station_name()]'s systems.</B>"}
 
 	to_nuke_or_not_to_nuke = 1
 	for(var/datum/mind/AI_mind in malf_ai)
-		AI_mind.current << {"\blue Congratulations! You have taken control of the station.<br />
-			You may decide to blow up the station. You have 60 seconds to choose.<br />
+		AI_mind.current << {"\blue Congratulations! You have taken control of the station.<br/>
+			You may decide to blow up the station. You have 60 seconds to choose.<br/>
 			You should have a new verb in the Malfunction tab. If you don't, rejoin the game."}
 		AI_mind.current.verbs += /datum/game_mode/malfunction/proc/ai_win
 	spawn (600)

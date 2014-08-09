@@ -69,7 +69,7 @@
 	projectile_type = "/obj/item/projectile/energy/bolt"
 	cell_type = "/obj/item/weapon/cell/crap"
 	var/charge_tick = 0
-
+	var/recharge_time = 10
 
 	New()
 		..()
@@ -102,5 +102,5 @@
 	force = 10
 	m_amt = 200000
 	projectile_type = "/obj/item/projectile/energy/bolt/large"
-
+	var/recharge_time = 15
 
