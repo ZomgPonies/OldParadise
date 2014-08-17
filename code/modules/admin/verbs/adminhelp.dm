@@ -21,7 +21,7 @@ var/list/adminhelp_ignored_words = list("unknown","the","a","an","of","monkey","
 		src.verbs += /client/verb/adminhelp	// 2 minute cool-down for adminhelps//Go to hell
 	**/
 	var/msg
-	var/list/type = list("Player Complaint","Question","Bug Report","Event")
+	var/list/type = list("Admin","Mentor")
 	var/selected_type = input("Pick a category.", "Admin Help", null, null) as null|anything in type
 	if(selected_type)
 		msg = input("Please enter your message.", "Admin Help", null, null) as text
@@ -120,7 +120,7 @@ var/list/adminhelp_ignored_words = list("unknown","the","a","an","of","monkey","
 			eventholders += X
 
 	switch(selected_type)
-		if("Question")
+		if("Mentor")
 			if(modholders.len)
 				for(var/client/X in modholders)
 					if(X.prefs.sound & SOUND_ADMINHELP)
@@ -132,33 +132,9 @@ var/list/adminhelp_ignored_words = list("unknown","the","a","an","of","monkey","
 						if(X.prefs.sound & SOUND_ADMINHELP)
 							X << 'sound/effects/adminhelp.ogg'
 						X << msg
-		else if("Bug Report")
-			if(debugholders.len)
-				for(var/client/X in debugholders)
-					if(X.prefs.sound & SOUND_ADMINHELP)
-						X << 'sound/effects/adminhelp.ogg'
-					X << msg
-			else
-				if(adminholders.len)
-					for(var/client/X in adminholders)
-						if(X.prefs.sound & SOUND_ADMINHELP)
-							X << 'sound/effects/adminhelp.ogg'
-						X << msg
-		else if("Event")
-			if(eventholders.len)
-				for(var/client/X in eventholders)
-					if(X.prefs.sound & SOUND_ADMINHELP)
-						X << 'sound/effects/adminhelp.ogg'
-					X << msg
-			else
-				if(banholders.len)
-					for(var/client/X in banholders)
-						if(X.prefs.sound & SOUND_ADMINHELP)
-							X << 'sound/effects/adminhelp.ogg'
-						X << msg
-		else if("Player Complaint")
-			if(banholders.len)
-				for(var/client/X in banholders)
+		else if("Admin")
+			if(adminholders.len)
+				for(var/client/X in adminholders)
 					if(X.prefs.sound & SOUND_ADMINHELP)
 						X << 'sound/effects/adminhelp.ogg'
 					X << msg
