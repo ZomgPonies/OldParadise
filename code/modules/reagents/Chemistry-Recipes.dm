@@ -276,6 +276,13 @@ datum
 			required_reagents = list("sugar" = 1, "phosphorus" = 1, "sulfur" = 1,)
 			result_amount = 3
 
+		robustazine
+			name = "Robustazine"
+			id = "robustazine"
+			result = "robustazine"
+			required_reagents = list("ethanol" = 1, "rum" = 1, "hyperzine" = 1)
+			result_amount = 1
+
 		ryetalyn
 			name = "Ryetalyn"
 			id = "ryetalyn"
