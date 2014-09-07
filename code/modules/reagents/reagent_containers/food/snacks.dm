@@ -1234,7 +1234,8 @@
 	icon_state = "chinese1"
 	New()
 		..()
-		reagents.add_reagent("nutriment", 6)
+		reagents.add_reagent("nutriment", 4)
+		reagents.add_reagent("psilocybin", 2)
 		bitesize = 2
 
 /obj/item/weapon/reagent_containers/food/snacks/chinese/tao
@@ -1243,7 +1244,8 @@
 	icon_state = "chinese2"
 	New()
 		..()
-		reagents.add_reagent("nutriment", 6)
+		reagents.add_reagent("nutriment", 3)
+		reagents.add_reagent("carpotoxin", 3)
 		bitesize = 2
 
 /obj/item/weapon/reagent_containers/food/snacks/chinese/newdles
@@ -1252,7 +1254,8 @@
 	icon_state = "chinese3"
 	New()
 		..()
-		reagents.add_reagent("nutriment", 6)
+		reagents.add_reagent("nutriment", 3)
+		reagents.add_reagent("cornoil", 3)
 		bitesize = 2
 
 /obj/item/weapon/reagent_containers/food/snacks/chinese/rice
@@ -1262,6 +1265,7 @@
 	New()
 		..()
 		reagents.add_reagent("nutriment", 6)
+		reagents.add_reagent("rice", 3)
 		bitesize = 2
 
 /obj/item/weapon/reagent_containers/food/snacks/syndicake
@@ -1274,7 +1278,7 @@
 	New()
 		..()
 		reagents.add_reagent("nutriment", 4)
-		reagents.add_reagent("alchdranine", 5)
+		reagents.add_reagent("alchdranine", 4)
 		bitesize = 3
 
 /obj/item/weapon/reagent_containers/food/snacks/loadedbakedpotato

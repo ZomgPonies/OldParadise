@@ -556,6 +556,7 @@ var/list/all_supply_groups = list("Operations","Security","Hospitality","Enginee
 					/obj/machinery/power/rad_collector,
 					/obj/machinery/power/rad_collector)
 	containername = "Collector crate"
+	access = access_engine
 	group = "Engineering"
 
 /datum/supply_packs/engine/PA
@@ -1007,23 +1008,16 @@ var/list/all_supply_groups = list("Operations","Security","Hospitality","Enginee
 	containername = "EFTPOS crate"
 	group = "Operations"
 
-/datum/supply_packs/teg
-	contains = list(/obj/machinery/power/generator)
-	name = "Mark I Thermoelectric Generator"
-	cost = 75
+/datum/supply_packs/teg_engine
+	contains = list(/obj/machinery/atmospherics/binary/circulator,
+					/obj/machinery/atmospherics/binary/circulator,
+					/obj/machinery/power/generator)
+	name = "Mark I TEG Engine Kit"
+	cost = 50
 	containertype = /obj/structure/closet/crate/secure/large
-	containername = "Mk1 TEG crate"
-	group = "Engineering"
+	containername = "Mk 1 TEG Engine Kit crate"
 	access = access_engine
-
-/datum/supply_packs/circulator
-	contains = list(/obj/machinery/atmospherics/binary/circulator)
-	name = "Binary atmospheric circulator"
-	cost = 60
-	containertype = /obj/structure/closet/crate/secure/large
-	containername = "Atmospheric circulator crate"
 	group = "Engineering"
-	access = access_engine
 
 /datum/supply_packs/bee_keeper
 	name = "Beekeeping Crate"

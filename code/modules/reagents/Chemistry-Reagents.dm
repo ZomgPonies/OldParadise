@@ -1434,14 +1434,17 @@ datum
 					return
 
 		plantbgone
-			scannable = 1
 			name = "Plant-B-Gone"
 			id = "plantbgone"
 			description = "A harmful toxic mixture to kill plantlife. Do not ingest!"
 			reagent_state = LIQUID
 			color = "#49002E" // rgb: 73, 0, 46
-			toxod = OVERDOSE/3
-			burnod = OVERDOSE/3
+
+			on_mob_life(var/mob/living/M as mob)
+				if(!M) M = holder.my_atom
+				M.adjustToxLoss(2)
+				..()
+				return
 
 			// Clear off wallrot fungi
 			reaction_turf(var/turf/T, var/volume)
@@ -1778,11 +1781,11 @@ datum
 		synaptizine
 			name = "Synaptizine"
 			id = "synaptizine"
-			description = "Synaptizine is used to treat various diseases."
+			description = "Synaptizine is a synaptic stimulant that can also be used to treat certain diseases."
 			reagent_state = LIQUID
 			color = "#C8A5DC" // rgb: 200, 165, 220
-			custom_metabolism = 0.01
-			toxod = OVERDOSE
+			custom_metabolism = 0.1
+			toxod = OVERDOSE/4.5
 			scannable = 1
 
 			on_mob_life(var/mob/living/M as mob)
@@ -1794,7 +1797,6 @@ datum
 				if(holder.has_reagent("mindbreaker"))
 					holder.remove_reagent("mindbreaker", 5)
 				M.hallucination = max(0, M.hallucination - 10)
-				if(prob(60))	M.adjustToxLoss(1)
 				..()
 				return
 
@@ -2345,6 +2347,7 @@ datum
 			on_mob_life(var/mob/living/M as mob)
 				if(!M) M = holder.my_atom
 				if(prob(50)) M.heal_organ_damage(1,0)
+				if(prob(2)) M.emote("fart") //mature, I know. This amounts to farting once for each 20 nutriment you consume, so it'll be rare.
 				M.nutrition += nutriment_factor	// For hunger and fatness
 /*
 				// If overeaten - vomit and fall down
@@ -3401,12 +3404,6 @@ datum
 
 			rum
 				name = "Rum"
-				id = "rum"
-				description = "Yohoho and all that."
-				color = "#664300" // rgb: 102, 67, 0
-
-			deadrum
-				name = "Deadrum"
 				id = "rum"
 				description = "Popular with the sailors. Not very popular with everyone else."
 				color = "#664300" // rgb: 102, 67, 0

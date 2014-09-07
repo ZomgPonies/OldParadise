@@ -105,6 +105,13 @@ datum
 			required_reagents = list("inaprovaline" = 1, "ethanol" = 1, "oxygen" = 1)
 			result_amount = 3
 
+		paracetamol
+			name = "Paracetamol"
+			id = "paracetamol"
+			result = "paracetamol"
+			required_reagents = list("tramadol" = 1, "sugar" = 1, "water" = 1)
+			result_amount = 3
+
 		oxycodone
 			name = "Oxycodone"
 			id = "oxycodone"
