@@ -63,7 +63,7 @@
 	range = 1
 	cooldown_min = 200 //100 deciseconds reduction per rank
 
-	destroys = "gib_brain"
+	destroys = "disintegrate"
 
 	sparks_spread = 1
 	sparks_amt = 4

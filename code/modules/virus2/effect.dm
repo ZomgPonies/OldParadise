@@ -82,120 +82,25 @@
 
 // Bone White - Empty sypmtoms. There is a better way of handling this but this is much faster.
 
-/datum/disease2/effect/invisible_stage_onea
-	name = "Non-existant Syndrome"
-	stage = 1
-	activate(var/mob/living/carbon/mob,var/multiplier)
-		return
-/datum/disease2/effect/invisible_stage_oneb
-	name = "Non-existant Syndrome"
-	stage = 1
-	activate(var/mob/living/carbon/mob,var/multiplier)
-		return
+// The inclusion of the ability to make a symptomless virus until it hits stage 4 is questionable enough, but giving a much higher weighted probability for these to show up in dishes/mutations? No. -Fox
 
-/datum/disease2/effect/invisible_stage_twoa
-	name = "Non-existant Syndrome"
-	stage = 2
-	activate(var/mob/living/carbon/mob,var/multiplier)
-		return
-/datum/disease2/effect/invisible_stage_twob
-	name = "Non-existant Syndrome"
-	stage = 2
-	activate(var/mob/living/carbon/mob,var/multiplier)
-		return
-/datum/disease2/effect/invisible_stage_twoc
-	name = "Non-existant Syndrome"
-	stage = 2
-	activate(var/mob/living/carbon/mob,var/multiplier)
-		return
-/datum/disease2/effect/invisible_stage_twod
-	name = "Non-existant Syndrome"
+/datum/disease2/effect/invisible_stage_two
+	name = "Patience Syndrome"
 	stage = 2
 	activate(var/mob/living/carbon/mob,var/multiplier)
 		return
 
-/datum/disease2/effect/invisible_stage_threea
-	name = "Non-existant Syndrome"
-	stage = 3
-	activate(var/mob/living/carbon/mob,var/multiplier)
-		return
-/datum/disease2/effect/invisible_stage_threeb
-	name = "Non-existant Syndrome"
-	stage = 3
-	activate(var/mob/living/carbon/mob,var/multiplier)
-		return
-/datum/disease2/effect/invisible_stage_threec
-	name = "Non-existant Syndrome"
-	stage = 3
-	activate(var/mob/living/carbon/mob,var/multiplier)
-		return
-/datum/disease2/effect/invisible_stage_threed
-	name = "Non-existant Syndrome"
-	stage = 3
-	activate(var/mob/living/carbon/mob,var/multiplier)
-		return
-/datum/disease2/effect/invisible_stage_threee
-	name = "Non-existant Syndrome"
-	stage = 3
-	activate(var/mob/living/carbon/mob,var/multiplier)
-		return
-/datum/disease2/effect/invisible_stage_threef
-	name = "Non-existant Syndrome"
-	stage = 3
-	activate(var/mob/living/carbon/mob,var/multiplier)
-		return
-/datum/disease2/effect/invisible_stage_threeg
-	name = "Non-existant Syndrome"
-	stage = 3
-	activate(var/mob/living/carbon/mob,var/multiplier)
-		return
-/datum/disease2/effect/invisible_stage_threeh
-	name = "Non-existant Syndrome"
+/datum/disease2/effect/invisible_stage_three
+	name = "Delayed Syndrome"
 	stage = 3
 	activate(var/mob/living/carbon/mob,var/multiplier)
 		return
 
-/datum/disease2/effect/invisible_stage_foura
-	name = "Non-existant Syndrome"
+/datum/disease2/effect/invisible_stage_four
+	name = "Anticipation Syndrome"
 	stage = 4
 	activate(var/mob/living/carbon/mob,var/multiplier)
 		return
-/datum/disease2/effect/invisible_stage_fourb
-	name = "Non-existant Syndrome"
-	stage = 4
-	activate(var/mob/living/carbon/mob,var/multiplier)
-		return
-/datum/disease2/effect/invisible_stage_fourc
-	name = "Non-existant Syndrome"
-	stage = 4
-	activate(var/mob/living/carbon/mob,var/multiplier)
-		return
-/datum/disease2/effect/invisible_stage_fourd
-	name = "Non-existant Syndrome"
-	stage = 4
-	activate(var/mob/living/carbon/mob,var/multiplier)
-		return
-/datum/disease2/effect/invisible_stage_foure
-	name = "Non-existant Syndrome"
-	stage = 4
-	activate(var/mob/living/carbon/mob,var/multiplier)
-		return
-/datum/disease2/effect/invisible_stage_fourf
-	name = "Non-existant Syndrome"
-	stage = 4
-	activate(var/mob/living/carbon/mob,var/multiplier)
-		return
-/datum/disease2/effect/invisible_stage_fourg
-	name = "Non-existant Syndrome"
-	stage = 4
-	activate(var/mob/living/carbon/mob,var/multiplier)
-		return
-/datum/disease2/effect/invisible_stage_fourh
-	name = "Non-existant Syndrome"
-	stage = 4
-	activate(var/mob/living/carbon/mob,var/multiplier)
-		return
-
 
 
 ////////////////////////STAGE 4/////////////////////////////////
@@ -226,10 +131,6 @@
 	badness = 2
 	activate(var/mob/living/carbon/mob,var/multiplier)
 		mob.gib()
-
-/datum/disease2/effect/blank_stage_4
-	name = "Nonexistant Syndrome"
-	stage = 4
 
 /datum/disease2/effect/radian
 	name = "Radian's Syndrome"
@@ -871,6 +772,13 @@ var/list/compatible_mobs = list(/mob/living/carbon/human, /mob/living/carbon/mon
 	stage = 2
 	activate(var/mob/living/carbon/mob,var/multiplier)
 		mob.say("*scream")
+
+/datum/disease2/effect/farting //Oh gosh Fox, why, whyyyyy
+	name = "Goon Syndrome"
+	stage = 2
+	activate(var/mob/living/carbon/mob,var/multiplier)
+		if (prob(50))
+			mob.say("*fart")
 
 /datum/disease2/effect/drowsness
 	name = "Automated Sleeping Syndrome"
