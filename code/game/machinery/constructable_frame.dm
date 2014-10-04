@@ -251,6 +251,27 @@ micro-manipulator, console screen, beaker, Microlaser, matter bin, power cells.
 Note: Once everything is added to the public areas, will add m_amt and g_amt to circuit boards since autolathe won't be able
 to destroy them and players will be able to make replacements.
 */
+
+/obj/item/weapon/circuitboard/body_scanconsole
+	name = "circuit board (body scanner console)"
+	build_path = "/obj/machinery/body_scanconsole/buildable"
+	board_type = "machine"
+	origin_tech = "programming=4;biotech=2"
+	frame_desc = "Requires 2 Pieces of Cable, and 2 console screens"
+	req_components = list(
+							"/obj/item/weapon/stock_parts/console_screen" = 2,
+							"/obj/item/stack/cable_coil" = 2)
+
+/obj/item/weapon/circuitboard/bodyscanner
+	name = "circuit board (body scanner)"
+	build_path = "/obj/machinery/bodyscanner/buildable"
+	board_type = "machine"
+	origin_tech = "programming=3;biotech=3"
+	frame_desc = "Requires 3 Scanning Module, and 2 Pieces of Cable"
+	req_components = list(
+							"/obj/item/weapon/stock_parts/scanning_module" = 3,
+							"/obj/item/stack/cable_coil" = 2)
+
 /obj/item/weapon/circuitboard/destructive_analyzer
 	name = "Circuit board (Destructive Analyzer)"
 	build_path = "/obj/machinery/r_n_d/destructive_analyzer"
