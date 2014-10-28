@@ -69,6 +69,24 @@ datum/design/proc/CalcReliability(var/list/temp_techs)
 
 ///////////////////Computer Boards///////////////////////////////////
 
+datum/design/body_scanconsole
+	name = "Circuit Design (Body Scanner Console)"
+	desc = "Allows for the construction of circuit boards used to build a new body scanner console."
+	id = "body_scanconsole"
+	req_tech = list("programming" = 5, "biotech" = 2)
+	build_type = IMPRINTER
+	materials = list("$glass" = 2000, "sacid" = 20)
+	build_path = "/obj/item/weapon/circuitboard/body_scanconsole"
+
+datum/design/body_scanner
+	name = "Circuit Design (Body Scanner)"
+	desc = "Allows for the construction of circuit boards used to build a new body scanner."
+	id = "body_scanner"
+	req_tech = list("programming" = 4, "biotech" = 3)
+	build_type = IMPRINTER
+	materials = list("$glass" = 2000, "sacid" = 20)
+	build_path = "/obj/item/weapon/circuitboard/bodyscanner"
+
 datum/design/seccamera
 	name = "Circuit Design (Security)"
 	desc = "Allows for the construction of circuit boards used to build security camera computers."

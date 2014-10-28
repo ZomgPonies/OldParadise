@@ -213,13 +213,19 @@
 		icon_state = "body_scannerconsole-p"
 	else if(powered())
 		icon_state = initial(icon_state)
+		if(opened)
+			icon_state += "-O"
 		stat &= ~NOPOWER
 	else
 		spawn(rand(0, 15))
-			src.icon_state = "body_scannerconsole-p"
+			if(!opened)
+				src.icon_state = "body_scannerconsole-p"
+			else
+				src.icon_state = "body_scannerconsole-p-O"
 			stat |= NOPOWER
 
 /obj/machinery/body_scanconsole
+	var/opened = 0
 	var/obj/machinery/bodyscanner/connected
 	var/known_implants = list(/obj/item/weapon/implant/chem, /obj/item/weapon/implant/death_alarm, /obj/item/weapon/implant/loyalty, /obj/item/weapon/implant/tracking)
 	var/delete
@@ -230,7 +236,32 @@
 	density = 1
 	anchored = 1
 
-
+/obj/machinery/body_scanconsole/attackby(var/obj/item/I as obj, var/mob/user as mob)
+	if(istype(I, /obj/item/weapon/screwdriver))
+		if(!opened)
+			user << "You open the maintenance hatch of [src]."
+			src.opened = 1
+			if(powered())
+				src.icon_state = "body_scannerconsole-O"
+			else
+				src.icon_state = "body_scannerconsole-p-O"
+		else
+			user << "You close the maintenance hatch of [src]."
+			src.opened = 0
+			if(powered())
+				src.icon_state = "body_scannerconsole"
+			else
+				src.icon_state = "body_scannerconsole-p"
+		return 1
+	if(istype(I, /obj/item/device/multitool))
+		if(opened)
+			src.connected = locate(/obj/machinery/bodyscanner, get_step(src, WEST))
+			if(!connected)
+				user << "There is no body scanner to connect to."
+			else
+				user << "You reconnect the [src] to the [connected.name]."
+		return 1
+	return
 /obj/machinery/body_scanconsole/New()
 	..()
 	spawn( 5 )
@@ -426,3 +457,120 @@
 	dat += text("<BR><BR><A href='?src=\ref[];mach_close=scanconsole'>Close</A>", user)
 	user << browse(dat, "window=scanconsole;size=430x600")
 	return
+
+//BUILDABLE SCANNER CODE, not integrated into normal scanners to prevent antags/griefers from breaking the ones medbay starts with, however, both the scanner and console can interact with non-buildable ones, and vice versa, incase only 1 breaks
+/obj/machinery/bodyscanner/buildable
+	var/opened = 0
+
+/obj/machinery/bodyscanner/buildable/attackby(var/obj/item/weapon/G as obj, var/mob/user as mob)
+	if(istype(G, /obj/item/weapon/screwdriver))
+		if(!opened)
+			if(!occupant)
+				user << "You open the maintenance hatch of [src]."
+				src.opened = 1
+				src.icon_state = "body_scanner-P"
+			else
+				user << "You can't open the maintenance hatch of [src] while something is inside."
+		else
+			user << "You close the maintenance hatch of [src]."
+			src.opened = 0
+			src.icon_state = "body_scanner_0"
+		return
+	if(istype(G, /obj/item/weapon/crowbar))
+		if(opened)
+			playsound(get_turf(src), 'sound/items/Crowbar.ogg', 50, 1)
+			var/obj/machinery/constructable_frame/machine_frame/M = new /obj/machinery/constructable_frame/machine_frame(src.loc)
+			M.state = 2
+			M.icon_state = "box_1"
+			for(var/obj/I in component_parts)
+				if(I.reliability != 100 && crit_fail)
+					I.crit_fail = 1
+				I.loc = src.loc
+			del(src)
+			return 1
+		return
+	..()
+
+/obj/machinery/bodyscanner/buildable/MouseDrop_T(atom/movable/O as mob|obj, mob/user as mob)
+	if(opened)  //dont do it when the maint panel is opened, seriously
+		return
+	if(O.loc == user) //no you can't pull things out of your ass
+		return
+	if(user.restrained() || user.stat || user.weakened || user.stunned || user.paralysis || user.resting) //are you cuffed, dying, lying, stunned or other
+		return
+	if(O.anchored || get_dist(user, src) > 1 || get_dist(user, O) > 1 || user.contents.Find(src)) // is the mob anchored, too far away from you, or are you too far away from the source
+		return
+	if(!ismob(O)) //humans only
+		return
+	if(istype(O, /mob/living/simple_animal) || istype(O, /mob/living/silicon)) //animals and robutts dont fit
+		return
+	if(!ishuman(user) && !isrobot(user)) //No ghosts or mice putting people into the sleeper
+		return
+	if(user.loc==null) // just in case someone manages to get a closet into the blue light dimension, as unlikely as that seems
+		return
+	if(!istype(user.loc, /turf) || !istype(O.loc, /turf)) // are you in a container/closet/pod/etc?
+		return
+	if(occupant)
+		user << "\blue <B>The body scanner is already occupied!</B>"
+		return
+	var/mob/living/L = O
+	if(!istype(L) || L.buckled)
+		return
+	if(L.abiotic())
+		user << "\blue <B>Subject cannot have abiotic items on.</B>"
+		return
+	for(var/mob/living/carbon/slime/M in range(1,L))
+		if(M.Victim == L)
+			usr << "[L.name] will not fit into the body scanner because they have a slime latched onto their head."
+			return
+	if(L == user)
+		visible_message("[user] climbs into the body scanner.", 3)
+	else
+		visible_message("[user] puts [L.name] into the body scanner.", 3)
+
+	if (L.client)
+		L.client.perspective = EYE_PERSPECTIVE
+		L.client.eye = src
+	L.loc = src
+	src.occupant = L
+	src.icon_state = "body_scanner_1"
+	for(var/obj/OO in src)//dont want it to dump it's parts
+		if(!istype(OO, /obj/item/stack/cable_coil) && !istype(OO, /obj/item/weapon/stock_parts) && !istype(OO, /obj/item/weapon/circuitboard/bodyscanner))
+			OO.loc = src.loc
+			//Foreach goto(154)
+	src.add_fingerprint(user)
+	return
+
+/obj/machinery/bodyscanner/buildable/go_out()
+	if ((!( src.occupant ) || src.locked))
+		return
+	for(var/obj/O in src)
+		if(!istype(O, /obj/item/stack/cable_coil) && !istype(O, /obj/item/weapon/stock_parts) && !istype(O, /obj/item/weapon/circuitboard/bodyscanner))
+			O.loc = src.loc
+			//Foreach goto(30)
+	if (src.occupant.client)
+		src.occupant.client.eye = src.occupant.client.mob
+		src.occupant.client.perspective = MOB_PERSPECTIVE
+	src.occupant.loc = src.loc
+	src.occupant = null
+	src.icon_state = "body_scanner_0"
+	return
+
+//bodyscan console itself, only has dissasembling when the panel is opened added
+/obj/machinery/body_scanconsole/buildable/attackby(var/obj/item/weapon/I as obj, var/mob/user as mob)
+	if(istype(I, /obj/item/weapon/crowbar))
+		if(opened)
+			playsound(get_turf(src), 'sound/items/Crowbar.ogg', 50, 1)
+			var/obj/machinery/constructable_frame/machine_frame/M = new /obj/machinery/constructable_frame/machine_frame(src.loc)
+			M.state = 2
+			M.icon_state = "box_1"
+			for(var/obj/P in component_parts)
+				if(P.reliability != 100 && crit_fail)
+					P.crit_fail = 1
+				P.loc = src.loc
+			del(src)
+			return 1
+		return
+	..()
+
+
