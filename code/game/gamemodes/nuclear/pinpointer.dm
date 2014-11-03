@@ -10,18 +10,24 @@
 	throw_range = 20
 	m_amt = 500
 	var/obj/item/weapon/disk/nuclear/the_disk = null
+	var/mob/living/silicon/ai/the_ai = null
 	var/active = 0
 
 
 	attack_self()
-		if(!active)
+		if(active == 0)
 			active = 1
 			workdisk()
-			usr << "\blue You activate the pinpointer"
-		else
+			usr << "\blue You activate the pinpointer to track the nuclear disk"
+		else if (active == 1)
+			active = 2
+			workai()
+			usr << "\blue You activate the pinpointer to track the AI"
+		else if (active == 2)
 			active = 0
+			usr <<"\blue You deactive the pinpointer"
 			icon_state = "pinoff"
-			usr << "\blue You deactivate the pinpointer"
+
 
 	proc/workdisk()
 		if(!active) return
@@ -40,14 +46,39 @@
 				icon_state = "pinonmedium"
 			if(16 to INFINITY)
 				icon_state = "pinonfar"
-		spawn(5) .()
+		spawn(5)
+			if(active ==1).()
+
+	proc/workai()
+		if(!active) return
+		if(!the_ai)
+			the_ai = locate()
+			if(!the_disk)
+				icon_state = "pinonnull"
+				return
+		dir = get_dir(src,the_ai)
+		switch(get_dist(src,the_ai))
+			if(0)
+				icon_state = "pinondirect"
+			if(1 to 8)
+				icon_state = "pinonclose"
+			if(9 to 16)
+				icon_state = "pinonmedium"
+			if(16 to INFINITY)
+				icon_state = "pinonfar"
+		spawn(5)
+			if(active == 2).()
 
 	examine()
 		..()
-		for(var/obj/machinery/nuclearbomb/bomb in world)
-			if(bomb.timing)
-				usr << "Extreme danger.  Arming signal detected.   Time remaining: [bomb.timeleft]"
-
+		if (active == 0)
+			usr <<"It appears to be deactivated"
+		else if (active == 1)
+			for(var/obj/machinery/nuclearbomb/bomb in world)
+				if(bomb.timing)
+					usr << "Extreme danger.  Arming signal detected.   Time remaining: [bomb.timeleft]"
+		else if (active == 2 && the_ai)
+			usr<<"\blue The pinpointer is currently tracking AI [the_ai.name]"
 
 /obj/item/weapon/pinpointer/advpinpointer
 	name = "Advanced Pinpointer"
