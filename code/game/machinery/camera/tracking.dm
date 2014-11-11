@@ -1,22 +1,23 @@
 /mob/living/silicon/ai/proc/get_camera_list()
-
 	if(src.stat == 2)
 		return
 
 	var/list/L = list()
 	for (var/obj/machinery/camera/C in cameranet.viewpoints)
 		L.Add(C)
+
 	camera_sort(L)
 
-	var/list/D = list()
-	D["Cancel"] = "Cancel"
+	var/list/T = list()
+	T["Cancel"] = "Cancel"
 	for (var/obj/machinery/camera/C in L)
-		D[text("[][]", C.c_tag, (C.can_use() ? null : " (Deactivated)"))] = C
+		var/list/tempnetwork = C.network&src.network
+		if (tempnetwork.len)
+			T[text("[][]", C.c_tag, (C.can_use() ? null : " (Deactivated)"))] = C
 
 	track = new()
-	track.cameras = D
-	return D
-
+	track.cameras = T
+	return T
 
 /mob/living/silicon/ai/proc/ai_camera_list(var/camera in get_camera_list())
 	if(src.stat == 2)
