@@ -82,7 +82,6 @@ var/list/department_radio_keys = list(
 		if(dongle.translate_binary) return 1
 
 /mob/living/say(var/message)
-
 	/*
 		Formatting and sanitizing.
 	*/
@@ -178,9 +177,8 @@ var/list/department_radio_keys = list(
 		message_mode = department_radio_keys[channel_prefix]
 		if (message_mode || speaking || copytext(message,1,2) == ":")
 			message = trim(copytext(message, 3))
-			if (!(istype(src,/mob/living/carbon/human) || istype(src,/mob/living/carbon/monkey) || istype(src, /mob/living/simple_animal/parrot) || isrobot(src) && (message_mode=="department" || isAI(src) && (message_mode=="department") || (message_mode in radiochannels))))
+			if (!(istype(src,/mob/living/carbon/human) && !isrobot(src) && !isAI(src) || istype(src,/mob/living/carbon/monkey) || istype(src,/mob/living/simple_animal/parrot) || isrobot(src) && (message_mode=="department") || isAI(src) && (message_mode=="department") || (message_mode in radiochannels)))
 				message_mode = null //only humans can use headsets
-
 	if(src.stunned > 2 || (traumatic_shock > 61 && prob(50)))
 		message_mode = null //Stunned people shouldn't be able to physically turn on their radio/hold down the button to speak into it
 
@@ -232,7 +230,7 @@ var/list/department_radio_keys = list(
 				message_range = 1
 				italics = 1
 
-			// Select a headset and speak into it without actually sending a message
+			// Select a headset and speak into it without actually sending a message"
 			if ("fake")
 				if(iscarbon(src))
 					var/mob/living/carbon/C=src
