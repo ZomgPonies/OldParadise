@@ -31,7 +31,10 @@
 		networks["Thunderdome"] = list(access_cent_captain)	
 		
 	attack_ai(var/mob/user as mob)
-		return ui_interact(user) 
+		if(isAI(user))
+			return ui_interact(user) 
+		else
+			return attack_hand(user)
 
 	attack_paw(var/mob/user as mob)
 		return attack_hand(user)
