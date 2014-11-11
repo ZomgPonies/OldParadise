@@ -230,7 +230,7 @@ var/list/department_radio_keys = list(
 				message_range = 1
 				italics = 1
 
-			// Select a headset and speak into it without actually sending a message"
+			// Select a headset and speak into it without actually sending a message
 			if ("fake")
 				if(iscarbon(src))
 					var/mob/living/carbon/C=src
