@@ -8925,7 +8925,7 @@
 "dpG" = (/obj/machinery/door/airlock/hatch{desc = "You've heard rumors of the horrors that go on within this lab."; name = "Laboratory (DANGER!)"; req_access_txt = "0"},/turf/unsimulated/floor{tag = "icon-floor"; icon_state = "floor"},/area/admin)
 "dpH" = (/obj/machinery/computer/ordercomp,/turf/unsimulated/floor{tag = "icon-floor"; icon_state = "floor"},/area/admin)
 "dpI" = (/obj/machinery/computer/crew,/turf/unsimulated/floor{tag = "icon-floor"; icon_state = "floor"},/area/admin)
-"dpJ" = (/obj/machinery/computer/security{network = list("SS13","Telecomms","Research Outpost","Mining Outpost","CentCom","ERT","Thunderdome")},/turf/unsimulated/floor{tag = "icon-floor"; icon_state = "floor"},/area/admin)
+"dpJ" = (/obj/machinery/computer/security{network = list("SS13","Telecomms","Research Outpost","Mining Outpost","ERT","CentCom","Thunderdome")},/turf/unsimulated/floor{tag = "icon-floor"; icon_state = "floor"},/area/admin)
 "dpK" = (/obj/machinery/computer/rdservercontrol{badmin = 1; name = "Master R&amp;D Server Controller"},/turf/unsimulated/floor{tag = "icon-floor"; icon_state = "floor"},/area/admin)
 "dpL" = (/obj/structure/table,/obj/item/weapon/card/id/captains_spare,/turf/unsimulated/floor{tag = "icon-floor"; icon_state = "floor"},/area/admin)
 "dpM" = (/obj/structure/table,/obj/item/weapon/card/id/silver,/obj/item/weapon/card/id/fluff/lifetime{pixel_x = 3; pixel_y = 3},/turf/unsimulated/floor{tag = "icon-floor"; icon_state = "floor"},/area/admin)

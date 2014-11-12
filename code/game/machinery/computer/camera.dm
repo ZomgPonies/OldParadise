@@ -27,6 +27,7 @@
 		networks["Anomaly Isolation"] = list(access_rd,access_hos,access_captain)
 		networks["Toxins"] = list(access_rd,access_hos,access_captain)
 		networks["Telepad"] = list(access_rd,access_hos,access_captain)
+		networks["ERT"] = list(access_cent_teleporter,access_cent_captain)		
 		networks["CentCom"] = list(access_cent_captain)
 		networks["Thunderdome"] = list(access_cent_captain)	
 		
