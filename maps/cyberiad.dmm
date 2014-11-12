@@ -8437,7 +8437,7 @@
 "dgm" = (/turf/unsimulated/floor{dir = 9; icon_state = "carpetside"},/area/centcom/specops)
 "dgn" = (/turf/unsimulated/floor{dir = 1; icon_state = "carpetside"},/area/centcom/specops)
 "dgo" = (/turf/unsimulated/floor{dir = 5; icon_state = "carpetside"},/area/centcom/specops)
-"dgp" = (/obj/machinery/computer/security{network = list("SS13","Telecomms","Research Outpost","Mining Outpost","CentCom","Thunderdome")},/turf/unsimulated/floor{icon_state = "floor"},/area/centcom/control)
+"dgp" = (/obj/machinery/computer/security{network = list("SS13","Telecomms","Research Outpost","Mining Outpost","ERT","CentCom","Thunderdome")},/turf/unsimulated/floor{icon_state = "floor"},/area/centcom/control)
 "dgq" = (/obj/machinery/computer/station_alert,/turf/unsimulated/floor{icon_state = "floor"},/area/centcom/control)
 "dgr" = (/obj/machinery/computer/communications,/turf/unsimulated/floor{icon_state = "floor"},/area/centcom/control)
 "dgs" = (/obj/machinery/computer/robotics,/turf/unsimulated/floor{icon_state = "floor"},/area/centcom/control)
