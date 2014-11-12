@@ -34,21 +34,21 @@ var/list/department_radio_keys = list(
 
 	  //kinda localization -- rastaf0
 	  //same keys as above, but on russian keyboard layout. This file uses cp1251 as encoding.
-	  ":ê" = "right hand",	"#ê" = "right hand",	".ê" = "right hand",
-	  ":ä" = "left hand",	"#ä" = "left hand",		".ä" = "left hand",
-	  ":ø" = "intercom",	"#ø" = "intercom",		".ø" = "intercom",
-	  ":ð" = "department",	"#ð" = "department",	".ð" = "department",
-	  ":ñ" = "Command",		"#ñ" = "Command",		".ñ" = "Command",
-	  ":ò" = "Science",		"#ò" = "Science",		".ò" = "Science",
-	  ":ü" = "Medical",		"#ü" = "Medical",		".ü" = "Medical",
-	  ":ó" = "Engineering",	"#ó" = "Engineering",	".ó" = "Engineering",
-	  ":û" = "Security",	"#û" = "Security",		".û" = "Security",
-	  ":ö" = "whisper",		"#ö" = "whisper",		".ö" = "whisper",
-	  ":è" = "binary",		"#è" = "binary",		".è" = "binary",
-	  ":ô" = "alientalk",	"#ô" = "alientalk",		".ô" = "alientalk",
-	  ":å" = "Syndicate",	"#å" = "Syndicate",		".å" = "Syndicate",
-	  ":é" = "Supply",		"#é" = "Supply",		".é" = "Supply",
-	  ":ï" = "changeling",	"#ï" = "changeling",	".ï" = "changeling"
+	  ":?" = "right hand",	"#?" = "right hand",	".?" = "right hand",
+	  ":?" = "left hand",	"#?" = "left hand",		".?" = "left hand",
+	  ":?" = "intercom",	"#?" = "intercom",		".?" = "intercom",
+	  ":?" = "department",	"#?" = "department",	".?" = "department",
+	  ":?" = "Command",		"#?" = "Command",		".?" = "Command",
+	  ":?" = "Science",		"#?" = "Science",		".?" = "Science",
+	  ":?" = "Medical",		"#?" = "Medical",		".?" = "Medical",
+	  ":?" = "Engineering",	"#?" = "Engineering",	".?" = "Engineering",
+	  ":?" = "Security",	"#?" = "Security",		".?" = "Security",
+	  ":?" = "whisper",		"#?" = "whisper",		".?" = "whisper",
+	  ":?" = "binary",		"#?" = "binary",		".?" = "binary",
+	  ":?" = "alientalk",	"#?" = "alientalk",		".?" = "alientalk",
+	  ":?" = "Syndicate",	"#?" = "Syndicate",		".?" = "Syndicate",
+	  ":?" = "Supply",		"#?" = "Supply",		".?" = "Supply",
+	  ":?" = "changeling",	"#?" = "changeling",	".?" = "changeling"
 )
 
 /mob/living/proc/binarycheck()
@@ -82,6 +82,7 @@ var/list/department_radio_keys = list(
 		if(dongle.translate_binary) return 1
 
 /mob/living/say(var/message)
+
 	/*
 		Formatting and sanitizing.
 	*/
@@ -177,8 +178,9 @@ var/list/department_radio_keys = list(
 		message_mode = department_radio_keys[channel_prefix]
 		if (message_mode || speaking || copytext(message,1,2) == ":")
 			message = trim(copytext(message, 3))
-			if (!(istype(src,/mob/living/carbon/human) && !isrobot(src) && !isAI(src) || istype(src,/mob/living/carbon/monkey) || istype(src,/mob/living/simple_animal/parrot) || isrobot(src) && (message_mode=="department") || isAI(src) && (message_mode=="department") || (message_mode in radiochannels)))
+			if (!(istype(src,/mob/living/carbon/human) && !isAI(src) && !isrobot(src) || istype(src,/mob/living/carbon/monkey) || istype(src, /mob/living/simple_animal/parrot) || isrobot(src) && (message_mode=="department") || isAI(src) && (message_mode=="department") || (message_mode in radiochannels)))
 				message_mode = null //only humans can use headsets
+
 	if(src.stunned > 2 || (traumatic_shock > 61 && prob(50)))
 		message_mode = null //Stunned people shouldn't be able to physically turn on their radio/hold down the button to speak into it
 
@@ -300,9 +302,9 @@ var/list/department_radio_keys = list(
 				if(issilicon(src))
 					if(isAI(src))//for the AI's radio.  This can't be with the borg thing above due to typecasting.
 						var/mob/living/silicon/ai/A = src
-						if(A.radio)
-							A.radio.talk_into(src, message, message_mode)
-							used_radios += A.radio
+						if(A.aiRadio)
+							A.aiRadio.talk_into(src, message, message_mode)
+							used_radios += A.aiRadio
 					else
 						var/mob/living/silicon/Ro=src
 						if(!isAI(Ro))
@@ -505,5 +507,3 @@ var/list/department_radio_keys = list(
 
 /mob/living/proc/GetVoice()
 	return name
-
-
