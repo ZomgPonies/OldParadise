@@ -31,24 +31,24 @@ var/list/department_radio_keys = list(
 	  ":T" = "Syndicate",	"#T" = "Syndicate",		".T" = "Syndicate",
 	  ":U" = "Supply",		"#U" = "Supply",		".U" = "Supply",
 	  ":G" = "changeling",	"#G" = "changeling",	".G" = "changeling",
-
-	  //kinda localization -- rastaf0
-	  //same keys as above, but on russian keyboard layout. This file uses cp1251 as encoding.
-	  ":ê" = "right hand",	"#ê" = "right hand",	".ê" = "right hand",
-	  ":ä" = "left hand",	"#ä" = "left hand",		".ä" = "left hand",
-	  ":ø" = "intercom",	"#ø" = "intercom",		".ø" = "intercom",
-	  ":ð" = "department",	"#ð" = "department",	".ð" = "department",
-	  ":ñ" = "Command",		"#ñ" = "Command",		".ñ" = "Command",
-	  ":ò" = "Science",		"#ò" = "Science",		".ò" = "Science",
-	  ":ü" = "Medical",		"#ü" = "Medical",		".ü" = "Medical",
-	  ":ó" = "Engineering",	"#ó" = "Engineering",	".ó" = "Engineering",
-	  ":û" = "Security",	"#û" = "Security",		".û" = "Security",
-	  ":ö" = "whisper",		"#ö" = "whisper",		".ö" = "whisper",
-	  ":è" = "binary",		"#è" = "binary",		".è" = "binary",
-	  ":ô" = "alientalk",	"#ô" = "alientalk",		".ô" = "alientalk",
-	  ":å" = "Syndicate",	"#å" = "Syndicate",		".å" = "Syndicate",
-	  ":é" = "Supply",		"#é" = "Supply",		".é" = "Supply",
-	  ":ï" = "changeling",	"#ï" = "changeling",	".ï" = "changeling"
+	  
+	//kinda localization -- rastaf0
+	//same keys as above, but on russian keyboard layout. This file uses cp1251 as encoding.
+	  ":e" = "right hand",	"#e" = "right hand",    ".e" = "right hand",
+	  ":a" = "left hand",   "#a" = "left hand",     ".a" = "left hand",
+	  ":o" = "intercom",    "#o" = "intercom",      ".o" = "intercom",
+	  ":?" = "department",  "#?" = "department",    ".?" = "department",
+	  ":n" = "Command",     "#n" = "Command",       ".n" = "Command",
+	  ":o" = "Science",     "#o" = "Science",       ".o" = "Science",
+	  ":u" = "Medical",     "#u" = "Medical",       ".u" = "Medical",
+	  ":o" = "Engineering", "#o" = "Engineering",   ".o" = "Engineering",
+	  ":u" = "Security",    "#u" = "Security",      ".u" = "Security",
+	  ":o" = "whisper",     "#o" = "whisper",       ".o" = "whisper",
+	  ":e" = "binary",      "#e" = "binary",        ".e" = "binary",
+	  ":o" = "alientalk",   "#o" = "alientalk",     ".o" = "alientalk",
+	  ":a" = "Syndicate",   "#a" = "Syndicate",     ".a" = "Syndicate",
+	  ":e" = "Supply",      "#e" = "Supply",        ".e" = "Supply",
+	  ":i" = "changeling",  "#i" = "changeling",    ".i" = "changeling"
 )
 
 /mob/living/proc/binarycheck()
