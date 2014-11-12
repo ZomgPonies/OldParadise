@@ -34,21 +34,21 @@ var/list/department_radio_keys = list(
 
 	  //kinda localization -- rastaf0
 	  //same keys as above, but on russian keyboard layout. This file uses cp1251 as encoding.
-	  ":Ãª" = "right hand", "#Ãª" = "right hand", ".Ãª" = "right hand",
-	  ":Ã¤" = "left hand", "#Ã¤" = "left hand", ".Ã¤" = "left hand",
-	  ":Ã¸" = "intercom", "#Ã¸" = "intercom", ".Ã¸" = "intercom",
-	  ":Ã°" = "department", "#Ã°" = "department", ".Ã°" = "department",
-	  ":Ã±" = "Command", "#Ã±" = "Command", ".Ã±" = "Command",
-	  ":Ã²" = "Science", "#Ã²" = "Science", ".Ã²" = "Science",
-	  ":Ã¼" = "Medical", "#Ã¼" = "Medical", ".Ã¼" = "Medical",
-	  ":Ã³" = "Engineering", "#Ã³" = "Engineering", ".Ã³" = "Engineering",
-	  ":Ã»" = "Security", "#Ã»" = "Security", ".Ã»" = "Security",
-	  ":Ã¶" = "whisper", "#Ã¶" = "whisper", ".Ã¶" = "whisper",
-	  ":Ã¨" = "binary", "#Ã¨" = "binary", ".Ã¨" = "binary",
-	  ":Ã´" = "alientalk", "#Ã´" = "alientalk", ".Ã´" = "alientalk",
-	  ":Ã¥" = "Syndicate", "#Ã¥" = "Syndicate", ".Ã¥" = "Syndicate",
-	  ":Ã©" = "Supply", "#Ã©" = "Supply", ".Ã©" = "Supply",
-	  ":Ã¯" = "changeling", "#Ã¯" = "changeling", ".Ã¯" = "changeling"
+	  ":ê" = "right hand",	"#ê" = "right hand",	".ê" = "right hand",
+	  ":ä" = "left hand",	"#ä" = "left hand",		".ä" = "left hand",
+	  ":ø" = "intercom",	"#ø" = "intercom",		".ø" = "intercom",
+	  ":ð" = "department",	"#ð" = "department",	".ð" = "department",
+	  ":ñ" = "Command",		"#ñ" = "Command",		".ñ" = "Command",
+	  ":ò" = "Science",		"#ò" = "Science",		".ò" = "Science",
+	  ":ü" = "Medical",		"#ü" = "Medical",		".ü" = "Medical",
+	  ":ó" = "Engineering",	"#ó" = "Engineering",	".ó" = "Engineering",
+	  ":û" = "Security",	"#û" = "Security",		".û" = "Security",
+	  ":ö" = "whisper",		"#ö" = "whisper",		".ö" = "whisper",
+	  ":è" = "binary",		"#è" = "binary",		".è" = "binary",
+	  ":ô" = "alientalk",	"#ô" = "alientalk",		".ô" = "alientalk",
+	  ":å" = "Syndicate",	"#å" = "Syndicate",		".å" = "Syndicate",
+	  ":é" = "Supply",		"#é" = "Supply",		".é" = "Supply",
+	  ":ï" = "changeling",	"#ï" = "changeling",	".ï" = "changeling"
 )
 
 /mob/living/proc/binarycheck()
@@ -178,7 +178,7 @@ var/list/department_radio_keys = list(
 		message_mode = department_radio_keys[channel_prefix]
 		if (message_mode || speaking || copytext(message,1,2) == ":")
 			message = trim(copytext(message, 3))
-			if (!(istype(src,/mob/living/carbon/human) && !isAI(src) && !isrobot(src) || istype(src,/mob/living/carbon/monkey) || istype(src, /mob/living/simple_animal/parrot) || isrobot(src) && (message_mode=="department") || isAI(src) && (message_mode=="department") || (message_mode in radiochannels)))
+			if (!(istype(src,/mob/living/carbon/human) || istype(src,/mob/living/carbon/monkey) || istype(src, /mob/living/simple_animal/parrot) || isrobot(src) && (message_mode=="department") || isAI(src) && (message_mode=="department") || (message_mode in radiochannels)))
 				message_mode = null //only humans can use headsets
 
 	if(src.stunned > 2 || (traumatic_shock > 61 && prob(50)))
@@ -507,3 +507,5 @@ var/list/department_radio_keys = list(
 
 /mob/living/proc/GetVoice()
 	return name
+
+
