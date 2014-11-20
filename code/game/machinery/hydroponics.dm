@@ -135,13 +135,15 @@
 	if(seed && seed.immutable > 0)
 		return
 
-	//Override for somatoray projectiles.
-	if(istype(Proj ,/obj/item/projectile/energy/floramut) && prob(20))
-		mutate(1)
+	//--FalseIncarnate
+	//Override for somatoray projectiles, updated to work with new mutation rework
+	if(istype(Proj ,/obj/item/projectile/energy/floramut))
+		mutate("F1")
 		return
-	else if(istype(Proj ,/obj/item/projectile/energy/florayield) && prob(20))
-		yield_mod = min(10,yield_mod+rand(1,2))
+	else if(istype(Proj ,/obj/item/projectile/energy/florayield))
+		mutate("F2")
 		return
+	//--FalseIncarnate
 
 	..()
 
@@ -532,53 +534,70 @@
 	*/
 
 	switch(severity)
-		if(1)
+		//Reagent Tiers
+		if(1)		//Tier 1
 			if(prob(20+mutation_mod))							//Low chance of stat mutation
 				if(!isnull(seed_types[seed.name]))
 					seed = seed.diverge()
-				seed.mutate(severity,get_turf(src))
+				seed.mutate(1,get_turf(src))
 				return
-		if(2)
+		if(2)		//Tier 2
 			if(prob(60+mutation_mod))							//Higher chance of stat mutation
 				if(!isnull(seed_types[seed.name]))
 					seed = seed.diverge()
-				seed.mutate(severity,get_turf(src))
+				seed.mutate(1,get_turf(src))
 				return
-		if(3)
+		if(3)		//Tier 3
 			if(prob(20+mutation_mod))							//Low chance of species shift mutation
 				if(seed.mutants. && seed.mutants.len)			//Check if current seed/plant has mutant species
 					mutate_species()
 				else											//No mutant species, mutate stats instead
 					if(!isnull(seed_types[seed.name]))
 						seed = seed.diverge()
-					seed.mutate(severity,get_turf(src))
+					seed.mutate(1,get_turf(src))
 				return
 			else												//Failed to shift, mutate stats instead
 				if(!isnull(seed_types[seed.name]))
 					seed = seed.diverge()
-				seed.mutate(severity,get_turf(src))
+				seed.mutate(1,get_turf(src))
 				return
-		if(4)
+		if(4)		//Tier 4
 			if(prob(60+mutation_mod))							//Higher chance of species shift mutation
 				if(seed.mutants. && seed.mutants.len)			//Check if current seed/plant has mutant species
 					mutate_species()
 				else											//No mutant species, mutate stats instead
 					if(!isnull(seed_types[seed.name]))
 						seed = seed.diverge()
-					seed.mutate(severity,get_turf(src))
-					if(prob(20+mutation_mod))					//Chance for second stat mutation
+					seed.mutate(1,get_turf(src))
+					if(prob(20+mutation_mod))					//Low chance for second stat mutation
 						if(!isnull(seed_types[seed.name]))
 							seed = seed.diverge()
-						seed.mutate(severity,get_turf(src))
+						seed.mutate(1,get_turf(src))
 				return
 			else												//Failed to shift, mutate stats instead
 				if(!isnull(seed_types[seed.name]))
 					seed = seed.diverge()
-				seed.mutate(severity,get_turf(src))
-				if(prob(20+mutation_mod))						//Chance for second stat mutation
+				seed.mutate(1,get_turf(src))
+				if(prob(20+mutation_mod))						//Low chance for second stat mutation
 					if(!isnull(seed_types[seed.name]))
 						seed = seed.diverge()
-					seed.mutate(severity,get_turf(src))
+					seed.mutate(1,get_turf(src))
+				return
+		//Floral Somatoray Tiers
+		if("F1")	//Random Stat Tier
+			if(prob(80+mutation_mod))							//EVEN Higher chance of stat mutation
+				if(!isnull(seed_types[seed.name]))
+					seed = seed.diverge()
+				seed.mutate(1,get_turf(src))
+				return
+		if("F2")	//Yield Tier
+			if(prob(40+mutation_mod))							//Medium chance of Yield stat mutation
+				if(!isnull(seed_types[seed.name]))
+					seed = seed.diverge()
+				if(seed.immutable <= 0 && seed.yield != -1)		//Check if the plant can be mutated and has a yield to mutate
+					seed.yield = seed.yield + rand(-2, 2)		//Randomly adjust yield
+					if(seed.yield < 0)							//If yield would drop below 0 after adjustment, set to 0 to allow further attempts
+						seed.yield = 0
 				return
 
 	/* code references
