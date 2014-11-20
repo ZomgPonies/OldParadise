@@ -111,12 +111,15 @@
 		"left4zed" =       list(  0,    0,   0.2 )
 		)
 
-	// Mutagen list specifies minimum value for the mutation to take place, rather
-	// than a bound as the lists above specify.
+	//--FalseIncarnate
+	// Mutagen list specifies reagent_min_value and reagent_step
+	// Reagent_min_value (value 1) is the minimum number of units needed to begin mutations
+	// Reagent_step (value 2) is the number of units between each mutation threshold
 	var/global/list/mutagenic_reagents = list(
-		"radium" =  list(8,3),
-		"mutagen" = list(3,8)
+		"radium" =  list(10,10),
+		"mutagen" = list(1,5)
 		)
+	//--FalseIncarnate
 
 /obj/machinery/portable_atmospherics/hydroponics/New()
 	..()
@@ -132,13 +135,15 @@
 	if(seed && seed.immutable > 0)
 		return
 
-	//Override for somatoray projectiles.
-	if(istype(Proj ,/obj/item/projectile/energy/floramut) && prob(20))
-		mutate(1)
+	//--FalseIncarnate
+	//Override for somatoray projectiles, updated to work with new mutation rework
+	if(istype(Proj ,/obj/item/projectile/energy/floramut))
+		mutate("F1")
 		return
-	else if(istype(Proj ,/obj/item/projectile/energy/florayield) && prob(20))
-		yield_mod = min(10,yield_mod+rand(1,2))
+	else if(istype(Proj ,/obj/item/projectile/energy/florayield))
+		mutate("F2")
 		return
+	//--FalseIncarnate
 
 	..()
 
@@ -336,13 +341,25 @@
 				mutation_mod += beneficial_reagents[R.id][3] * reagent_total
 
 			// Mutagen is distinct from the previous types and mostly has a chance of proccing a mutation.
-			if(mutagenic_reagents[R.id])
-				var/reagent_min_value = mutagenic_reagents[R.id][1]
-				var/reagent_value =     mutagenic_reagents[R.id][2]+mutation_mod
 
-				if(reagent_total >= reagent_min_value)
-					if(prob(min(reagent_total*reagent_value,100)))
-						mutate(reagent_total > 10 ? 2 : 1)
+			//--FalseIncarnate
+			// Mutation rework, will now use "thresholds" for proccing types of mutations and their respective chances.
+			// This should make it easier to avoid species shifts when trying to only affect stats like potency.
+			// Additionally, the chance of mutations will vary depending on the amount of mutagenic reagents added.
+			if(mutagenic_reagents[R.id])
+				var/reagent_min_value = mutagenic_reagents[R.id][1]					//10 for radium, 1 for unstable mutagen
+				var/reagent_step =     mutagenic_reagents[R.id][2]					//10 for radium, 5 for unstable mutagen
+
+				if(reagent_total >= reagent_min_value + (3 * reagent_step))			//31+ for radium, 16+ for unstable mutagen
+					mutate(4)
+				else if(reagent_total >= reagent_min_value + (2 * reagent_step))	//21-30 for radium, 11-15 for unstable mutagen
+					mutate(3)
+				else if(reagent_total >= reagent_min_value + reagent_step)			//11-20 for radium, 6-10 for unstable mutagen
+					mutate(2)
+				else if(reagent_total >= reagent_min_value)							//1-10 for radium, 1-5 for unstable mutagen
+					mutate(1)
+
+			//--FalseIncarnate
 
 		// Handle nutrient refilling.
 		if(nutrient_reagents[R.id])
@@ -484,26 +501,6 @@
 
 	return
 
-/obj/machinery/portable_atmospherics/hydroponics/proc/mutate(var/severity)
-
-	// No seed, no mutations.
-	if(!seed)
-		return
-
-	// Check if we should even bother working on the current seed datum.
-	if(seed.mutants. && seed.mutants.len && severity > 1 && prob(10+mutation_mod))
-		mutate_species()
-		return
-
-	// We need to make sure we're not modifying one of the global seed datums.
-	// If it's not in the global list, then no products of the line have been
-	// harvested yet and it's safe to assume it's restricted to this tray.
-	if(!isnull(seed_types[seed.name]))
-		seed = seed.diverge()
-	seed.mutate(severity,get_turf(src))
-
-	return
-
 /obj/machinery/portable_atmospherics/hydroponics/proc/check_level_sanity()
 	//Make sure various values are sane.
 	if(seed)
@@ -518,6 +515,102 @@
 	weedlevel =  max(0,min(weedlevel,10))
 	toxins =     max(0,min(toxins,10))
 
+/obj/machinery/portable_atmospherics/hydroponics/proc/mutate(var/severity)
+
+	// No seed, no mutations.
+	if(!seed)
+		return
+
+	/*
+	--FalseIncarnate
+	New mutation system, now uses "Mutation Tiers" to adjust the chances of mutations
+		Tier 1 has a low chance of causing a stat mutation
+		Tier 2 has a higher chance of causing a stat mutation
+		Tier 3 has a low chance of causing a species shift (if possible), and will ALWAYS cause a stat mutation if it does not shift species
+		Tier 4 has a higher chance of causing a species shift (if possible), and will ALWAYS cause a stat mutation if it does not shift species
+			Tier 4 also has a low chance to cause a SECOND stat mutation when it does not shift species
+	All mutation chances are increased by the mutation_mod value. Mutation_mod is not transferred into seeds/harvests, and is reset when the plant dies
+
+	*/
+
+	switch(severity)
+		//Reagent Tiers
+		if(1)		//Tier 1
+			if(prob(20+mutation_mod))							//Low chance of stat mutation
+				if(!isnull(seed_types[seed.name]))
+					seed = seed.diverge()
+				seed.mutate(1,get_turf(src))
+				return
+		if(2)		//Tier 2
+			if(prob(60+mutation_mod))							//Higher chance of stat mutation
+				if(!isnull(seed_types[seed.name]))
+					seed = seed.diverge()
+				seed.mutate(1,get_turf(src))
+				return
+		if(3)		//Tier 3
+			if(prob(20+mutation_mod))							//Low chance of species shift mutation
+				if(seed.mutants. && seed.mutants.len)			//Check if current seed/plant has mutant species
+					mutate_species()
+				else											//No mutant species, mutate stats instead
+					if(!isnull(seed_types[seed.name]))
+						seed = seed.diverge()
+					seed.mutate(1,get_turf(src))
+				return
+			else												//Failed to shift, mutate stats instead
+				if(!isnull(seed_types[seed.name]))
+					seed = seed.diverge()
+				seed.mutate(1,get_turf(src))
+				return
+		if(4)		//Tier 4
+			if(prob(60+mutation_mod))							//Higher chance of species shift mutation
+				if(seed.mutants. && seed.mutants.len)			//Check if current seed/plant has mutant species
+					mutate_species()
+				else											//No mutant species, mutate stats instead
+					if(!isnull(seed_types[seed.name]))
+						seed = seed.diverge()
+					seed.mutate(1,get_turf(src))
+					if(prob(20+mutation_mod))					//Low chance for second stat mutation
+						if(!isnull(seed_types[seed.name]))
+							seed = seed.diverge()
+						seed.mutate(1,get_turf(src))
+				return
+			else												//Failed to shift, mutate stats instead
+				if(!isnull(seed_types[seed.name]))
+					seed = seed.diverge()
+				seed.mutate(1,get_turf(src))
+				if(prob(20+mutation_mod))						//Low chance for second stat mutation
+					if(!isnull(seed_types[seed.name]))
+						seed = seed.diverge()
+					seed.mutate(1,get_turf(src))
+				return
+		//Floral Somatoray Tiers
+		if("F1")	//Random Stat Tier
+			if(prob(80+mutation_mod))							//EVEN Higher chance of stat mutation
+				if(!isnull(seed_types[seed.name]))
+					seed = seed.diverge()
+				seed.mutate(1,get_turf(src))
+				return
+		if("F2")	//Yield Tier
+			if(prob(40+mutation_mod))							//Medium chance of Yield stat mutation
+				if(!isnull(seed_types[seed.name]))
+					seed = seed.diverge()
+				if(seed.immutable <= 0 && seed.yield != -1)		//Check if the plant can be mutated and has a yield to mutate
+					seed.yield = seed.yield + rand(-2, 2)		//Randomly adjust yield
+					if(seed.yield < 0)							//If yield would drop below 0 after adjustment, set to 0 to allow further attempts
+						seed.yield = 0
+				return
+
+	/* code references
+	// We need to make sure we're not modifying one of the global seed datums.
+	// If it's not in the global list, then no products of the line have been
+	// harvested yet and it's safe to assume it's restricted to this tray.
+	if(!isnull(seed_types[seed.name]))
+		seed = seed.diverge()
+	seed.mutate(severity,get_turf(src))
+	*/
+
+	//--FalseIncarnate
+
 /obj/machinery/portable_atmospherics/hydroponics/proc/mutate_species()
 
 	var/previous_plant = seed.display_name
@@ -528,7 +621,7 @@
 		return
 
 	dead = 0
-	mutate(1)
+	//mutate(1)
 	age = 0
 	health = seed.endurance
 	lastcycle = world.time
