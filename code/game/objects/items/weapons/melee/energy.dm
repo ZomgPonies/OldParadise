@@ -1,6 +1,7 @@
 /obj/item/weapon/melee/energy
 	var/active = 0
-
+	no_embed = 1 // Physically impossible for energy weapons to embed themselves into people, this should fix that. -- Dave
+	hitsound = 'sound/weapons/blade1.ogg' // Probably more appropriate than the previous hitsound. -- Dave
 
 /obj/item/weapon/melee/energy/suicide_act(mob/user)
 	viewers(user) << pick("<span class='suicide'>[user] is slitting \his stomach open with the [src.name]! It looks like \he's trying to commit seppuku.</span>", \
@@ -16,6 +17,7 @@
 	throw_speed = 1
 	throw_range = 5
 	w_class = 3.0
+	hitsound = "swing_hit"
 	flags = FPRINT | CONDUCT | NOSHIELD | TABLEPASS
 	origin_tech = "combat=3"
 	attack_verb = list("attacked", "chopped", "cleaved", "torn", "cut")
@@ -28,15 +30,19 @@
 		return (BRUTELOSS|FIRELOSS)
 
 /obj/item/weapon/melee/energy/sword
+	var/hacked = 0
+	var/blade_color
 	color
 	name = "energy sword"
 	desc = "May the force be within you."
 	icon_state = "sword0"
+	icon_override = 'icons/mob/in-hand/swords.dmi'
 	force = 3.0
 	throwforce = 5.0
 	throw_speed = 1
 	throw_range = 5
 	w_class = 2.0
+	hitsound = "swing_hit"
 	flags = FPRINT | TABLEPASS | NOSHIELD
 	origin_tech = "magnets=3;syndicate=4"
 	attack_verb = list("attacked", "slashed", "stabbed", "sliced", "torn", "ripped", "diced", "cut")

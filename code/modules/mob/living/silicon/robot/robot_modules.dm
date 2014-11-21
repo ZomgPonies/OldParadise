@@ -235,6 +235,7 @@
 		src.modules += new /obj/item/weapon/melee/baton/robot(src)
 		src.modules += new /obj/item/weapon/gun/energy/taser/cyborg(src)
 		src.modules += new /obj/item/taperoll/police(src)
+		src.modules += new /obj/item/device/taperecorder(src)
 		src.emag = new /obj/item/weapon/gun/energy/laser/cyborg(src)
 		return
 
@@ -250,6 +251,7 @@
 		src.modules += new /obj/item/weapon/storage/bag/trash(src)
 		src.modules += new /obj/item/weapon/mop(src)
 		src.modules += new /obj/item/device/lightreplacer(src)
+		src.modules += new /obj/item/weapon/holosign_creator(src)
 		src.emag = new /obj/item/weapon/reagent_containers/spray(src)
 
 		src.emag.reagents.add_reagent("lube", 250)
@@ -298,6 +300,7 @@
 		src.modules += new /obj/item/device/flash(src)
 		src.modules += new /obj/item/weapon/pen/robopen(src)
 		src.modules += new /obj/item/weapon/form_printer(src)
+		src.modules += new /obj/item/device/taperecorder(src)
 		src.modules += new /obj/item/weapon/gripper/paperwork(src)
 
 		src.emag = new /obj/item/weapon/stamp/denied(src)
@@ -394,6 +397,7 @@
 		src.modules += new /obj/item/weapon/gripper(src)
 		src.modules += new /obj/item/weapon/matter_decompiler(src)
 		src.modules += new /obj/item/weapon/reagent_containers/spray/cleaner/drone(src)
+		src.modules += new /obj/item/weapon/soap(src)
 
 		src.emag = new /obj/item/weapon/pickaxe/plasmacutter(src)
 		src.emag.name = "Plasma Cutter"

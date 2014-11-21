@@ -23,4 +23,4 @@
 	return tally+config.robot_delay
 
 /mob/living/silicon/robot/Move()
-	..()
+	..()	
