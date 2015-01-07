@@ -147,8 +147,8 @@
 	result = /obj/item/weapon/reagent_containers/food/snacks/brainburger
 
 /datum/recipe/roburger
-	reagents = list("flour" = 5)
 	items = list(
+		/obj/item/weapon/reagent_containers/food/snacks/bun,
 		/obj/item/robot_parts/head
 	)
 	result = /obj/item/weapon/reagent_containers/food/snacks/roburger
