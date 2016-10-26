@@ -88,7 +88,7 @@
 		if(!affecting.buckled)
 			affecting.loc = assailant.loc
 	if(state >= GRAB_NECK)
-		affecting.Stun(5)  //It will hamper your voice, being choked and all.
+		affecting.Weaken(2)
 		if(isliving(affecting))
 			var/mob/living/L = affecting
 			L.adjustOxyLoss(1)
